@@ -1,4 +1,4 @@
-package test.java.com.j_mikolajczyk.momentum.models
+package test.java.com.j_mikolajczyk.momentum.models;
 
 public class TestSet {
     
