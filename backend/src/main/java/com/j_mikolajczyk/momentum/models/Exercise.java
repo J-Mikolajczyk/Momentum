@@ -4,6 +4,7 @@ import java.util.Set;
 
 public class Exercise {
     private String name;
+    private String type;
     private String muscleWorked;
     private List<Set> sets;
 
@@ -11,8 +12,9 @@ public class Exercise {
     public Exercise() {
     }
 
-    public Exercise(String name, String muscleWorked, List<Set> sets) {
+    public Exercise(String name, String type, String muscleWorked, List<Set> sets) {
         this.name = name;
+        this.type = type;
         this.muscleWorked = muscleWorked;
         this.sets = sets;
     }
@@ -23,6 +25,14 @@ public class Exercise {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMuscleWorked() {
