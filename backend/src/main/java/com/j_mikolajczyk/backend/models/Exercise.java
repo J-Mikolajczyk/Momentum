@@ -1,6 +1,9 @@
 package com.j_mikolajczyk.backend.models;
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document(collection = "exercises")
 public class Exercise {
     private String name;
     private String type;
