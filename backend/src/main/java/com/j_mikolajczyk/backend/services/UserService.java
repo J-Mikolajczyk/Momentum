@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.UserRepository;
-import com.j_mikolajczyk.backend.request.LoginRequest;
-import com.j_mikolajczyk.backend.request.RegisterRequest;
+import com.j_mikolajczyk.backend.requests.LoginRequest;
+import com.j_mikolajczyk.backend.requests.RegisterRequest;
 
 @Service
 public class UserService {
