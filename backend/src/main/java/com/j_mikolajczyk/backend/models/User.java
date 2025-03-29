@@ -1,12 +1,10 @@
 package com.j_mikolajczyk.backend.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Document(collection = "users")
 public class User {
@@ -16,9 +14,7 @@ public class User {
     private String email;
     private String password;
     private String name;
-
-    @DocumentReference
-    private List<Block> trainingBlocks;
+    private List<ObjectId> trainingBlockIds;
 
     public User() {
     }
@@ -27,7 +23,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.trainingBlocks = new ArrayList<Block>();
     }
     
     public String getEmail() {
@@ -55,13 +50,17 @@ public class User {
         this.name = name;
     }
 
-
-    public List<Block> getTrainingBlocks() {
-        return this.trainingBlocks;
+    public List<ObjectId> getTrainingBlockIds() {
+        return this.trainingBlockIds;
     }
 
-    public void setTrainingBlocks(List<Block> trainingBlocks) {
-        this.trainingBlocks = trainingBlocks;
+    public void setTrainingBlockIds(List<ObjectId> trainingBlockIds) {
+        this.trainingBlockIds = trainingBlockIds;
+    }
+
+    
+    public void addTrainingBlockId(ObjectId id) {
+        trainingBlockIds.add(id);
     }
     
 }

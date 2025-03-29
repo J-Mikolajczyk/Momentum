@@ -6,10 +6,9 @@ import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import com.j_mikolajczyk.backend.models.User;
+import com.j_mikolajczyk.backend.models.TrainingBlock;
 
 @Repository
-public interface UserRepository extends MongoRepository<User, ObjectId> {
-    Optional<User> findByEmail(String email);
-    Optional<User> findById(ObjectId id);
+public interface BlockRepository extends MongoRepository<TrainingBlock, ObjectId> {
+    Optional<TrainingBlock> findByIdAndCreatedByUserID(ObjectId id, ObjectId createdByUserID);
 }
