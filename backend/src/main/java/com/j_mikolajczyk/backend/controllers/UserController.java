@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.j_mikolajczyk.backend.request.LoginRequest;
-import com.j_mikolajczyk.backend.request.RegisterRequest;
+import com.j_mikolajczyk.backend.requests.LoginRequest;
+import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 
 @RestController

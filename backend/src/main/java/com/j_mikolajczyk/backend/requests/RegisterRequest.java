@@ -1,4 +1,4 @@
-package com.j_mikolajczyk.backend.request;
+package com.j_mikolajczyk.backend.requests;
 
 import com.j_mikolajczyk.backend.models.User;
 
