@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 
 @Repository
-public interface BlockRepository extends MongoRepository<TrainingBlock, ObjectId> {
+public interface TrainingBlockRepository extends MongoRepository<TrainingBlock, ObjectId> {
     Optional<TrainingBlock> findByIdAndCreatedByUserID(ObjectId id, ObjectId createdByUserID);
 }

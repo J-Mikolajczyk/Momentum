@@ -8,23 +8,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
-import com.j_mikolajczyk.backend.requests.BlockRequest;
-import com.j_mikolajczyk.backend.requests.CreateBlockRequest;
-import com.j_mikolajczyk.backend.services.BlockService;
+import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.services.TrainingBlockService;
 
 @RestController
 @RequestMapping("/block")
-public class BlockController {
+public class TrainingBlockController {
 
-    private final BlockService blockService;
+    private final TrainingBlockService blockService;
 
     @Autowired
-    public BlockController(BlockService blockService) {
+    public TrainingBlockController(TrainingBlockService blockService) {
         this.blockService = blockService;
     }
 
     @PostMapping("/get")
-    public ResponseEntity<?> get(@RequestBody BlockRequest blockRequest){
+    public ResponseEntity<?> get(@RequestBody TrainingBlockRequest blockRequest){
         try {
             TrainingBlock block = blockService.get(blockRequest);
             return ResponseEntity.ok(block);
@@ -34,7 +34,7 @@ public class BlockController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateBlockRequest createBlockRequest){
+    public ResponseEntity<?> create(@RequestBody CreateTrainingBlockRequest createBlockRequest){
         try {
             blockService.create(createBlockRequest);
             return ResponseEntity.ok("Creation successful");

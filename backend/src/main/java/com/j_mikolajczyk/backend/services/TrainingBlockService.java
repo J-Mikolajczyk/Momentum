@@ -6,21 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
-import com.j_mikolajczyk.backend.repositories.BlockRepository;
-import com.j_mikolajczyk.backend.requests.BlockRequest;
-import com.j_mikolajczyk.backend.requests.CreateBlockRequest;
+import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
+import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 
 @Service
-public class BlockService {
+public class TrainingBlockService {
 
-    private final BlockRepository blockRepository;
+    private final TrainingBlockRepository blockRepository;
 
     @Autowired
-    public BlockService(BlockRepository blockRepository) {
+    public TrainingBlockService(TrainingBlockRepository blockRepository) {
         this.blockRepository = blockRepository;
     }
 
-    public TrainingBlock get(BlockRequest blockRequest){
+    public TrainingBlock get(TrainingBlockRequest blockRequest){
         if(blockRequest.getUserId() == null || blockRequest.getBlockId() == null) {
             throw new RuntimeException("UserID and BlockID are required.");
         }
@@ -34,7 +34,7 @@ public class BlockService {
         }
     }
 
-    public void create(CreateBlockRequest createBlockRequest){
+    public void create(CreateTrainingBlockRequest createBlockRequest){
         if(createBlockRequest.getUserId() == null) {
             throw new RuntimeException("UserID is required.");
         }

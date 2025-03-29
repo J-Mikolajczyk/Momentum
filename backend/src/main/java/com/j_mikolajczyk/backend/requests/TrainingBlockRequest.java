@@ -2,17 +2,17 @@ package com.j_mikolajczyk.backend.requests;
 
 import org.bson.types.ObjectId;
 
-public class BlockRequest {
+public class TrainingBlockRequest {
 
     private final ObjectId blockId;
     private final ObjectId userId;
 
-    public BlockRequest() {
+    public TrainingBlockRequest() {
         this.blockId = null;
         this.userId = null;
     }
 
-    public BlockRequest(ObjectId blockId, ObjectId userId) {
+    public TrainingBlockRequest(ObjectId blockId, ObjectId userId) {
         this.blockId = blockId;
         this.userId = userId;
     }

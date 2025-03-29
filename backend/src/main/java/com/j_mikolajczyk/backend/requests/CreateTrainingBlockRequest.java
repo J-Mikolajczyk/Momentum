@@ -2,17 +2,17 @@ package com.j_mikolajczyk.backend.requests;
 
 import org.bson.types.ObjectId;
 
-public class CreateBlockRequest {
+public class CreateTrainingBlockRequest {
 
     private final String name;
     private final ObjectId userId;
 
-    public CreateBlockRequest() {
+    public CreateTrainingBlockRequest() {
         this.name = null;
         this.userId = null;
     }
 
-    public CreateBlockRequest(String name, ObjectId userId) {
+    public CreateTrainingBlockRequest(String name, ObjectId userId) {
         this.name = name;
         this.userId = userId;
     }
