@@ -1,14 +1,12 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import SplashScreen from './components/SplashScreen';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-      </div>
+      <SplashScreen />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
