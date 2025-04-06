@@ -1,20 +1,21 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 import SplashScreen from './components/SplashScreen';
-import LoginRegister from './components/LoginRegister'; // import LoginRegister
+import EmailForm from './components/EmailForm';
 
 function App() {
-  const [showLoginRegister, setShowLoginRegister] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  const handleShowLoginRegister = () => {
-    setShowLoginRegister(true); 
+  const handleShowEmailForm = () => {
+    setShowEmailForm(true); 
   };
 
   return (
     <div>
-      {showLoginRegister ? (
-        <LoginRegister />
+      {showEmailForm ? (
+        <EmailForm />
       ) : (
-        <SplashScreen onClick={handleShowLoginRegister} />
+        <SplashScreen onClick={handleShowEmailForm} />
       )}
     </div>
   );
