@@ -10,6 +10,7 @@ import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.UserRepository;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
+import com.j_mikolajczyk.backend.requests.UserRequest;
 
 @Service
 public class UserService {
@@ -49,5 +50,16 @@ public class UserService {
         }
 
         return existingUser.get();
+    }
+
+    public boolean exists(UserRequest userRequest){
+
+        Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
+
+        if (existingUser.isEmpty()) {
+            throw new RuntimeException("User not found.");
+        }
+
+        return true;
     }
 }

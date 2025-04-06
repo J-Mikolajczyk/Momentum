@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.requests.LoginRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
+import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 
 @RestController
@@ -20,6 +21,16 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @PostMapping("/exists")
+    public ResponseEntity<?> userExists(@RequestBody UserRequest userRequest){
+        try {
+            userService.exists(userRequest);
+            return ResponseEntity.ok("User exists");
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/register")
