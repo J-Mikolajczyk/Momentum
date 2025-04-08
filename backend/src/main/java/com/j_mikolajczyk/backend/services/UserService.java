@@ -2,11 +2,13 @@ package com.j_mikolajczyk.backend.services;
 
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.UserRepository;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
@@ -69,7 +71,9 @@ public class UserService {
         return true;
     }
 
-    public void addBlock(TrainingBlock block, ObjectId userId) throws NotFoundException{
+    public void addBlock(TrainingBlock block) throws NotFoundException{
+
+        ObjectId userId = block.getCreatedByUserID();
 
         Optional<User> existingUser = userRepository.findById(userId);
 
@@ -77,6 +81,10 @@ public class UserService {
             throw new NotFoundException();
         }
 
-        userRepository.save(existingUser.get())
+        User user = existingUser.get();
+
+        user.addBlock(block.getId());
+
+        userRepository.save(existingUser.get());
     }
 }

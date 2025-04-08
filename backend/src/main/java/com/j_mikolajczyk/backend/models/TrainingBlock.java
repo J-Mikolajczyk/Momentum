@@ -31,6 +31,10 @@ public class TrainingBlock {
         this.createdByUserID = createdByUserID;
     }
 
+    public ObjectId getId() {
+        return this.id;
+    }
+
     public String getName() {
         return this.name;
     }

@@ -3,6 +3,8 @@ package com.j_mikolajczyk.backend.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
@@ -43,7 +45,12 @@ public class TrainingBlockService {
 
         TrainingBlock block = new TrainingBlock(createBlockRequest.getName(), createBlockRequest.getUserId());
 
-        userService.addBlock(block, block.getCreatedByUserID());
+        try {
+            userService.addBlock(block);
+        } catch (NotFoundException e) {
+            return;
+        }
+
         blockRepository.save(block);
     }
 }
