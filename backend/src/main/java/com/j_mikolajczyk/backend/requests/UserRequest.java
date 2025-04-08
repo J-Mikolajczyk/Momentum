@@ -16,4 +16,8 @@ public class UserRequest {
         return this.email;
     }
 
+    public String toString(){
+        return "User requested: " + email;
+    }
+
 }
