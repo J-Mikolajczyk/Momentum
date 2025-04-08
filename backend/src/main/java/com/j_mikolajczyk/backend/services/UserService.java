@@ -3,6 +3,7 @@ package com.j_mikolajczyk.backend.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,17 +48,22 @@ public class UserService {
 
         if (existingUser.isEmpty()) {
             throw new RuntimeException("User not found.");
+        } else {
+            User user = existingUser.get();
+            if (passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
+                return user;
+            } else {
+                throw new RuntimeException("Wrong password.");
+            }
         }
-
-        return existingUser.get();
     }
 
-    public boolean exists(UserRequest userRequest){
+    public boolean exists(UserRequest userRequest) throws NotFoundException{
 
         Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
 
         if (existingUser.isEmpty()) {
-            throw new RuntimeException("User not found.");
+            throw new NotFoundException();
         }
 
         return true;
