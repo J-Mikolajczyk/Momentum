@@ -68,4 +68,15 @@ public class UserService {
 
         return true;
     }
+
+    public void addBlock(TrainingBlock block, ObjectId userId) throws NotFoundException{
+
+        Optional<User> existingUser = userRepository.findById(userId);
+
+        if (existingUser.isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        userRepository.save(existingUser.get())
+    }
 }

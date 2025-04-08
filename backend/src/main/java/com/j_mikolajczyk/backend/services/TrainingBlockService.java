@@ -14,10 +14,12 @@ import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 public class TrainingBlockService {
 
     private final TrainingBlockRepository blockRepository;
+    private final UserService userService;
 
     @Autowired
-    public TrainingBlockService(TrainingBlockRepository blockRepository) {
+    public TrainingBlockService(TrainingBlockRepository blockRepository, UserService userService) {
         this.blockRepository = blockRepository;
+        this.userService = userService;
     }
 
     public TrainingBlock get(TrainingBlockRequest blockRequest){
@@ -41,6 +43,7 @@ public class TrainingBlockService {
 
         TrainingBlock block = new TrainingBlock(createBlockRequest.getName(), createBlockRequest.getUserId());
 
+        userService.addBlock(block, block.getCreatedByUserID());
         blockRepository.save(block);
     }
 }
