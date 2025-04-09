@@ -3,6 +3,8 @@ package com.j_mikolajczyk.backend.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
@@ -14,10 +16,12 @@ import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 public class TrainingBlockService {
 
     private final TrainingBlockRepository blockRepository;
+    private final UserService userService;
 
     @Autowired
-    public TrainingBlockService(TrainingBlockRepository blockRepository) {
+    public TrainingBlockService(TrainingBlockRepository blockRepository, UserService userService) {
         this.blockRepository = blockRepository;
+        this.userService = userService;
     }
 
     public TrainingBlock get(TrainingBlockRequest blockRequest){
@@ -40,6 +44,12 @@ public class TrainingBlockService {
         }
 
         TrainingBlock block = new TrainingBlock(createBlockRequest.getName(), createBlockRequest.getUserId());
+
+        try {
+            userService.addBlock(block);
+        } catch (NotFoundException e) {
+            return;
+        }
 
         blockRepository.save(block);
     }

@@ -24,6 +24,10 @@ public class User {
         this.password = password;
         this.name = name;
     }
+
+    public void addBlock(ObjectId id) {
+        this.trainingBlockIds.add(id);
+    }
     
     public String getEmail() {
         return this.email;
