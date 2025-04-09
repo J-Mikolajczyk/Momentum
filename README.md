@@ -27,13 +27,10 @@ Momentum is a full-stack strength training tracker built with Java Spring Boot, 
 ### Frontend
 - **React** with JSX
 - **Tailwind CSS** for styling
-- **Axios** for API communication (assumed)
 
 ### In Progress
 - JWT Authentication
 - Spring Security
-- Improved API documentation (Swagger/OpenAPI)
-- Deployment (e.g., Vercel, Heroku, or AWS)
 
 ---
 
