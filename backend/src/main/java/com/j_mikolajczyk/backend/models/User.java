@@ -1,5 +1,6 @@
 package com.j_mikolajczyk.backend.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -23,6 +24,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.name = name;
+        this.trainingBlockIds = new ArrayList<ObjectId>();
     }
 
     public void addBlock(ObjectId id) {
