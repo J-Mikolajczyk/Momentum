@@ -2,11 +2,11 @@
 
 Momentum is a full-stack strength training tracker built with Java Spring Boot, React, and MongoDB. It allows users to plan and track their training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
 
-> 🚧 This project is a work in progress. Features like authentication and a finalized user homepage are currently in development.
+> 🚧 This project is a work in progress. Features like JWT authentication and a finalized user homepage are currently in development.
 
 ---
 
-## ✨ Features
+## ✨ Features to be Implemented
 
 - User login and account system (JWT + Spring Security coming soon)
 - Create training blocks with multiple weeks and days
