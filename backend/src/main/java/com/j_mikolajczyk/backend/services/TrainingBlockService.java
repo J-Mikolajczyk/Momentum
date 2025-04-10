@@ -39,6 +39,7 @@ public class TrainingBlockService {
     }
 
     public void create(CreateTrainingBlockRequest createBlockRequest){
+        
         if(createBlockRequest.getUserId() == null) {
             throw new RuntimeException("UserID is required.");
         }
@@ -46,11 +47,13 @@ public class TrainingBlockService {
         TrainingBlock block = new TrainingBlock(createBlockRequest.getName(), createBlockRequest.getUserId());
 
         try {
+            blockRepository.save(block);
             userService.addBlock(block);
         } catch (NotFoundException e) {
+            blockRepository.delete(block);
             return;
         }
 
-        blockRepository.save(block);
+        
     }
 }
