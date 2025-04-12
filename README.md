@@ -34,6 +34,91 @@ Momentum is a full-stack strength training tracker built with Java Spring Boot, 
 
 ---
 
+## 🚀 Deployment
+
+To run Momentum locally, follow the instructions for your operating system below:
+
+### 🪟 Windows Setup
+
+**1. Clone the Repository**
+
+```powershell
+git clone https://github.com/j-mikolajczyk/momentum.git
+cd momentum
+```
+
+**2. Set Up Environment Variables**
+
+Copy the example ```.env``` files:
+
+```powershell
+copy backend\.env.example backend\.env
+```
+
+Open the ```.env``` file and fill in the necessary configuration values (e.g., MongoDB URI, username, password, etc.).
+
+**3. Run the Backend**
+
+- Open a terminal in the ```backend``` directory.
+- Run the Spring Boot application using Maven:
+
+```powershell
+cd backend
+./mvnw spring-boot:run
+```
+
+**4. Run the Frontend**
+
+- Open a new terminal window.
+- Navigate to the ```frontend``` directory.
+- Install depencencies and run:
+  ```powershell
+  cd frontend
+  npm install
+  npm run dev
+  ```
+
+### 🐧 Linux/MacOS Setup
+
+**1. Clone the Repository**
+
+```
+git clone https://github.com/j-mikolajczyk/momentum.git
+cd momentum
+```
+
+**2. Set Up Environment Variables**
+
+Copy the example ```.env``` files:
+
+```
+cp backend/.env.example backend/.env
+```
+
+Open the ```.env``` file and fill in the necessary configuration values (e.g., MongoDB URI, username, password, etc.).
+
+**3. Run the Backend**
+
+- Open a terminal in the ```backend``` directory.
+- Run the Spring Boot application using Maven:
+
+```powershell
+cd backend
+./mvnw spring-boot:run
+```
+
+**4. Run the Frontend**
+
+- Open a new terminal window.
+- Navigate to the ```frontend``` directory.
+- Install depencencies and run:
+  ```
+  cd frontend
+  npm install
+  npm run dev
+  ```
+---
+
 ## 📂 Project Structure
 
 ```bash
