@@ -50,7 +50,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         const response = await postRequest('http://localhost:8080/user/exists', { email });
 
         if (response.ok) {
-          setMessage('User exists. Please enter your password.');
+          setMessage('Please enter your password.');
           setExists(true);
         } else if(response.status === 404) {
           setMessage('User not found. Please register.');
@@ -68,12 +68,12 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
     <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-400 to-blue-900'>
       <form  onSubmit={handleSubmit}  className='h-1/3 w-5/6 max-w-md max-h-md flex flex-col items-center justify-evenly bg-white font-anton rounded-md text-blue-900 text-4xl border-blue-900 border-2'  >
         <h1 className='text-blue-900 font-anton text-4xl'>Login/Register:</h1>
-        <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
         {
-          (exists || notFound) ? <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Password' value={password} onChange={(e) => setPassword(e.target.value)} required /> : <></>
+          (exists || notFound) ? <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required /> : <></>
         }
         {
-          notFound ? <><input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Confirm Password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+          notFound ? <><input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Confirm Password' type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                         <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} required />  </>
                      : <></>
         }
