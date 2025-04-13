@@ -84,7 +84,7 @@ public class UserService {
 
         User user = existingUser.get();
 
-        user.addBlock(block.getId());
+        user.addBlock(block.getId(), block.getName());
 
         userRepository.save(existingUser.get());
     }
