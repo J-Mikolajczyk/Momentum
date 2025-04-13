@@ -23,12 +23,12 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) throws Exception{
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public void register(RegisterRequest registerRequest){
+    public void register(RegisterRequest registerRequest) throws Exception{
         if(registerRequest.getEmail() == null || registerRequest.getPassword() == null) {
             throw new RuntimeException("Email and password are required.");
         }
@@ -36,7 +36,7 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new RuntimeException("Email is already in use.");
+            throw new Exception("409");
         }
 
         User user = registerRequest.getUser();

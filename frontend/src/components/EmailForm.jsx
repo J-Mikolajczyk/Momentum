@@ -37,6 +37,8 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         const response = await postRequest('http://localhost:8080/user/register', { email, password, name });
         if (response.ok) {
           setMessage('User registered.');
+        } else if(response.status === 409) {
+          setMessage('User already registered, please log in.');
         } else {
           setMessage('Other issue. Try again later.');
         }
