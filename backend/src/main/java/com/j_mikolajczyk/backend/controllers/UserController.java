@@ -55,6 +55,10 @@ public class UserController {
             System.out.println("Registration successful for user: " + email);
             return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
         } catch (Exception e) {
+            if (e.getMessage().equals("409")) {
+                System.out.println(email + " already registered.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("User already registered");
+            }
             System.out.println(email + " registration unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
