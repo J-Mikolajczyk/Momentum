@@ -52,7 +52,7 @@ cd momentum
 Copy the example ```.env``` files:
 
 ```powershell
-copy backend\.env.example backend\.env
+copy backend\src\main\resources\.env.example backend\src\main\resources\.env   
 ```
 
 Open the ```.env``` file and fill in the necessary configuration values (e.g., MongoDB URI, username, password, etc.).
@@ -92,7 +92,7 @@ cd momentum
 Copy the example ```.env``` files:
 
 ```
-cp backend/.env.example backend/.env
+cp backend/src/main/resources/.env.example backend/src/main/resources/.env
 ```
 
 Open the ```.env``` file and fill in the necessary configuration values (e.g., MongoDB URI, username, password, etc.).
