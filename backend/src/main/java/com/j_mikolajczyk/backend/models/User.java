@@ -1,7 +1,7 @@
 package com.j_mikolajczyk.backend.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -15,7 +15,7 @@ public class User {
     private String email;
     private String password;
     private String name;
-    private List<ObjectId> trainingBlockIds;
+    private Map<ObjectId, String> trainingBlockNameMap;
 
     public User() {
     }
@@ -24,15 +24,11 @@ public class User {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.trainingBlockIds = new ArrayList<ObjectId>();
+        this.trainingBlockNameMap = new HashMap<ObjectId, String>();
     }
 
     public ObjectId getId() {
         return this.id;
-    }
-
-    public void addBlock(ObjectId id) {
-        this.trainingBlockIds.add(id);
     }
     
     public String getEmail() {
@@ -60,17 +56,17 @@ public class User {
         this.name = name;
     }
 
-    public List<ObjectId> getTrainingBlockIds() {
-        return this.trainingBlockIds;
+    public Map<ObjectId, String> getTrainingBlockNameMap() {
+        return this.trainingBlockNameMap;
     }
 
-    public void setTrainingBlockIds(List<ObjectId> trainingBlockIds) {
-        this.trainingBlockIds = trainingBlockIds;
+    public void setTrainingBlockNameMap(HashMap<ObjectId, String> trainingBlockNameMap) {
+        this.trainingBlockNameMap = trainingBlockNameMap;
     }
 
     
-    public void addTrainingBlockId(ObjectId id) {
-        trainingBlockIds.add(id);
+    public void addBlock(ObjectId id, String name) {
+        this.trainingBlockNameMap.put(id, name);
     }
     
 }
