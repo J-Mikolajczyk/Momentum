@@ -27,6 +27,10 @@ public class User {
         this.trainingBlockIds = new ArrayList<ObjectId>();
     }
 
+    public ObjectId getId() {
+        return this.id;
+    }
+
     public void addBlock(ObjectId id) {
         this.trainingBlockIds.add(id);
     }

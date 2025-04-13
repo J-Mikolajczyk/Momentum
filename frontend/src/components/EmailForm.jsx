@@ -1,7 +1,7 @@
 import React, { useState, useSyncExternalStore } from 'react';
 import { postRequest } from '../utils/api';
 
-function EmailForm({ setLoggedIn }) {
+function EmailForm({ setLoggedIn, setUserInfo }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,6 +20,8 @@ function EmailForm({ setLoggedIn }) {
         if (response.ok) {
           setMessage('User logged in.');
           setLoggedIn(true);
+          const json = await response.json();
+          setUserInfo(json);
         } else {
           setMessage('Wrong password.');
         }
