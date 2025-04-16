@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import AddBlockPopup from '../components/AddBlockPopup'
 
 function Home({ userInfo }) {
   const[showSidebar, setShowSidebar] = useState(false);
@@ -10,8 +11,6 @@ function Home({ userInfo }) {
 
   var blocks = userInfo;
 
-  console.log(blocks);
-
 
     return (
       <div className='h-screen flex flex-col bg-white'>
@@ -19,11 +18,9 @@ function Home({ userInfo }) {
           <p className='select-none mt-3 text-white font-anton text-5xl'>MOMENTUM</p>
           <button className='select-none text-white font-anton text-6xl'>≡</button>
         </nav>
+        <AddBlockPopup open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu}/>
         <div className='flex flex-col h-screen items-center pt-3 mx-3'>
-          <button onClick={toggleAddBlockMenu} className='select-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 h-10 text-xl border-1 border-gray-500'>Add Block</button>
-          <div className='border-blue-900 border-2 h-20 w-full rounded-lg'>
-
-          </div>
+          <button onClick={toggleAddBlockMenu} className='select-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 h-10 text-xl border-1 border-gray-500'>Add Block</button>   
         </div>
       </div>
     );
