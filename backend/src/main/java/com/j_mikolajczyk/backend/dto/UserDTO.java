@@ -8,19 +8,19 @@ import com.j_mikolajczyk.backend.models.User;
 
 public class UserDTO {
 
-    private ObjectId id;
+    private String id;
     private String email;
     private String name;
     private Map<ObjectId, String> trainingBlockNameMap;
 
     public UserDTO(User user) {
-        this.id = user.getId();
+        this.id = user.getId().toString();
         this.email = user.getEmail();
         this.name = user.getName();
         this.trainingBlockNameMap = user.getTrainingBlockNameMap();
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return this.id;
     }
     

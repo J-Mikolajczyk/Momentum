@@ -24,7 +24,7 @@ public class LoginRequest {
     }
 
     public String toString() {
-        return "User " + email + " successfull logged in.";
+        return "User " + email + " successfully logged in.";
     }
 
 }

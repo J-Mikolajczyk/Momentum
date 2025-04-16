@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
+import com.j_mikolajczyk.backend.requests.RefreshRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.services.UserService;
@@ -78,6 +79,24 @@ public class UserController {
                 return ResponseEntity.notFound().build();
             }
             System.out.println(email + " login unsuccessful, returning bad request");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> login(@RequestBody RefreshRequest refreshRequest){
+        String email = refreshRequest.getEmail();
+        System.out.println("Refresh requested for user: " + email);
+        try {
+            UserDTO userDTO = userService.refresh(refreshRequest);
+            System.out.println("User found, returning: " + email);
+            return ResponseEntity.ok(userDTO);
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) {
+                System.out.println(email + " not found, returning 404 Not Found");
+                return ResponseEntity.notFound().build();
+            }
+            System.out.println(email + " refresh unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
