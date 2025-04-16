@@ -13,6 +13,7 @@ import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.UserRepository;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
+import com.j_mikolajczyk.backend.requests.RefreshRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
 
@@ -54,10 +55,23 @@ public class UserService {
         } else {
             User user = existingUser.get();
             if (passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
+                System.out.println("UserID: " + user.getId());
                 return new UserDTO(user);
             } else {
                 throw new RuntimeException("Wrong password.");
             }
+        }
+    }
+
+    public UserDTO refresh(RefreshRequest refreshRequest) throws Exception{
+
+        Optional<User> existingUser = userRepository.findByEmail(refreshRequest.getEmail());
+
+        if (existingUser.isEmpty()) {
+            throw new RuntimeException("User not found.");
+        } else {
+            User user = existingUser.get();
+            return new UserDTO(user);
         }
     }
 

@@ -13,7 +13,7 @@ function App() {
   };
 
   if(loggedIn) {
-    return <Home userInfo={userInfo}/>;
+    return <Home userInfo={userInfo} setUserInfo={setUserInfo}/>;
   }
 
   if (showEmailForm) {

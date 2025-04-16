@@ -53,6 +53,7 @@ public class TrainingBlockController {
             System.out.println("Block creation successful for user: " + userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
         } catch (Exception e) {
+            System.out.println(e);
             if (e instanceof NotFoundException) {
                 System.out.println(userId + " not found, returning 404 Not Found");
                 return ResponseEntity.notFound().build();
