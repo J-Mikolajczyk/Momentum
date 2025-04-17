@@ -1,5 +1,6 @@
 package com.j_mikolajczyk.backend.dto;
 
+import java.util.List;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
@@ -11,13 +12,13 @@ public class UserDTO {
     private String id;
     private String email;
     private String name;
-    private Map<ObjectId, String> trainingBlockNameMap;
+    private List<String> trainingBlockNames;
 
     public UserDTO(User user) {
         this.id = user.getId().toString();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.trainingBlockNameMap = user.getTrainingBlockNameMap();
+        this.trainingBlockNames = user.getTrainingBlockNames();
     }
 
     public String getId() {
@@ -32,8 +33,8 @@ public class UserDTO {
         return this.name;
     }
 
-    public Map<ObjectId, String> getTrainingBlockNameMap() {
-        return this.trainingBlockNameMap;
+    public List<String> getTrainingBlockNames() {
+        return this.trainingBlockNames;
     }
 
 

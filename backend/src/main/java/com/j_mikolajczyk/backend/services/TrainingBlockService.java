@@ -25,11 +25,11 @@ public class TrainingBlockService {
     }
 
     public TrainingBlock get(TrainingBlockRequest blockRequest){
-        if(blockRequest.getUserId() == null || blockRequest.getBlockId() == null) {
-            throw new RuntimeException("UserID and BlockID are required.");
+        if(blockRequest.getUserId() == null || blockRequest.getName() == null) {
+            throw new RuntimeException("UserID and Block Name are required.");
         }
 
-        Optional<TrainingBlock> fetchedBlock = blockRepository.findByIdAndCreatedByUserID(blockRequest.getBlockId(), blockRequest.getUserId());
+        Optional<TrainingBlock> fetchedBlock = blockRepository.findByNameAndCreatedByUserID(blockRequest.getName(), blockRequest.getUserId());
 
         if (fetchedBlock.isPresent()) {
             return fetchedBlock.get();
@@ -44,14 +44,14 @@ public class TrainingBlockService {
             throw new RuntimeException("UserID is required.");
         }
 
-        TrainingBlock block = new TrainingBlock(createBlockRequest.getName(), createBlockRequest.getUserId());
+        TrainingBlock block = new TrainingBlock(createBlockRequest.getBlockName(), createBlockRequest.getUserId());
 
         try {
             blockRepository.save(block);
             userService.addBlock(block);
-        } catch (NotFoundException e) {
+        } catch (Exception e) {
             blockRepository.delete(block);
-            throw new NotFoundException();
+            throw e;
         }
 
     }
