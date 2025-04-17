@@ -36,7 +36,13 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
       try {
         const response = await postRequest('http://localhost:8080/user/register', { email, password, name });
         if (response.ok) {
-          setMessage('User registered.');
+          setMessage('User registered, redirecting to login.');
+          setTimeout(() => {
+            setNotFound(false);
+            setPassword('');
+            setMessage('');
+          }, 2000);
+          
         } else if(response.status === 409) {
           setMessage('User already registered, please log in.');
         } else {
@@ -67,7 +73,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
   return (
     <div className='h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-400 to-blue-900'>
       <form  onSubmit={handleSubmit}  className='h-1/3 w-5/6 max-w-md max-h-md flex flex-col items-center justify-evenly bg-white font-anton rounded-md text-blue-900 text-4xl border-blue-900 border-2'  >
-        <h1 className='text-blue-900 font-anton text-4xl'>Login/Register:</h1>
+      <h1 className='text-blue-900 font-anton text-4xl'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
         <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
         {
           (exists || notFound) ? <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required /> : <></>
