@@ -86,7 +86,7 @@ public class UserService {
         return true;
     }
 
-    public void addBlock(TrainingBlock block) throws NotFoundException{
+    public void addBlock(TrainingBlock block) throws Exception{
 
         ObjectId userId = block.getCreatedByUserID();
 
@@ -98,8 +98,11 @@ public class UserService {
 
         User user = existingUser.get();
 
-        user.addBlock(block.getId(), block.getName());
-
-        userRepository.save(existingUser.get());
+        try {
+            user.addBlock(block.getName());
+            userRepository.save(existingUser.get());
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

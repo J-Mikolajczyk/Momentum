@@ -27,25 +27,26 @@ public class TrainingBlockController {
 
     @PostMapping("/get")
     public ResponseEntity<?> get(@RequestBody TrainingBlockRequest blockRequest){
-        String blockId = blockRequest.getBlockId().toString();
+        String name = blockRequest.getName().toString();
         String userId = blockRequest.getUserId().toString();
-        System.out.println("Block " + blockId + " requested for user: " + userId);
+        System.out.println("Block " + name + " requested for user: " + userId);
         try {
             TrainingBlock block = blockService.get(blockRequest);
-            System.out.println("Block " + blockId + " found for user: " + userId);
+            System.out.println("Block " + name + " found for user: " + userId);
             return ResponseEntity.ok(block);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(blockId + " not found, returning 404 Not Found");
+                System.out.println(name + " not found, returning 404 Not Found");
                 return ResponseEntity.notFound().build();
             }
-            System.out.println(blockId + " search unsuccessful, returning bad request");
+            System.out.println(name + " search unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CreateTrainingBlockRequest createBlockRequest){
+        String name = createBlockRequest.getBlockName();
         String userId = createBlockRequest.getUserId().toString();
         System.out.println("Block creation requested from user: " + userId);
         try {
@@ -53,10 +54,12 @@ public class TrainingBlockController {
             System.out.println("Block creation successful for user: " + userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
         } catch (Exception e) {
-            System.out.println(e);
             if (e instanceof NotFoundException) {
                 System.out.println(userId + " not found, returning 404 Not Found");
                 return ResponseEntity.notFound().build();
+            } else if (e.getMessage().equals("409")) {
+                System.out.println(name + " block name already exists.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");
             }
             return ResponseEntity.badRequest().body(e.getMessage());
         }

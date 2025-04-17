@@ -1,6 +1,8 @@
 package com.j_mikolajczyk.backend.models;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
@@ -15,7 +17,7 @@ public class User {
     private String email;
     private String password;
     private String name;
-    private Map<ObjectId, String> trainingBlockNameMap;
+    private List<String> trainingBlockNames;
 
     public User() {
     }
@@ -24,7 +26,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.trainingBlockNameMap = new HashMap<ObjectId, String>();
+        this.trainingBlockNames = new ArrayList<String>();
     }
 
     public ObjectId getId() {
@@ -56,17 +58,20 @@ public class User {
         this.name = name;
     }
 
-    public Map<ObjectId, String> getTrainingBlockNameMap() {
-        return this.trainingBlockNameMap;
+    public List<String> getTrainingBlockNames() {
+        return this.trainingBlockNames;
     }
 
-    public void setTrainingBlockNameMap(HashMap<ObjectId, String> trainingBlockNameMap) {
-        this.trainingBlockNameMap = trainingBlockNameMap;
+    public void setTrainingBlockNames(List<String> trainingBlockNames) {
+        this.trainingBlockNames = trainingBlockNames;
     }
 
     
-    public void addBlock(ObjectId id, String name) {
-        this.trainingBlockNameMap.put(id, name);
+    public void addBlock(String name) throws Exception {
+        if(trainingBlockNames.contains(name)) {
+            throw new Exception("409");
+        }
+        this.trainingBlockNames.add(name);
     }
     
 }

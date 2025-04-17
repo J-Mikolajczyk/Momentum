@@ -4,21 +4,21 @@ import org.bson.types.ObjectId;
 
 public class TrainingBlockRequest {
 
-    private final ObjectId blockId;
+    private final String blockName;
     private final ObjectId userId;
 
     public TrainingBlockRequest() {
-        this.blockId = null;
+        this.blockName = null;
         this.userId = null;
     }
 
-    public TrainingBlockRequest(ObjectId blockId, ObjectId userId) {
-        this.blockId = blockId;
+    public TrainingBlockRequest(String blockName, ObjectId userId) {
+        this.blockName = blockName;
         this.userId = userId;
     }
 
-    public ObjectId getBlockId() {
-        return blockId;
+    public String getName() {
+        return blockName;
     }
 
     public ObjectId getUserId() {

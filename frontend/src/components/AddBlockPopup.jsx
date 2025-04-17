@@ -4,8 +4,10 @@ import { postRequest } from '../utils/api';
 export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
     const [blockName, setBlockName] = useState(null);
 
-    const userId = userInfo?.id != null ? userInfo.id : null;
+    const userId = userInfo?.id ? userInfo.id.toString() : null;
     const email = userInfo?.email != null ? userInfo.email : null;
+
+    console.log(userInfo)
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -16,7 +18,6 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
                 try {
                   const response = await postRequest('http://localhost:8080/user/refresh', { email });
                   if(response.ok) {
-                    console.log('ok')
                     const json = await response.json();
                     setUserInfo(json);
                   } else {
