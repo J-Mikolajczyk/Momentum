@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AddBlockPopup from '../components/AddBlockPopup';
+import Sidebar from '../components/Sidebar'
 
 function Home({ userInfo, setUserInfo }) {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -11,13 +12,17 @@ function Home({ userInfo, setUserInfo }) {
     setshowAddBlockMenu(!showAddBlockMenu);
   };
 
+  const toggleSidebar = () => {
+    setShowSidebar(!showSidebar);
+  }
+
   return (
     <div className='h-screen flex flex-col bg-white'>
       <nav className='flex justify-between bg-blue-800 pl-2.5 pr-4 pb-2'>
         <p className='select-none mt-3 text-white font-anton text-5xl'>MOMENTUM</p>
-        <button className='select-none text-white font-anton text-6xl'>≡</button>
+        <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl'>≡</button>
       </nav>
-
+      <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
       <AddBlockPopup open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
 
       <div className='flex flex-col h-screen items-center pt-3 mx-6 gap-2'>
