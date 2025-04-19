@@ -18,9 +18,9 @@ function Home({ userInfo, setUserInfo }) {
 
   return (
     <div className='h-screen flex flex-col bg-white'>
-      <nav className='flex justify-between bg-blue-800 pl-2.5 pr-4 pb-2'>
-        <p className='select-none mt-3 text-white font-anton text-5xl'>MOMENTUM</p>
-        <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl'>≡</button>
+      <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
+        <p className='select-none text-white font-anton text-5xl'>MOMENTUM</p>
+        <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
       <AddBlockPopup open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
