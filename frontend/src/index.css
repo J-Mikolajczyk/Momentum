@@ -6,3 +6,10 @@
     font-family: 'Anton', sans-serif;
     font-style: italic;
 }
+
+.app-container {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
