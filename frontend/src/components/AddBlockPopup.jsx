@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { postRequest } from '../utils/api';
 
 export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
+  const ip = import.meta.env.VITE_IP_ADDRESS;
     const [blockName, setBlockName] = useState('');
     const [message, setMessage] = useState('');
 
@@ -30,10 +31,10 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
       e.preventDefault();
 
       try {
-              const response = await postRequest('http://localhost:8080/block/create', { blockName, userId });
+              const response = await postRequest('http://'+ip+':8080/block/create', { blockName, userId });
               if (response.ok) {
                 try {
-                  const refreshResponse = await postRequest('http://localhost:8080/user/refresh', { email });
+                  const refreshResponse = await postRequest('http://'+ip+':8080/user/refresh', { email });
                   if(refreshResponse.ok) {
                     const json = await refreshResponse.json();
                     setUserInfo(json);
