@@ -10,4 +10,5 @@ import com.j_mikolajczyk.backend.models.Exercise;
 
 @Repository
 public interface ExerciseRepository extends MongoRepository<Exercise, ObjectId> {
+  
 }
