@@ -9,7 +9,6 @@ Momentum is a full-stack strength training tracker built with Java Spring Boot, 
 ## ✨ Features to be Implemented
 
 - User login and account system (JWT + Spring Security coming soon)
-- Create training blocks with multiple weeks and days
 - Add custom days (e.g., Chest Day, Leg Day, etc.)
 - Add exercises to each day
 - Track detailed sets: reps, weight, and more
