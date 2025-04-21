@@ -16,7 +16,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
 
     if(exists) {
       try {
-        const response = await postRequest('http://'+ip+':8080/user/login', { email, password });
+        const response = await postRequest('https://'+ip+':8080/user/login', { email, password });
 
         if (response.ok) {
           setMessage('User logged in.');
@@ -35,7 +35,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         return;
       }
       try {
-        const response = await postRequest('http://'+ip+':8080/user/register', { email, password, name });
+        const response = await postRequest('https://'+ip+':8080/user/register', { email, password, name });
         if (response.ok) {
           setMessage('User registered, redirecting to login.');
           setTimeout(() => {
@@ -54,7 +54,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
       }
     } else {
       try {
-        const response = await postRequest('http://'+ip+':8080/user/exists', { email });
+        const response = await postRequest('https://'+ip+':8080/user/exists', { email });
 
         if (response.ok) {
           setMessage('Please enter your password.');
