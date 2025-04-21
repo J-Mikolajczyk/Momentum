@@ -17,8 +17,8 @@ Momentum is a full-stack strength training tracker built with Java Spring Boot, 
 ---
 ## ☁️ Deployment Platforms
 
-- Render for Backend (via Dockerfile)
-- Netlify for Frontend
+- [Render](https://render.com/) for Backend (via Dockerfile)
+- [Netlify](https://www.netlify.com/) for Frontend
 
 ---
 
