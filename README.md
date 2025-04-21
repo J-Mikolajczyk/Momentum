@@ -1,6 +1,6 @@
 # Momentum <img src="frontend/src/assets/favicon.ico" alt="Momentum Logo" width="24" height="24" />
 
-Momentum is a full-stack strength training tracker built with Java Spring Boot, React, and MongoDB. It allows users to plan and track their training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
+[Momentum](https://training-momentum.com/) is a full-stack strength training tracker built with Java Spring Boot, React, and MongoDB. It allows users to plan and track their training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
 
 > 🚧 This project is a work in progress. Features like JWT authentication and a finalized user profile page are currently in development.
 
