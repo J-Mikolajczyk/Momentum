@@ -13,23 +13,15 @@ function App() {
   };
 
   if(loggedIn) {
-    return 
-    <div className='h-screen overflow-hidden'>
-    <Home userInfo={userInfo} setUserInfo={setUserInfo}/>;
-    </div>
+    return  <Home userInfo={userInfo} setUserInfo={setUserInfo}/>;
   }
 
   if (showEmailForm) {
-    return
-    <div className='h-screen overflow-hidden'>
-     <EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/>;
-    </div>
+    return<EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/>;
   }
 
   return (
-    <div className='h-screen overflow-hidden'>
-     <SplashScreen onClick={handleShowEmailForm} />
-     </div>
+    <SplashScreen onClick={handleShowEmailForm} />
   );
 }
 
