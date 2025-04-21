@@ -14,6 +14,11 @@ Momentum is a full-stack strength training tracker built with Java Spring Boot, 
 - Add exercises to each day
 - Track detailed sets: reps, weight, and more
 - Responsive UI built with Tailwind CSS
+---
+## ☁️ Deployment Platforms
+
+- Render for Backend (via Dockerfile)
+- Netlify for Frontend
 
 ---
 
@@ -34,7 +39,7 @@ Momentum is a full-stack strength training tracker built with Java Spring Boot, 
 
 ---
 
-## 🚀 Deployment
+## 🚀 Personal Deployment
 
 To run Momentum locally, follow the instructions for your operating system below:
 
