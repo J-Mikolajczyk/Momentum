@@ -72,7 +72,7 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
             <button onClick={handleClose} className="font-anton inlinetext-gray-500 hover:text-gray-700 text-2xl ">X</button>
             </div>
             <form>
-                <input className='mt-3 bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 text-2xl border-blue-900 border-2' placeholder='Block Name' value={blockName} onChange={(e) => setBlockName(e.target.value)} required /> 
+                <input className='mt-3 bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 text-2xl border-blue-900 border-2 pl-3' placeholder='Block Name' value={blockName} onChange={(e) => setBlockName(e.target.value)} required /> 
                 <button type='submit' onClick={handleSubmit} className='mt-3 bg-white font-anton rounded-md text-blue-900 hover:bg-gray-200 transition duration-300 h-1/4 px-10 text-2xl border-blue-900 border-2'>Add</button>
                 {message && (<p className='font-anton text-red-700 text-xl mt-2'>{message}</p> )}
             </form>
