@@ -20,8 +20,9 @@ function App() {
   }
 
   if (showEmailForm) {
+    return
     <div className='h-screen overflow-hidden'>
-    return <EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/>;
+     <EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/>;
     </div>
   }
 
