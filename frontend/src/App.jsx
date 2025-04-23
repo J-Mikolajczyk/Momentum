@@ -12,16 +12,16 @@ function App() {
     setShowEmailForm(true); 
   };
 
-  if(loggedIn) {
-    return  <Home userInfo={userInfo} setUserInfo={setUserInfo}/>;
-  }
-
-  if (showEmailForm) {
-    return<EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/>;
-  }
-
   return (
-    <SplashScreen onClick={handleShowEmailForm} />
+    <div>
+      { loggedIn ? 
+        (<><Home userInfo={userInfo} setUserInfo={setUserInfo}/></>)
+        :(<> { showEmailForm ?
+          (<><EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/></>)
+            :(<><SplashScreen onClick={handleShowEmailForm} /></>)}
+        </>)
+      }
+    </div>
   );
 }
 
