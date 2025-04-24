@@ -31,10 +31,10 @@ function Home({ userInfo, setUserInfo }) {
   }
 
   return (
-    <div className='min-h-full flex flex-col bg-white'>
-      <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
-        <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
-        <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
+    <div className='h-screen flex-col bg-white'>
+      <nav className='sticky h-1/12 flex justify-between items-center bg-blue-800 pl-2.5'>
+        <button onClick={goHome} className='text-white font-anton text-5xl'>MOMENTUM</button>
+        <button onClick={toggleSidebar} className='text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
       <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-8 overflow-y-auto overscroll-contain scroll-hidden'>
