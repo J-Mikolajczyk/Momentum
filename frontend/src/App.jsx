@@ -14,7 +14,7 @@ function App() {
   };
 
   return (
-    <div className='h-full'>
+    <div className='min-h-full'>
       { loggedIn ? 
         (<><Home userInfo={userInfo} setUserInfo={setUserInfo}/></>)
         :(<> { showEmailForm ?
