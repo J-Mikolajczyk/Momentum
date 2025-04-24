@@ -12,7 +12,6 @@
 - Add custom days (e.g., Chest Day, Leg Day, etc.)
 - Add exercises to each day
 - Track detailed sets: reps, weight, and more
-- Responsive UI built with Tailwind CSS
 ---
 ## ☁️ Deployment Platforms
 
