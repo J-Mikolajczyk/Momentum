@@ -34,13 +34,13 @@ function Home({ userInfo, setUserInfo }) {
   }
 
   return (
-    <div ref={ref} className='h-screen flex flex-col bg-white'>
+    <div className='h-screen flex flex-col bg-white'>
       <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      <div className='flex flex-col h-screen items-center pt-3 mx-6 gap-2'>
+      <div ref={ref} className='flex flex-col h-screen items-center pt-3 mx-6 gap-2'>
       { blockName === null ? 
         (<>
           <div className='flex w-full items-center mb-3'>
