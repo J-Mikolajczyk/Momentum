@@ -16,7 +16,7 @@ function App() {
   };
 
   return (
-    <div className='h-full'>
+    <div className='scroll-hidden .scroll-hidden::-webkit-scrollbar'>
       { loggedIn ? 
         (<><Home userInfo={userInfo} setUserInfo={setUserInfo}/></>)
         :(<> { showEmailForm ?

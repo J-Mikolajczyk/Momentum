@@ -31,7 +31,7 @@ function Home({ userInfo, setUserInfo }) {
   }
 
   return (
-    <div className='h-full flex flex-col bg-white'>
+    <div className='h-screen flex flex-col bg-white'>
       <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
@@ -42,7 +42,7 @@ function Home({ userInfo, setUserInfo }) {
         (<>
           <div className='flex w-full items-center mb-3'>
             <p className='text-blue-800 font-anton inline-block text-3xl'>Welcome, {name}</p>
-            <button onClick={toggleAddBlockMenu} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 h-10 text-xl border border-gray-500' > Add Block </button>
+            <button onClick={toggleAddBlockMenu} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500' > Add Block </button>
           </div>
           {userInfo?.trainingBlockNames?.length > 0 ? (
           userInfo.trainingBlockNames.map((blockName, index) => (
