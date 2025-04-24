@@ -37,7 +37,7 @@ function Home({ userInfo, setUserInfo }) {
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-5 overflow-y-auto overscroll-contain'>
+      <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-8 overflow-y-auto overscroll-contain scroll-hidden'>
       { blockName === null ? 
         (<>
           <div className='flex w-full items-center mb-3'>
