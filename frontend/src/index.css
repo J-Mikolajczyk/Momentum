@@ -8,12 +8,7 @@
     user-select: none;
 }
 
-body {
-  min-height: 100vh;
-  padding-top: calc(env(safe-area-inset-top) + 20px); /* Extra padding if needed */
-}
-
 html, body {
   height: 100%;
-  padding-top: env(safe-area-inset-top);  /* For Dynamic Island */
+  overscroll-behavior: none;
 }

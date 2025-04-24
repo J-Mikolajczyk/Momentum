@@ -1,15 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import AddBlockPopup from '../components/AddBlockPopup';
-import Sidebar from '../components/Sidebar'
-import Block from '../components/Block'
-import { enableScrollOnElement } from '../utils/scrollFix';
+import Sidebar from '../components/Sidebar';
+import Block from '../components/Block';
+import useLockScroll from '../hooks/useLockScroll';
+
 
 function Home({ userInfo, setUserInfo }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    enableScrollOnElement(ref.current);
-  }, []);
+  useLockScroll();
   
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
@@ -40,7 +37,7 @@ function Home({ userInfo, setUserInfo }) {
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      <div ref={ref} className='flex flex-col h-screen items-center pt-3 mx-6 gap-2'>
+      <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-5 overflow-y-auto overscroll-contain'>
       { blockName === null ? 
         (<>
           <div className='flex w-full items-center mb-3'>
