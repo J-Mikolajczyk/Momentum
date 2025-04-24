@@ -24,12 +24,14 @@
 
 ### Backend
 - **Java Spring Boot**
-- **MongoDB** via Spring Data
-- **REST API**
+- **REST APIs**
 
 ### Frontend
 - **React** with JSX
 - **Tailwind CSS** for styling
+
+### Database
+- **MongoDB** via Spring Data
 
 ### In Progress
 - JWT Authentication
