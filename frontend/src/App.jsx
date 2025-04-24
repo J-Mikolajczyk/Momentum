@@ -1,9 +1,12 @@
-import { use, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SplashScreen from './components/SplashScreen';
 import EmailForm from './components/EmailForm';
 import Home from './components/Home'
+import usePreventBodyScroll from './hooks/usePreventBodyScroll';
 
 function App() {
+  usePreventBodyScroll();
+
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);

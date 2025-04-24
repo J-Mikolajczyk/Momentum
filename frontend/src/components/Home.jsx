@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import AddBlockPopup from '../components/AddBlockPopup';
 import Sidebar from '../components/Sidebar'
 import Block from '../components/Block'
+import { enableScrollOnElement } from '../utils/scrollFix';
 
 function Home({ userInfo, setUserInfo }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    enableScrollOnElement(ref.current);
+  }, []);
+  
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
   const [blockName, setBlockName] = useState(null);
@@ -27,7 +34,7 @@ function Home({ userInfo, setUserInfo }) {
   }
 
   return (
-    <div className='h-screen flex flex-col bg-white'>
+    <div ref={ref} className='h-screen flex flex-col bg-white'>
       <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
