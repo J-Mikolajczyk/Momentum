@@ -32,7 +32,7 @@ function Home({ userInfo, setUserInfo }) {
 
   return (
     <div className='h-screen flex-col bg-white'>
-      <nav className='h-1/12 flex justify-between items-center bg-blue-800 pl-2.5'>
+      <nav className='sticky h-1/12 flex justify-between items-center bg-blue-800 pl-2.5'>
         <button onClick={goHome} className='text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
