@@ -31,7 +31,7 @@ function Home({ userInfo, setUserInfo }) {
   }
 
   return (
-    <div className='h-screen flex flex-col bg-white'>
+    <div className='flex flex-col bg-white'>
       <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
