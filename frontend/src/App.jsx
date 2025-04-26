@@ -5,8 +5,6 @@ import Home from './components/Home'
 import useLockScroll from './hooks/useLockScroll';
 
 function App() {
-  useLockScroll();
-
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
