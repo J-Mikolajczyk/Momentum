@@ -1,4 +1,4 @@
-import React, { useState, useSyncExternalStore } from 'react';
+import React, { useState, useSyncExternalStore, useEffect } from 'react';
 import { postRequest } from '../utils/api';
 import setThemeColor from '../hooks/useThemeColor'
 
@@ -8,7 +8,6 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
     setThemeColor('#51a2ff');
   }, []);
 
-  
   const ip = import.meta.env.VITE_IP_ADDRESS;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
