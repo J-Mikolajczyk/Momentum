@@ -8,7 +8,7 @@ import setThemeColor from '../hooks/useThemeColor'
 function Home({ userInfo, setUserInfo }) {
 
   useEffect(() => {
-    setThemeColor('#193cb8');
+      setThemeColor('#51a2ff');
   }, []);
 
   
@@ -35,7 +35,7 @@ function Home({ userInfo, setUserInfo }) {
 
   return (
     <div className='flex flex-col bg-white'>
-      <nav className='sticky top-0 z-10 h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
+      <nav className='sticky top-0 z-10 h-1/12 flex shrink-0 justify-between items-center bg-blue-400 pl-2.5'>
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
