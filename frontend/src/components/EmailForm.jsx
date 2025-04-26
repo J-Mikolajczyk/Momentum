@@ -5,7 +5,7 @@ import setThemeColor from '../hooks/useThemeColor'
 function EmailForm({ setLoggedIn, setUserInfo }) {
 
   useEffect(() => {
-    setThemeColor('#51a2ff');
+    setThemeColor('#193cb8');
   }, []);
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
@@ -78,7 +78,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
   };
 
   return (
-    <div className='h-screen flex flex-col items-center justify-center bg-blue-400'>
+    <div className='h-screen flex flex-col items-center justify-center bg-blue-800'>
       <form  onSubmit={handleSubmit}  className='min-h-1/3 w-5/6 max-w-md max-h-md flex flex-col items-center justify-evenly bg-white font-anton rounded-md text-blue-900 text-4xl border-blue-900 border-2'  >
       <h1 className='text-blue-900 font-anton text-4xl'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
         <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
