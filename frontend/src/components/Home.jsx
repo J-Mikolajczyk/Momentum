@@ -10,7 +10,6 @@ function Home({ userInfo, setUserInfo }) {
   useEffect(() => {
     setThemeColor('#193cb8');
   }, []);
-
   
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
