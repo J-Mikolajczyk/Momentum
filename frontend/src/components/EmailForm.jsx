@@ -78,8 +78,8 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
   };
 
   return (
-    <div className='h-screen flex flex-col items-center justify-center bg-blue-800'>
-      <form  onSubmit={handleSubmit}  className='min-h-1/3 w-5/6 max-w-md max-h-md flex flex-col items-center justify-evenly bg-white font-anton rounded-md text-blue-900 text-4xl border-blue-900 border-2'  >
+    <div className='h-2/7 w-5/6'>
+      <form  onSubmit={handleSubmit}  className='w-full max-w-md h-full flex flex-col items-center justify-evenly bg-white font-anton rounded-md text-blue-900 text-4xl border-blue-900 border-2'  >
       <h1 className='text-blue-900 font-anton text-4xl'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
         <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
         {

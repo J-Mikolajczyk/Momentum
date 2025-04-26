@@ -1,7 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { postRequest } from '../utils/api';
+import setThemeColor from '../hooks/useThemeColor'
 
 export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
+
+    useEffect(() => {
+      setThemeColor('#122A81');
+    }, []);
+
   const ip = import.meta.env.VITE_IP_ADDRESS;
     const [blockName, setBlockName] = useState('');
     const [message, setMessage] = useState('');
