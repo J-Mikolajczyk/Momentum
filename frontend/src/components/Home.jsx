@@ -19,8 +19,8 @@ function Home({ userInfo, setUserInfo }) {
 
   const toggleAddBlockMenu = () => {
     setshowAddBlockMenu(!showAddBlockMenu);
-    if (showAddBlockMenu) {
-      setThemeColor('#FFFFFF');
+    if (!showAddBlockMenu) {
+      setThemeColor('#0D1E5C');
     } else {
       setThemeColor('#193cb8');
     }
