@@ -3,11 +3,9 @@ import AddBlockPopup from '../components/AddBlockPopup';
 import Sidebar from '../components/Sidebar';
 import Block from '../components/Block';
 import setThemeColor from '../hooks/useThemeColor'
-import useLockScroll from '../hooks/useLockScroll';
 
 
 function Home({ userInfo, setUserInfo }) {
-  useLockScroll();
 
   useEffect(() => {
     setThemeColor('#193cb8');
