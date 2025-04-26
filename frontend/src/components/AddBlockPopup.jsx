@@ -5,7 +5,7 @@ import setThemeColor from '../hooks/useThemeColor'
 export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
 
     useEffect(() => {
-      setThemeColor('#122A81');
+      setThemeColor('#FFFFFF');
     }, []);
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
