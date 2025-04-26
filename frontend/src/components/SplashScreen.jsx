@@ -1,21 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import setThemeColor from '../hooks/useThemeColor'
 
 function SplashScreen({ onClick }) {
-  useEffect(() => {
-      setThemeColor('#193cb8');
-  }, []);
 
   return (
-    <div>
-      <h1 className="text-white font-anton text-6xl">MOMENTUM</h1>
+    <>
+      <h1 className="mt-10 text-white font-anton text-6xl text-shadow-lg">MOMENTUM</h1>
+      <br></br>
       <button
-        className='bg-white font-anton rounded-md text-blue-900 hover:bg-gray-200 transition duration-300 py-3 px-10 text-4xl border-blue-900 border-2'
+        className='bg-white font-anton rounded-md text-blue-900 hover:bg-gray-200 transition duration-300 h-1/5 w-4/5 text-4xl border-blue-900 border-2'
         onClick={onClick} 
       >
         LOGIN/REGISTER
       </button>
-    </div>
+    </>
   );
 }
 

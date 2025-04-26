@@ -13,13 +13,13 @@ function App() {
   };
 
   return (
-    <div className='h-screen w-screen flex flex-col items-center justify-center bg-blue-800'>
+    <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
       { loggedIn ? 
         (<><Home userInfo={userInfo} setUserInfo={setUserInfo}/></>)
-        :(<> 
+        :(<div className='flex flex-col bg-linear-to-b from-blue-400 to-blue-900 h-3/7 w-5/6 rounded-lg justify-center items-center border-1 border-blue-9000'> 
           { showEmailForm ?
           (<><EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/></>)
-            :(<><SplashScreen onClick={handleShowEmailForm} /></>)} </>
+            :(<><SplashScreen onClick={handleShowEmailForm} /></>)} </div>
           )
       }
     </div>

@@ -66,7 +66,7 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
     }
 
     return (
-        <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-[5px]">
+        <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-[4.5px]">
           <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/4 border-blue-900 border-1">
             <div className='flex justify-between'>
             <p className='inline text-blue-900 font-anton text-2xl'>Add a training block</p>
