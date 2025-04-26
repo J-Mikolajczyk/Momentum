@@ -73,22 +73,22 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
   };
 
   return (
-    <>
-      <form  onSubmit={handleSubmit}  className='w-full max-w-md h-full flex flex-col items-center justify-evenly font-anton rounded-md text-blue-900 text-4xl'  >
-      <h1 className='text-white font-anton text-4xl text-shadow-lg'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
-        <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
+    <div className='flex flex-col bg-white h-full w-full rounded-lg items-center justify-center'>
+      <form  onSubmit={handleSubmit}  className='w-full h-1/2 flex flex-col items-center justify-around font-anton rounded-md text-blue-900 text-4xl'  >
+      <h1 className='text-blue-800 font-anton text-5xl text-shadow-lg'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
+        <input className='bg-white font-anton rounded-md text-blue-900 h-15 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
         {
-          (exists || notFound) ? <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required /> : <></>
+          (exists || notFound) ? <input className='bg-white font-anton rounded-md text-blue-900 h-15 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required /> : <></>
         }
         {
-          notFound ? <><input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Confirm Password' type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
-                        <input className='bg-white font-anton rounded-md text-blue-900 h-1/4 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} required />  </>
+          notFound ? <><input className='bg-white font-anton rounded-md text-blue-900 h-15 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Confirm Password' type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                        <input className='bg-white font-anton rounded-md text-blue-900 h-15 w-6/7 pl-3 text-2xl border-blue-900 border-2' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} required />  </>
                      : <></>
         }
-        <button type='submit' className='bg-white font-anton rounded-md text-blue-900 hover:bg-gray-200 transition duration-300 h-1/4 px-10 text-4xl border-blue-900 border-2'   >Submit</button>
+        <button type='submit' className='bg-white font-anton rounded-md text-blue-900 hover:bg-gray-200 transition duration-300 h-15 px-10 text-4xl border-blue-900 border-2'   >Submit</button>
         {message && (<p className='text-blue-900 text-xl mt-2'>{message}</p> )}
       </form>
-    </>
+    </div>
   );
 }
 

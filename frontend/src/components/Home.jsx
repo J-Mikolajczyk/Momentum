@@ -2,9 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import AddBlockPopup from '../components/AddBlockPopup';
 import Sidebar from '../components/Sidebar';
 import Block from '../components/Block';
+import setThemeColor from '../hooks/useThemeColor'
 
 
 function Home({ userInfo, setUserInfo }) {
+
+  useEffect(() => {
+    setThemeColor('#193cb8');
+  }, []);
+  
   
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
@@ -13,6 +19,11 @@ function Home({ userInfo, setUserInfo }) {
 
   const toggleAddBlockMenu = () => {
     setshowAddBlockMenu(!showAddBlockMenu);
+    if (showAddBlockMenu) {
+      setThemeColor('#FFFFFF');
+    } else {
+      setThemeColor('#193cb8');
+    }
   };
 
   const goHome = () => {
@@ -29,9 +40,9 @@ function Home({ userInfo, setUserInfo }) {
 
   return (
     <div className='h-full w-full flex flex-col bg-white'>
-      <nav className='sticky top-0 z-10 h-1/12 flex shrink-0 justify-between items-center pl-2.5 border-b-2 border-blue-800'>
-        <button onClick={goHome} className='select-none text-blue-800 font-anton text-5xl'>MOMENTUM</button>
-        <button onClick={toggleSidebar} className='select-none text-blue-800 font-anton text-6xl pb-2 w-1/6'>≡</button>
+      <nav className='bg-blue-800 sticky top-0 z-10 h-1/12 flex shrink-0 justify-between items-center pl-2.5'>
+        <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
+        <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
       <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-8 overflow-y-auto overscroll-contain scroll-hidden .scroll-hidden::-webkit-scrollbar'>
