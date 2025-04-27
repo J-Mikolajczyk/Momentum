@@ -17,7 +17,7 @@ export default function Sidebar( {open, toggleSidebar, userInfo, setUserInfo} ) 
     }
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-end bg-black/30 backdrop-blur-sm h-11/12" onClick={handleOuterClick}>
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-black/50 flex items-center justify-end bg-black/30 h-11/12" onClick={handleOuterClick}>
           <div className="bg-white p-6 shadow-lg w-5/6 h-full" onClick={handleInnerClick}>
             
           </div>

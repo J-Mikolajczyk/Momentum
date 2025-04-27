@@ -2,20 +2,28 @@ import React, { useState, useRef, useEffect } from 'react';
 import AddBlockPopup from '../components/AddBlockPopup';
 import Sidebar from '../components/Sidebar';
 import Block from '../components/Block';
-import useLockScroll from '../hooks/useLockScroll';
+import setThemeColor from '../hooks/useThemeColor'
 
 
 function Home({ userInfo, setUserInfo }) {
-  useLockScroll();
+
+  useEffect(() => {
+    setThemeColor('#193cb8');
+  }, []);
+  
   
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
   const [blockName, setBlockName] = useState(null);
-
   const name = userInfo?.name != null ? userInfo.name : null;
 
   const toggleAddBlockMenu = () => {
     setshowAddBlockMenu(!showAddBlockMenu);
+    if (!showAddBlockMenu) {
+      setThemeColor('#0D1E5C');
+    } else {
+      setThemeColor('#193cb8');
+    }
   };
 
   const goHome = () => {
@@ -31,8 +39,8 @@ function Home({ userInfo, setUserInfo }) {
   }
 
   return (
-    <div className='h-full flex flex-col bg-white'>
-      <nav className='h-1/12 flex shrink-0 justify-between items-center bg-blue-800 pl-2.5'>
+    <div className='h-full w-full flex flex-col bg-white'>
+      <nav className='bg-blue-800 sticky top-0 z-10 h-1/12 flex shrink-0 justify-between items-center pl-2.5'>
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
@@ -42,7 +50,7 @@ function Home({ userInfo, setUserInfo }) {
         (<>
           <div className='flex w-full items-center mb-3'>
             <p className='text-blue-800 font-anton inline-block text-3xl'>Welcome, {name}</p>
-            <button onClick={toggleAddBlockMenu} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500' > Add Block </button>
+            <button onClick={toggleAddBlockMenu} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' > Add Block </button>
           </div>
           {userInfo?.trainingBlockNames?.length > 0 ? (
           userInfo.trainingBlockNames.map((blockName, index) => (

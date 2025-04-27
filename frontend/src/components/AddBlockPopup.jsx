@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { postRequest } from '../utils/api';
 
 export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
+
   const ip = import.meta.env.VITE_IP_ADDRESS;
     const [blockName, setBlockName] = useState('');
     const [message, setMessage] = useState('');
@@ -65,7 +66,7 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
     }
 
     return (
-        <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+        <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/4">
             <div className='flex justify-between'>
             <p className='inline text-blue-900 font-anton text-2xl'>Add a training block</p>
