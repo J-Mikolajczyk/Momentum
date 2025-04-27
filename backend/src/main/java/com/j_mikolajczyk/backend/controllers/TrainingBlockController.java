@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
@@ -25,14 +27,12 @@ public class TrainingBlockController {
         this.blockService = blockService;
     }
 
-    @PostMapping("/get")
-    public ResponseEntity<?> get(@RequestBody TrainingBlockRequest blockRequest){
-        String name = blockRequest.getName().toString();
-        String userId = blockRequest.getUserId().toString();
-        System.out.println("Block " + name + " requested for user: " + userId);
+    @GetMapping("/get")
+    public ResponseEntity<?> get(@RequestParam("blockName") String name, @RequestParam("email") String email){
+        System.out.println("Block " + name + " requested for user: " + email);
         try {
-            TrainingBlock block = blockService.get(blockRequest);
-            System.out.println("Block " + name + " found for user: " + userId);
+            TrainingBlock block = blockService.get(name, email);
+            System.out.println("Block " + name + " found for user: " + email);
             return ResponseEntity.ok(block);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { postRequest } from '../utils/api';
+import { postRequest, getRequest } from '../utils/api';
 
 export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
 
@@ -35,7 +35,7 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
               const response = await postRequest(ip+'/block/create', { blockName, userId });
               if (response.ok) {
                 try {
-                  const refreshResponse = await postRequest(ip+'/user/refresh', { email });
+                  const refreshResponse = await getRequest(ip+'/user/refresh', { email });
                   if(refreshResponse.ok) {
                     const json = await refreshResponse.json();
                     setUserInfo(json);

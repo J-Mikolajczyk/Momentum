@@ -2,14 +2,17 @@ package com.j_mikolajczyk.backend.services;
 
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
+import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 
 @Service
@@ -24,12 +27,22 @@ public class TrainingBlockService {
         this.userService = userService;
     }
 
-    public TrainingBlock get(TrainingBlockRequest blockRequest){
-        if(blockRequest.getUserId() == null || blockRequest.getName() == null) {
-            throw new RuntimeException("UserID and Block Name are required.");
+    public TrainingBlock get(String blockName, String email){
+        if(blockName == null || email == null) {
+            throw new RuntimeException("Email and Block Name are required.");
         }
 
-        Optional<TrainingBlock> fetchedBlock = blockRepository.findByNameAndCreatedByUserID(blockRequest.getName(), blockRequest.getUserId());
+        UserRequest userRequest = new UserRequest(email);
+        ObjectId userId = null;
+
+        try {
+            User user = userService.get(userRequest);
+            userId = user.getId();
+        } catch(Exception e) {
+            throw new RuntimeException("User not found.");
+        }
+
+        Optional<TrainingBlock> fetchedBlock = blockRepository.findByNameAndCreatedByUserID(blockName, userId);
 
         if (fetchedBlock.isPresent()) {
             return fetchedBlock.get();

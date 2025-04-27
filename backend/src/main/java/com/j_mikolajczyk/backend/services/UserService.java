@@ -63,9 +63,9 @@ public class UserService {
         }
     }
 
-    public UserDTO refresh(RefreshRequest refreshRequest) throws Exception{
+    public UserDTO refresh(String email) throws Exception{
 
-        Optional<User> existingUser = userRepository.findByEmail(refreshRequest.getEmail());
+        Optional<User> existingUser = userRepository.findByEmail(email);
 
         if (existingUser.isEmpty()) {
             throw new RuntimeException("User not found.");
@@ -84,6 +84,17 @@ public class UserService {
         }
 
         return true;
+    }
+
+    public User get(UserRequest userRequest) throws Exception{
+
+        Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
+
+        if (existingUser.isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        return existingUser.get();
     }
 
     public void addBlock(TrainingBlock block) throws Exception{

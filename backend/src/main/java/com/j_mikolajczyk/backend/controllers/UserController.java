@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
@@ -83,12 +85,11 @@ public class UserController {
         }
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<?> login(@RequestBody RefreshRequest refreshRequest){
-        String email = refreshRequest.getEmail();
+    @GetMapping("/refresh")
+    public ResponseEntity<?> login(@RequestParam("email") String email){
         System.out.println("Refresh requested for user: " + email);
         try {
-            UserDTO userDTO = userService.refresh(refreshRequest);
+            UserDTO userDTO = userService.refresh(email);
             System.out.println("User found, returning: " + email);
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {

@@ -16,6 +16,7 @@ function Home({ userInfo, setUserInfo }) {
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
   const [blockName, setBlockName] = useState(null);
   const name = userInfo?.name != null ? userInfo.name : null;
+  const email = userInfo?.email != null ? userInfo.email : null;
 
   const toggleAddBlockMenu = () => {
     setshowAddBlockMenu(!showAddBlockMenu);
@@ -57,7 +58,7 @@ function Home({ userInfo, setUserInfo }) {
           <button onClick={() => openBlock(blockName)} key={index} className='bg-blue-50 text-blue-800 font-anton px-4 py-2 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1'>{blockName}</button> ))
           ) : (<p className='text-gray-500 font-anton text-2xl'>No Training Blocks Found</p>)}         
         </>) : (<>
-          <Block blockName={blockName}/>
+          <Block blockName={blockName} email={email}/>
         </>)
       }
       </div> 
