@@ -45,6 +45,7 @@ function Home({ userInfo, setUserInfo }) {
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
+      <div className='h-1/12 w-full'></div>
       <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
       <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-8'>
       { blockName === null ? 
