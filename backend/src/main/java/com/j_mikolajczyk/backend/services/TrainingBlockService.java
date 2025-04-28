@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
+import com.j_mikolajczyk.backend.models.Week;
 import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
+import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 
 @Service
@@ -27,16 +29,15 @@ public class TrainingBlockService {
         this.userService = userService;
     }
 
-    public TrainingBlock get(String blockName, String email){
-        if(blockName == null || email == null) {
+    public TrainingBlock get(String blockName, ObjectId id){
+        if(blockName == null || id == null) {
             throw new RuntimeException("Email and Block Name are required.");
         }
 
-        UserRequest userRequest = new UserRequest(email);
         ObjectId userId = null;
 
         try {
-            User user = userService.get(userRequest);
+            User user = userService.getById(id);
             userId = user.getId();
         } catch(Exception e) {
             throw new RuntimeException("User not found.");
@@ -64,6 +65,26 @@ public class TrainingBlockService {
             userService.addBlock(block);
         } catch (Exception e) {
             blockRepository.delete(block);
+            throw e;
+        }
+
+    }
+
+    public void addWeek(AddWeekRequest addWeekRequest) throws Exception{
+        ObjectId id = addWeekRequest.getUserId();
+        String blockName = addWeekRequest.getBlockName();
+
+        if(id == null || blockName == null) {
+            throw new RuntimeException("UserID and Block Name is required.");
+        }
+
+        Week week = new Week();
+
+        try {
+            TrainingBlock block = this.get(blockName, id);
+            block.addWeek(week);
+            blockRepository.save(block);
+        } catch (Exception e) {
             throw e;
         }
 

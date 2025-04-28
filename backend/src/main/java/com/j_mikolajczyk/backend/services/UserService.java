@@ -48,7 +48,7 @@ public class UserService {
 
     public UserDTO login(LoginRequest loginRequest) throws Exception{
 
-        Optional<User> existingUser = userRepository.findByEmail(loginRequest.getEmail());
+        Optional<User> existingUser = userRepository.findByEmail(loginRequest.getEmail().toLowerCase());
 
         if (existingUser.isEmpty()) {
             throw new RuntimeException("User not found.");
@@ -63,9 +63,9 @@ public class UserService {
         }
     }
 
-    public UserDTO refresh(String email) throws Exception{
+    public UserDTO refresh(ObjectId id) throws Exception{
 
-        Optional<User> existingUser = userRepository.findByEmail(email);
+        Optional<User> existingUser = userRepository.findById(id);
 
         if (existingUser.isEmpty()) {
             throw new RuntimeException("User not found.");
@@ -77,7 +77,7 @@ public class UserService {
 
     public boolean exists(UserRequest userRequest) throws Exception{
 
-        Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
+        Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail().toLowerCase());
 
         if (existingUser.isEmpty()) {
             throw new NotFoundException();
@@ -86,9 +86,20 @@ public class UserService {
         return true;
     }
 
-    public User get(UserRequest userRequest) throws Exception{
+    public User getByUserRequest(UserRequest userRequest) throws Exception{
 
         Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
+
+        if (existingUser.isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        return existingUser.get();
+    }
+
+    public User getById(ObjectId userId) throws Exception{
+
+        Optional<User> existingUser = userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
             throw new NotFoundException();

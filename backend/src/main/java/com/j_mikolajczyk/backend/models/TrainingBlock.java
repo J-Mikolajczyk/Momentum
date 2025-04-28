@@ -58,5 +58,9 @@ public class TrainingBlock {
     public void setCreatedByUserID(ObjectId createdByUserID) {
         this.createdByUserID = createdByUserID;
     }
+
+    public void addWeek(Week week) {
+        this.weeks.add(week);
+    }
     
 }

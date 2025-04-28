@@ -1,5 +1,6 @@
 package com.j_mikolajczyk.backend.controllers;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 
@@ -28,11 +30,12 @@ public class TrainingBlockController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> get(@RequestParam("blockName") String name, @RequestParam("email") String email){
-        System.out.println("Block " + name + " requested for user: " + email);
+    public ResponseEntity<?> get(@RequestParam("blockName") String name, @RequestParam("userId") String stringId){
+        ObjectId id = new ObjectId(stringId);
+        System.out.println("Block " + name + " requested for user: " + id);
         try {
-            TrainingBlock block = blockService.get(name, email);
-            System.out.println("Block " + name + " found for user: " + email);
+            TrainingBlock block = blockService.get(name, id);
+            System.out.println("Block " + name + " found for user: " + id);
             return ResponseEntity.ok(block);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
@@ -52,6 +55,27 @@ public class TrainingBlockController {
         try {
             blockService.create(createBlockRequest);
             System.out.println("Block creation successful for user: " + userId);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) {
+                System.out.println(userId + " not found, returning 404 Not Found");
+                return ResponseEntity.notFound().build();
+            } else if (e.getMessage().equals("409")) {
+                System.out.println(name + " block name already exists.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");
+            }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/add-week")
+    public ResponseEntity<?> add(@RequestBody AddWeekRequest addWeekRequest){
+        String name = addWeekRequest.getBlockName();
+        String userId = addWeekRequest.getUserId().toString();
+        System.out.println("Week add requested from user: " + userId);
+        try {
+            blockService.addWeek(addWeekRequest);
+            System.out.println("Week addition successful for user: " + userId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {

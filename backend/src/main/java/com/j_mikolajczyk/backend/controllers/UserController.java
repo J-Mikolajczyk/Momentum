@@ -1,6 +1,7 @@
 package com.j_mikolajczyk.backend.controllers;
 
 import org.apache.coyote.BadRequestException;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class UserController {
 
     @PostMapping("/exists")
     public ResponseEntity<?> userExists(@RequestBody UserRequest userRequest){
-        String email = userRequest.getEmail();
+        String email = userRequest.getEmail().toLowerCase();
         System.out.println("Existence requested for user: " + email);
         try {
             userService.exists(userRequest);
@@ -51,7 +52,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest){
-        String email = registerRequest.getEmail();
+        String email = registerRequest.getEmail().toLowerCase();
         System.out.println("Registration requested for user: " + email);
         try {
             userService.register(registerRequest);
@@ -69,7 +70,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-        String email = loginRequest.getEmail();
+        String email = loginRequest.getEmail().toLowerCase();
         System.out.println("Login requested for user: " + email);
         try {
             UserDTO userDTO = userService.login(loginRequest);
@@ -86,18 +87,19 @@ public class UserController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<?> login(@RequestParam("email") String email){
-        System.out.println("Refresh requested for user: " + email);
+    public ResponseEntity<?> login(@RequestParam("id") String stringId){
+        ObjectId id = new ObjectId(stringId);
+        System.out.println("Refresh requested for user: " + id);
         try {
-            UserDTO userDTO = userService.refresh(email);
-            System.out.println("User found, returning: " + email);
+            UserDTO userDTO = userService.refresh(id);
+            System.out.println("User found, returning: " + id);
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(email + " not found, returning 404 Not Found");
+                System.out.println(id + " not found, returning 404 Not Found");
                 return ResponseEntity.notFound().build();
             }
-            System.out.println(email + " refresh unsuccessful, returning bad request");
+            System.out.println(id + " refresh unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
