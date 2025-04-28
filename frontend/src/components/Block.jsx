@@ -74,7 +74,7 @@ export default function Block({ blockName, userInfo }) {
                     <>
                       {blockData.weeks.length < 1 ? (
                         <p className='text-gray-500 font-anton text-2xl'>No Weeks Created</p>
-                      ) : ( <> {blockData.weeks[weekNum].days === null || blockData.weeks[weekNum].days.length === 0 ? 
+                      ) : ( <> {blockData?.weeks[weekNum-1]?.days === null || blockData?.weeks[weekNum-1]?.days?.length === 0 ? 
                                   (<div className='flex flex-row w-full items-center justify-between'>
                                     <p className='text-gray-500 font-anton text-2xl'>No Days Found</p>
                                     <button className='inline-block elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Add Day</button>

@@ -87,7 +87,7 @@ public class UserController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<?> login(@RequestParam("id") String stringId){
+    public ResponseEntity<?> login(@RequestParam("userId") String stringId){
         ObjectId id = new ObjectId(stringId);
         System.out.println("Refresh requested for user: " + id);
         try {
