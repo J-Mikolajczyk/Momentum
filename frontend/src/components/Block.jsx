@@ -36,11 +36,22 @@ export default function Block({ blockName, email }) {
   }, []); 
 
     return <>
-                <p className='text-blue-800 font-anton mr-auto text-3xl'>{blockName}</p>
+                <div className='flex w-full items-center mb-3'>
+                  <p className='text-blue-800 font-anton inline-block text-3xl'>{blockName}</p>
+                  <button className='inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Add Week</button>
+                </div>
                 <div className='flex flex-row bg-gray-300 h-8 w-full justify-around items-center'>
-                    <button onClick={decrementWeek} className='font-anton text-2xl'>&lt;</button>
+                    <button onClick={decrementWeek} className='font-anton text-2xl w-1/10'>&lt;</button>
                     <p className='font-anton text-lg'>Week {weekNum}</p>
-                    <button onClick={incrementWeek} className='font-anton text-2xl'>&gt;</button>
+                    <button onClick={incrementWeek} className='font-anton text-2xl w-1/10'>&gt;</button>
+                </div>
+                <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-8'>
+                  { blockData !== null ?
+                    (<>{ blockData.weeks.length < 1 ? 
+                      (<p className='text-gray-500 font-anton text-2xl'>No Weeks Created</p>)
+                      : (<p>Non-0</p>)
+                        }</>) : (<> </>)
+                  }
                 </div>
            </>
 }
