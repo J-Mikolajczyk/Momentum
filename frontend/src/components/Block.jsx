@@ -11,21 +11,28 @@ export default function Block({ blockName, userInfo }) {
   const [blockData, setBlockData] = useState(null);
   const [weekNum, setWeekNum] = useState(0);
 
+  const setWeekNameAndNum = (weekNum) => {
+    setWeekNum(weekNum);
+    setWeekText("Week " + (weekNum));
+  }
+
+  const [weekText, setWeekText] = useState('Loading...');
+
   useEffect(() => {
     if (blockData?.weeks?.length >= 1 && weekNum === 0) {
-      setWeekNum(1);
+      setWeekNameAndNum(1);
+    } else if (blockData?.weeks?.length === 0) {
+      setWeekText('No Weeks Created');
     }
   }, [blockData]);
 
   const incrementWeek = () => {
-    setWeekNum(weekNum+1);
+    setWeekNameAndNum(weekNum+1);
   }
 
   const decrementWeek = () => {
-    setWeekNum(weekNum-1);
+    setWeekNameAndNum(weekNum-1);
   }
-
-  console.log(blockData)
 
   const addWeek = async () => {
     try {
@@ -70,7 +77,7 @@ export default function Block({ blockName, userInfo }) {
                     { weekNum < 2 ? (<button className='font-anton text-gray-300 text-2xl w-1/10'>&lt;</button>) 
                     : (<><button onClick={decrementWeek} className='font-anton text-2xl w-1/10'>&lt;</button></>)
                     }              
-                    <p className='font-anton text-lg'>Week {weekNum}</p>
+                    <p className='font-anton text-lg'>{weekText}</p>
                     { weekNum === blockData?.weeks?.length ? (<button className='font-anton text-gray-300 text-2xl w-1/10'>&lt;</button>) 
                     : (<><button onClick={incrementWeek} className='font-anton text-2xl w-1/10'>&gt;</button></>)
                     } 
@@ -79,10 +86,10 @@ export default function Block({ blockName, userInfo }) {
                   {blockData !== null ? (
                     <>
                       {blockData.weeks.length < 1 ? (
-                        <p className='text-gray-500 font-anton text-2xl'>No Weeks Created</p>
+                        <></>
                       ) : ( <> {blockData?.weeks[weekNum-1]?.days === null || blockData?.weeks[weekNum-1]?.days?.length === 0 ? 
                                   (<div className='flex flex-row w-full items-center justify-between'>
-                                    <p className='text-gray-500 font-anton text-2xl'>No Days Found</p>
+                                    <p className='text-gray-500 font-anton text-2xl'>No Days Created</p>
                                     <button className='inline-block elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Add Day</button>
                                   </div>) : 
                                   ('Days Found')}
