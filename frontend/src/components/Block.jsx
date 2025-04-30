@@ -11,6 +11,12 @@ export default function Block({ blockName, userInfo }) {
   const [blockData, setBlockData] = useState(null);
   const [weekNum, setWeekNum] = useState(0);
 
+  useEffect(() => {
+    if (blockData?.weeks?.length >= 1 && weekNum === 0) {
+      setWeekNum(1);
+    }
+  }, [blockData]);
+
   const incrementWeek = () => {
     setWeekNum(weekNum+1);
   }
