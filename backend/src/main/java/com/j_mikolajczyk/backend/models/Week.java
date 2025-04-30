@@ -1,10 +1,12 @@
 package com.j_mikolajczyk.backend.models;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Week {
     private List<Day> days;
 
     public Week() {
+        this.days = new ArrayList<Day>();
     }
 
     public Week(List<Day> days) {
