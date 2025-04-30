@@ -17,7 +17,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
 
     if(exists) {
       try {
-        const response = await postRequest(ip+'/user/login', { email, password });
+        const response = await postRequest(ip+'/auth/login', { email, password });
 
         if (response.ok) {
           setMessage('User logged in.');
@@ -36,7 +36,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         return;
       }
       try {
-        const response = await postRequest(ip+'/user/register', { email, password, name });
+        const response = await postRequest(ip+'/auth/register', { email, password, name });
         if (response.ok) {
           setMessage('User registered, redirecting to login.');
           setTimeout(() => {
@@ -55,7 +55,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
       }
     } else {
       try {
-        const response = await postRequest(ip+'/user/exists', { email });
+        const response = await postRequest(ip+'/auth/exists', { email });
 
         if (response.ok) {
           setMessage('Please enter your password.');
