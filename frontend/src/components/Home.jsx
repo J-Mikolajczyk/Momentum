@@ -3,20 +3,40 @@ import AddBlockPopup from '../components/AddBlockPopup';
 import Sidebar from '../components/Sidebar';
 import Block from '../components/Block';
 import setThemeColor from '../hooks/useThemeColor'
+import {getRequest} from '../utils/api'
 
 
 function Home({ userInfo, setUserInfo }) {
 
-  useEffect(() => {
-    setThemeColor('#193cb8');
-  }, []);
-  
+  const ip = import.meta.env.VITE_IP_ADDRESS;
+
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
   const [blockName, setBlockName] = useState(null);
   const name = userInfo?.name != null ? userInfo.name : null;
+  const userId = userInfo?.id != null ? userInfo.id : null;
   const email = userInfo?.email != null ? userInfo.email : null;
 
+
+  const fetchData = async () => {
+    try {
+                  const refreshResponse = await getRequest(ip+'/user/refresh', { userId });
+                  if(refreshResponse.ok) {
+                    const json = await refreshResponse.json();
+                    setUserInfo(json);
+                  } else {
+                    console.log('Response not OK');
+                  }
+                } catch (err) {
+                  console.log(err);
+         }
+  }
+
+  useEffect(() => {
+    setThemeColor('#193cb8'); 
+  }, []);
+  
+  
   const toggleAddBlockMenu = () => {
     setshowAddBlockMenu(!showAddBlockMenu);
     if (!showAddBlockMenu) {
@@ -28,6 +48,7 @@ function Home({ userInfo, setUserInfo }) {
 
   const goHome = () => {
     setBlockName(null);
+    fetchData();
   }
 
   const toggleSidebar = () => {
