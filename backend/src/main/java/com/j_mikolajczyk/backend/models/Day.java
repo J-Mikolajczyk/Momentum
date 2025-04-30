@@ -1,4 +1,5 @@
 package com.j_mikolajczyk.backend.models;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Day {
@@ -7,6 +8,8 @@ public class Day {
 
 
     public Day() {
+        this.name = null;
+        this.exercises = new ArrayList<Exercise>();
     }
 
     public Day(String name, List<Exercise> exercises) {
