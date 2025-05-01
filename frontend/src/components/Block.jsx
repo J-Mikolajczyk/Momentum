@@ -31,9 +31,6 @@ export default function Block({ blockName, userInfo }) {
       const refreshResponse = await postRequest(ip + '/block/add-week', { blockName, userId });
       if (refreshResponse.ok) {
         refresh();
-        if (weekNum === blockData.weeks.length) {
-          incrementWeek();
-        }
       } else {
         console.log('Issue adding week');
       }
@@ -52,7 +49,11 @@ export default function Block({ blockName, userInfo }) {
           return;
         }
         if (json.weeks.length > 0) {
-          setWeekNameAndNum(1);
+          if(weekNum === 0) {
+            setWeekNameAndNum(1);
+          } else if (weekNum === json.weeks.length-1) {
+            setWeekNameAndNum(weekNum+1);
+          }
         } else {
           setWeekText('No Weeks Created');
         }
