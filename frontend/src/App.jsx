@@ -15,7 +15,7 @@ function App() {
   return (
     <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
       { loggedIn ? 
-        (<><Home userInfo={userInfo} setUserInfo={setUserInfo}/></>)
+        (<><Home setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/></>)
         :(<div className='flex flex-col bg-white h-full w-full rounded-lg items-center justify-center'> 
           { showEmailForm ?
           (<><EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/></>)
