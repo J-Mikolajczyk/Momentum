@@ -20,12 +20,21 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         const response = await postRequest(ip+'/auth/login', { email, password });
 
         if (response.ok) {
-          setMessage('User logged in.');
-          setLoggedIn(true);
+          console.log(response);
           const json = await response.json();
-          setUserInfo(json);
+          if(json.exists === false) {
+            setMessage('User not found. Please register.');
+            setNotFound(true);
+            setExists(false);
+          } else {
+            setMessage('User logged in.');
+            setLoggedIn(true);
+            setUserInfo(json);
+          }
+        } else if(response.status === 401) {
+          setMessage('Incorrect password.');
         } else {
-          setMessage('Wrong password.');
+          setMessage('Other issue. Try again later.');
         }
       } catch (err) {
         setMessage('Server error. Try again later.');
@@ -58,11 +67,14 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         const response = await postRequest(ip+'/auth/exists', { email });
 
         if (response.ok) {
-          setMessage('Please enter your password.');
-          setExists(true);
-        } else if(response.status === 404) {
-          setMessage('User not found. Please register.');
-          setNotFound(true);
+          const json = await response.json();
+          if(json.exists) {
+            setMessage('Please enter your password.');
+            setExists(true);
+          } else {
+            setMessage('User not found. Please register.');
+            setNotFound(true);
+          }
         } else {
           setMessage('Other issue. Try again later.');
         }

@@ -6,7 +6,7 @@ import setThemeColor from '../hooks/useThemeColor'
 import {getRequest} from '../utils/api'
 
 
-function Home({ userInfo, setUserInfo }) {
+function Home({ setLoggedIn, userInfo, setUserInfo }) {
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -17,12 +17,20 @@ function Home({ userInfo, setUserInfo }) {
   const userId = userInfo?.id != null ? userInfo.id : null;
   const email = userInfo?.email != null ? userInfo.email : null;
 
+  const logOut = () => {
+    setLoggedIn(false);
+    setUserInfo(null);
+  }
 
   const fetchData = async () => {
     try {
                   const refreshResponse = await getRequest(ip+'/user/refresh', { userId });
                   if(refreshResponse.ok) {
                     const json = await refreshResponse.json();
+                    if(json.exists === false) {
+                      console.log('User does not exist, redirecting to login');
+                      return;
+                    }
                     setUserInfo(json);
                   } else {
                     console.log('Response not OK');
@@ -65,7 +73,7 @@ function Home({ userInfo, setUserInfo }) {
         <button onClick={goHome} className='select-none text-white font-anton text-5xl'>MOMENTUM</button>
         <button onClick={toggleSidebar} className='select-none text-white font-anton text-6xl pb-2 w-1/6'>≡</button>
       </nav>
-      <Sidebar open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
+      <Sidebar logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
       <div className='flex flex-col flex-grow items-center pt-3 mx-6 gap-2 pb-8'>
         { blockName === null ? 
           (<><div className='flex w-full items-center mb-3'>
@@ -79,9 +87,10 @@ function Home({ userInfo, setUserInfo }) {
             </>) : (<>
               <Block blockName={blockName} userInfo={userInfo}/>
             </>)
-        }
+        }      
       </div> 
-      <AddBlockPopup open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
+      
+      <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
 
       
     </div>

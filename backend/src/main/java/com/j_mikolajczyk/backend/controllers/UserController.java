@@ -42,8 +42,8 @@ public class UserController {
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(id + " not found, returning 404 Not Found");
-                return ResponseEntity.notFound().build();
+                System.out.println(id + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
             }
             System.out.println(id + " refresh unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());

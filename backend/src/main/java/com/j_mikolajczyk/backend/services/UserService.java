@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,14 +52,14 @@ public class UserService {
         Optional<User> existingUser = userRepository.findByEmail(loginRequest.getEmail().toLowerCase());
 
         if (existingUser.isEmpty()) {
-            throw new RuntimeException("User not found.");
+            throw new NotFoundException();
         } else {
             User user = existingUser.get();
             if (passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
                 System.out.println("UserID: " + user.getId());
                 return new UserDTO(user);
             } else {
-                throw new RuntimeException("Wrong password.");
+                throw new BadCredentialsException("Invalid credentials.");
             }
         }
     }
