@@ -39,8 +39,8 @@ public class TrainingBlockController {
             return ResponseEntity.ok(block);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(name + " not found, returning 404 Not Found");
-                return ResponseEntity.notFound().build();
+                System.out.println(name + " or " + stringId + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
             }
             System.out.println(name + " search unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -58,8 +58,8 @@ public class TrainingBlockController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(userId + " not found, returning 404 Not Found");
-                return ResponseEntity.notFound().build();
+                System.out.println(userId + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
             } else if (e.getMessage().equals("409")) {
                 System.out.println(name + " block name already exists.");
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");
@@ -79,8 +79,8 @@ public class TrainingBlockController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(userId + " not found, returning 404 Not Found");
-                return ResponseEntity.notFound().build();
+                System.out.println(userId + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
             } else if (e.getMessage().equals("409")) {
                 System.out.println(name + " block name already exists.");
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");

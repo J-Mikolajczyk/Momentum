@@ -29,7 +29,7 @@ public class TrainingBlockService {
         this.userService = userService;
     }
 
-    public TrainingBlock get(String blockName, ObjectId id){
+    public TrainingBlock get(String blockName, ObjectId id) throws Exception{
         if(blockName == null || id == null) {
             throw new RuntimeException("Email and Block Name are required.");
         }
@@ -40,7 +40,7 @@ public class TrainingBlockService {
             User user = userService.getById(id);
             userId = user.getId();
         } catch(Exception e) {
-            throw new RuntimeException("User not found.");
+            throw new NotFoundException();
         }
 
         Optional<TrainingBlock> fetchedBlock = blockRepository.findByNameAndCreatedByUserID(blockName, userId);
@@ -48,7 +48,7 @@ public class TrainingBlockService {
         if (fetchedBlock.isPresent()) {
             return fetchedBlock.get();
         } else {
-            throw new RuntimeException("Block not found.");
+            throw new NotFoundException();
         }
     }
 

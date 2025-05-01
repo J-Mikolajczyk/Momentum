@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,12 +39,12 @@ public class AuthController {
         System.out.println("Existence requested for user: " + email);
         try {
             userService.exists(userRequest);
-            System.out.println(email + " found, returning 200 OK");
-            return ResponseEntity.ok(null);
+            System.out.println(email + " found, returning true");
+            return ResponseEntity.ok("{\"exists\": true}");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(email + " not found, returning 404 Not Found");
-                return ResponseEntity.notFound().build();
+                System.out.println(email + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
             }
             System.out.println(email + " Existence check unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -78,8 +79,11 @@ public class AuthController {
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(email + " not found, returning 404 Not Found");
-                return ResponseEntity.notFound().build();
+                System.out.println(email + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
+            } else if (e instanceof BadCredentialsException) {
+                System.out.println(email + " invalid credentials, returning unauthorized");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
             System.out.println(email + " login unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());

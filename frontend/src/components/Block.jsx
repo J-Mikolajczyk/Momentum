@@ -18,14 +18,6 @@ export default function Block({ blockName, userInfo }) {
 
   const [weekText, setWeekText] = useState('Loading...');
 
-  useEffect(() => {
-    if (blockData?.weeks?.length >= 1 && weekNum === 0) {
-      setWeekNameAndNum(1);
-    } else if (blockData?.weeks?.length === 0) {
-      setWeekText('No Weeks Created');
-    }
-  }, [blockData]);
-
   const incrementWeek = () => {
     setWeekNameAndNum(weekNum+1);
   }
@@ -55,6 +47,15 @@ export default function Block({ blockName, userInfo }) {
       const refreshResponse = await getRequest(ip + '/block/get', { blockName, userId });
       if (refreshResponse.ok) {
         const json = await refreshResponse.json();
+        if (json.exists === false) {
+          console.log('Issue with block data, block does not exist');
+          return;
+        }
+        if (json.weeks.length > 0) {
+          setWeekNameAndNum(1);
+        } else {
+          setWeekText('No Weeks Created');
+        }
         setBlockData(json);
       } else {
         console.log('Non-OK response');

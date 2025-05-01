@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { postRequest, getRequest } from '../utils/api';
 
-export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
+export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
     const [blockName, setBlockName] = useState('');
@@ -33,23 +33,13 @@ export default function AddBlockPopup( {open, toggleAddBlockMenu, userInfo, setU
 
       try {
               const response = await postRequest(ip+'/block/create', { blockName, userId });
-              if (response.ok) {
-                try {
-                  const refreshResponse = await getRequest(ip+'/user/refresh', { userId });
-                  if(refreshResponse.ok) {
-                    const json = await refreshResponse.json();
-                    setUserInfo(json);
-                    handleClose();
-                  } else {
-                    setMessage('Error refreshing user info')
-                    return null;
-                  }
-                } catch (err) {
-                  setMessage(err)
-                  return null;
-                }
+              console.log(response);
+              if (response.status === 201) {
+                fetchData();
                 toggleAddBlockMenu();
                 return null;
+              } else if (response.status === 409) {
+                setMessage(blockName + ' already exists.');
               } else {
                 setMessage('Error creating block')
                 return null;
