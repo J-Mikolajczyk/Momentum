@@ -13,6 +13,7 @@ import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.models.Week;
 import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
@@ -52,6 +53,21 @@ public class TrainingBlockService {
         }
     }
 
+
+    public TrainingBlock get(ObjectId id) throws Exception{
+        if(id == null) {
+            throw new RuntimeException("Email and Block Name are required.");
+        }
+
+        Optional<TrainingBlock> fetchedBlock = blockRepository.findById(id);
+
+        if (fetchedBlock.isPresent()) {
+            return fetchedBlock.get();
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
     public void create(CreateTrainingBlockRequest createBlockRequest) throws Exception{
 
         if(createBlockRequest.getUserId() == null) {
@@ -83,6 +99,24 @@ public class TrainingBlockService {
         try {
             TrainingBlock block = this.get(blockName, id);
             block.addWeek(week);
+            blockRepository.save(block);
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }
+
+    public void update(UpdateBlockRequest updateBlockRequest) throws Exception{
+        ObjectId id = updateBlockRequest.getId();
+
+        if(id == null) {
+            throw new RuntimeException("Block ID and Block Name is required.");
+        }
+
+        try {
+            TrainingBlock block = this.get(id);
+            block.setName(updateBlockRequest.getName());
+            block.setWeeks(updateBlockRequest.getWeeks());
             blockRepository.save(block);
         } catch (Exception e) {
             throw e;
