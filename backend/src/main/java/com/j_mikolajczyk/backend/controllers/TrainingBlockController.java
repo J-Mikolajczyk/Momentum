@@ -12,8 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.j_mikolajczyk.backend.dto.BlockDTO;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
-import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
@@ -36,7 +37,8 @@ public class TrainingBlockController {
         try {
             TrainingBlock block = blockService.get(name, id);
             System.out.println("Block " + name + " found for user: " + id);
-            return ResponseEntity.ok(block);
+            BlockDTO blockDTO = new BlockDTO(block);
+            return ResponseEntity.ok(blockDTO);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
                 System.out.println(name + " or " + stringId + " not found, returning false");
@@ -89,4 +91,20 @@ public class TrainingBlockController {
         }
     }
 
+    @PostMapping("/update")
+    public ResponseEntity<?> update(@RequestBody UpdateBlockRequest updateBlockRequest) throws Exception{
+        String name = updateBlockRequest.getName();
+        System.out.println("Block update requested for block " + name);
+        try {
+            blockService.update(updateBlockRequest);
+            System.out.println("Block update successful for block " + name);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Update successful");
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) {
+                System.out.println(name + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
+            }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

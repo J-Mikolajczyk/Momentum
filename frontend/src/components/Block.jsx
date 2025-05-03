@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { postRequest, getRequest } from '../utils/api';
+import Week from '../models/Week';
 
 export default function Block({ blockName, userInfo }) {
 
@@ -27,12 +28,20 @@ export default function Block({ blockName, userInfo }) {
   }
 
   const addWeek = async () => {
+    blockData.weeks.push(new Week([]));
+    update();
+  }
+
+  const update = async () => {
+    const id = blockData.id;
+    const name = blockName;
+    const weeks = blockData.weeks;
     try {
-      const refreshResponse = await postRequest(ip + '/block/add-week', { blockName, userId });
-      if (refreshResponse.ok) {
+      const updateResponse = await postRequest(ip + '/block/update', { name, id, weeks });
+      if (updateResponse.ok) {
         refresh();
       } else {
-        console.log('Issue adding week');
+        console.log('Issue updating block');
       }
     } catch (err) {
       console.log(err);
@@ -101,6 +110,7 @@ export default function Block({ blockName, userInfo }) {
                   ) : (
                     <></>
                   )}
+                  <button onClick={update} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Save</button>
                 </div>
            </>
 }
