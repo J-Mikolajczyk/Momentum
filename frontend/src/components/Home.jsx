@@ -3,7 +3,7 @@ import AddBlockPopup from '../components/AddBlockPopup';
 import Sidebar from '../components/Sidebar';
 import Block from '../components/Block';
 import setThemeColor from '../hooks/useThemeColor'
-import {getRequest} from '../utils/api'
+import {getRequest, postRequest} from '../utils/api'
 
 
 function Home({ setLoggedIn, userInfo, setUserInfo }) {
@@ -18,9 +18,23 @@ function Home({ setLoggedIn, userInfo, setUserInfo }) {
   const email = userInfo?.email != null ? userInfo.email : null;
 
   const logOut = () => {
+    logOutUser();
     setLoggedIn(false);
     setUserInfo(null);
     setThemeColor('#ffffff'); 
+  }
+
+  const logOutUser = async () => {
+    try {
+      const response = await postRequest(ip+'/auth/logout', {email});
+      if (response.ok) {
+        console.log('User logged out successfully.');
+      } else {
+        console.log('Error logging out user.');
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const fetchData = async () => {

@@ -1,6 +1,7 @@
 export async function postRequest(url, data) {
     try {
       const response = await fetch(url, {
+        credentials: 'include',
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -21,6 +22,7 @@ export async function postRequest(url, data) {
       const fullUrl = queryString ? `${url}?${queryString}` : url;
   
       const response = await fetch(fullUrl, {
+        credentials: 'include',
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
