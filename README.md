@@ -25,6 +25,7 @@ Momentum is a full-stack strength training tracker PWA built with Java Spring Bo
 ### Backend
 - **Java Spring Boot**
 - **REST APIs**
+- **Docker**
 
 ### Frontend
 - **React** with JSX
