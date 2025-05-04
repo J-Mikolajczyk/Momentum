@@ -1,24 +1,15 @@
 package com.j_mikolajczyk.backend.controllers;
 
-import org.apache.coyote.BadRequestException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
-import com.j_mikolajczyk.backend.requests.LoginRequest;
-import com.j_mikolajczyk.backend.requests.RefreshRequest;
-import com.j_mikolajczyk.backend.requests.RegisterRequest;
-import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 
 @RestController
