@@ -63,6 +63,23 @@ public class JwtUtil {
         return tokens;
     }
 
+    public String generateShortTermToken(UserDTO userDTO) {
+    
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
+            
+        String shortTermToken = Jwts.builder()
+                .setSubject(userDTO.getId())
+                .claim("email", userDTO.getEmail())
+                .claim("name", userDTO.getName())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + shortTermExpiration))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    
+        return shortTermToken;
+    }
+
     public Claims validateToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
