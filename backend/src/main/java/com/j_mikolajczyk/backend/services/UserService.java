@@ -56,7 +56,6 @@ public class UserService {
         } else {
             User user = existingUser.get();
             if (passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
-                System.out.println("UserID: " + user.getId());
                 return new UserDTO(user);
             } else {
                 throw new BadCredentialsException("Invalid credentials.");

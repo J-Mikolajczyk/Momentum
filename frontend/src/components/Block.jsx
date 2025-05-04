@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { postRequest, getRequest } from '../utils/api';
+import AddDayPopup from './AddDayPopup';
 import Week from '../models/Week';
+import Day from '../models/Day';
 
 export default function Block({ blockName, userInfo }) {
 
@@ -11,6 +13,13 @@ export default function Block({ blockName, userInfo }) {
 
   const [blockData, setBlockData] = useState(null);
   const [weekNum, setWeekNum] = useState(0);
+  const [showAddDayPopup, setShowAddDayPopup] = useState(false);
+
+  const toggleAddDayPopup = () => {
+    setShowAddDayPopup(!showAddDayPopup);
+  }
+
+  console.log(blockData)
 
   const setWeekNameAndNum = (weekNum) => {
     setWeekNum(weekNum);
@@ -28,24 +37,32 @@ export default function Block({ blockName, userInfo }) {
   }
 
   const addWeek = async () => {
-    blockData.weeks.push(new Week([]));
+    if (blockData.weeks.length === 0 || blockData.weeks[weekNum-1].length === 0 ) {
+      blockData.weeks.push(new Week());
+    } else {
+      blockData.weeks.push(new Week(blockData.weeks[weekNum-1].days))
+    }
+    
     update();
   }
+
+
 
   const update = async () => {
     const id = blockData.id;
     const name = blockName;
     const weeks = blockData.weeks;
+    console.log(weeks);
     try {
-      const updateResponse = await postRequest(ip + '/block/update', { name, id, weeks });
-      if (updateResponse.ok) {
-        refresh();
-      } else {
-        console.log('Issue updating block');
-      }
-    } catch (err) {
-      console.log(err);
-    }
+       const updateResponse = await postRequest(ip + '/block/update', { name, id, weeks });
+       if (updateResponse.ok) {
+         refresh();
+       } else {
+         console.log('Issue updating block');
+       }
+     } catch (err) {
+       console.log(err);
+     }
   }
 
   const refresh = async () => {
@@ -93,24 +110,39 @@ export default function Block({ blockName, userInfo }) {
                     : (<><button onClick={incrementWeek} className='font-anton text-2xl w-1/10'>&gt;</button></>)
                     } 
                 </div>
-                <div className='flex flex-col w-full flex-grow items-center pt-3 gap-2 pb-8'>
+                <div className='flex flex-col w-full flex-grow items-center gap-2 pb-8'>
                   {blockData !== null ? (
                     <>
                       {blockData.weeks.length < 1 ? (
                         <></>
-                      ) : ( <> {blockData?.weeks[weekNum-1]?.days === null || blockData?.weeks[weekNum-1]?.days?.length === 0 ? 
+                      ) : ( <>  <button onClick={toggleAddDayPopup} className='flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-6 text-l border items-center justify-center border-gray-500 rounded-xs ml-auto' >Add Day</button> {blockData?.weeks[weekNum-1]?.days === null || blockData?.weeks[weekNum-1]?.days?.length === 0 ? 
                                   (<div className='flex flex-row w-full items-center justify-between'>
                                     <p className='text-gray-500 font-anton text-2xl'>No Days Created</p>
-                                    <button className='inline-block elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Add Day</button>
                                   </div>) : 
-                                  ('Days Found')}
+                                  (<>{blockData?.weeks?.[weekNum-1]?.days?.length > 0 ? (
+                                    blockData.weeks[weekNum-1].days.map((day, index) => (
+                                      <button
+                                        // onClick={() => openBlock(day)}
+                                        key={index}
+                                        className='bg-blue-50 text-blue-800 font-anton px-4 py-2 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1'
+                                      >
+                                        {day.name}
+                                      </button>
+                                    ))
+                                  ) : (
+                                    <p className='text-gray-500 font-anton text-2xl'>No Training Days Found</p>
+                                  )}</>) }
                             </>
                       )}
                     </>
                   ) : (
                     <></>
                   )}
-                  <button onClick={update} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Save</button>
-                </div>
-           </>
+
+                    
+                  
+                  <AddDayPopup show={showAddDayPopup} toggle={toggleAddDayPopup} blockData={blockData} blockName={blockName} weekNum={weekNum} update={update}/>
+      
+                   </div>
+                      </>
 }
