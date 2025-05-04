@@ -1,13 +1,12 @@
 package com.j_mikolajczyk.backend.services;
 
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.Exercise;
 import com.j_mikolajczyk.backend.repositories.ExerciseRepository;
-import com.j_mikolajczyk.backend.requests.ExerciseRequest;
 
 @Service
 public class ExerciseService {
@@ -17,6 +16,10 @@ public class ExerciseService {
     @Autowired
     public ExerciseService(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
+    }
+
+    public List<Exercise> getAllExercises() {
+        return exerciseRepository.findAll();
     }
 
 }
