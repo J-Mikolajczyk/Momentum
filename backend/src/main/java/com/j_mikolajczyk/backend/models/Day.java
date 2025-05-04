@@ -4,17 +4,17 @@ import java.util.List;
 
 public class Day {
     private String name;
-    private List<Exercise> exercises;
+    private List<ExerciseSet> exerciseSets;
 
 
     public Day() {
         this.name = null;
-        this.exercises = new ArrayList<Exercise>();
+        this.exerciseSets = new ArrayList<ExerciseSet>();
     }
 
-    public Day(String name, List<Exercise> exercises) {
+    public Day(String name, List<ExerciseSet> exerciseSets) {
         this.name = name;
-        this.exercises = exercises;
+        this.exerciseSets = exerciseSets;
     }
 
     public String getName() {
@@ -25,12 +25,12 @@ public class Day {
         this.name = name;
     }
 
-    public List<Exercise> getExercises() {
-        return this.exercises;
+    public List<ExerciseSet> getExercises() {
+        return this.exerciseSets;
     }
 
-    public void setExercises(List<Exercise> exercises) {
-        this.exercises = exercises;
+    public void setExercises(List<ExerciseSet> exerciseSets) {
+        this.exerciseSets = exerciseSets;
     }
     
 }
