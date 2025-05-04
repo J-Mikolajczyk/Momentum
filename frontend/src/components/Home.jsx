@@ -20,6 +20,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo }) {
   const logOut = () => {
     setLoggedIn(false);
     setUserInfo(null);
+    setThemeColor('#ffffff'); 
   }
 
   const fetchData = async () => {
