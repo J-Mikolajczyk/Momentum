@@ -1,30 +1,36 @@
 package com.j_mikolajczyk.backend.controllers;
 
-import org.apache.coyote.BadRequestException;
-import org.bson.types.ObjectId;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
-import com.j_mikolajczyk.backend.requests.RefreshRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
+    @Value("${jwt.longTermExpiration}")
+    private long longTermExpiration;
+
+    @Value("${jwt.shortTermExpiration}")
+    private long shortTermExpiration;
 
     private final UserService userService;
 
@@ -70,11 +76,26 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail().toLowerCase();
         System.out.println("Login requested for user: " + email);
         try {
             UserDTO userDTO = userService.login(loginRequest);
+            Map<String, String> tokens = userService.generateJwtToken(userDTO);
+            
+            Cookie longTermCookie = new Cookie("longTermToken", tokens.get("longTermToken"));
+            longTermCookie.setHttpOnly(true);
+            longTermCookie.setPath("/");
+            longTermCookie.setMaxAge((int) longTermExpiration / 1000);
+            longTermCookie.setSecure(true);
+            response.addCookie(longTermCookie);
+
+            Cookie shortTermCookie = new Cookie("shortTermToken", tokens.get("shortTermToken"));
+            shortTermCookie.setHttpOnly(true);
+            shortTermCookie.setPath("/");
+            shortTermCookie.setMaxAge((int) shortTermExpiration / 1000);
+            shortTermCookie.setSecure(true);
+            
             System.out.println("User found, returning: " + email);
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {

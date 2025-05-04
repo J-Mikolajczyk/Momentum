@@ -1,9 +1,13 @@
 package com.j_mikolajczyk.backend.services;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,15 +18,29 @@ import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.UserRepository;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
-import com.j_mikolajczyk.backend.requests.RefreshRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.shortTermExpiration}")
+    private long shortTermExpiration;
+
+    @Value("${jwt.longTermExpiration}")
+    private long longTermExpiration;
 
     @Autowired
     public UserService(UserRepository userRepository) throws Exception{
@@ -127,4 +145,36 @@ public class UserService {
             throw e;
         }
     }
+    
+    
+    public Map<String, String> generateJwtToken(UserDTO userDTO) {
+        Map<String, String> tokens = new HashMap<>();
+    
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
+        Key key = Keys.hmacShaKeyFor(keyBytes);
+            
+        String shortTermToken = Jwts.builder()
+                .setSubject(userDTO.getId())
+                .claim("email", userDTO.getEmail())
+                .claim("name", userDTO.getName())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + shortTermExpiration))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
+        String longTermToken = Jwts.builder()
+                    .setSubject(userDTO.getId())
+                .claim("email", userDTO.getEmail())
+                .claim("name", userDTO.getName())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + longTermExpiration))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    
+        tokens.put("shortTermToken", shortTermToken);
+        tokens.put("longTermToken", longTermToken);
+    
+        return tokens;
+    }
+
 }
