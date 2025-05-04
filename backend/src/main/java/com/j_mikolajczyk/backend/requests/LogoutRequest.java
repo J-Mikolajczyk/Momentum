@@ -1,23 +1,19 @@
 package com.j_mikolajczyk.backend.requests;
 
-public class RefreshRequest {
+public class LogoutRequest {
 
     private final String email;
 
-    public RefreshRequest() {
+    public LogoutRequest() {
         this.email = null;
     }
 
-    public RefreshRequest(String email) {
+    public LogoutRequest(String email) {
         this.email = email;
     }
 
     public String getEmail() {
         return this.email;
-    }
-
-    public String toString() {
-        return "User " + email + " successfully refreshed.";
     }
 
 }
