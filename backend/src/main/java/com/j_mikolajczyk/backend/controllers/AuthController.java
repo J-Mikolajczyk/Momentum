@@ -96,6 +96,7 @@ public class AuthController {
             longTermCookie.setPath("/");
             longTermCookie.setMaxAge((int) longTermExpiration / 1000);
             longTermCookie.setSecure(true);
+            longTermCookie.setAttribute("SameSite", "None");
             response.addCookie(longTermCookie);
 
             Cookie shortTermCookie = new Cookie("shortTermCookie", tokens.get("shortTermToken"));
@@ -103,6 +104,7 @@ public class AuthController {
             shortTermCookie.setPath("/");
             shortTermCookie.setMaxAge((int) shortTermExpiration / 1000);
             shortTermCookie.setSecure(true);
+            shortTermCookie.setAttribute("SameSite", "None");
             response.addCookie(shortTermCookie);
             
             System.out.println("User found, returning: " + email);

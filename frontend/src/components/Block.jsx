@@ -19,8 +19,6 @@ export default function Block({ blockName, userInfo }) {
     setShowAddDayPopup(!showAddDayPopup);
   }
 
-  console.log(blockData)
-
   const setWeekNameAndNum = (weekNum) => {
     setWeekNum(weekNum);
     setWeekText("Week " + (weekNum));
