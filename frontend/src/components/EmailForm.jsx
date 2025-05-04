@@ -56,6 +56,14 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
           
         } else if(response.status === 409) {
           setMessage('User already registered, please log in.');
+          setTimeout(() => {
+            setNotFound(false);
+            setExists(true);
+            setPassword('');
+            setConfirmPassword('');
+            setName('');
+            setMessage('');
+          }, 2000);
         } else {
           setMessage('Other issue. Try again later.');
         }
