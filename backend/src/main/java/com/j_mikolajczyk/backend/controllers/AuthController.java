@@ -91,20 +91,10 @@ public class AuthController {
             UserDTO userDTO = userService.login(loginRequest);
             Map<String, String> tokens = jwtUtil.generateJwtToken(userDTO);
             
-            Cookie longTermCookie = new Cookie("longTermCookie", tokens.get("longTermToken"));
-            longTermCookie.setHttpOnly(true);
-            longTermCookie.setPath("/");
-            longTermCookie.setMaxAge((int) longTermExpiration / 1000);
-            longTermCookie.setSecure(true);
-            longTermCookie.setAttribute("SameSite", "None");
+            Cookie longTermCookie = createCookie("longTermCookie", tokens.get("longTermToken"), (int) longTermExpiration / 1000);
             response.addCookie(longTermCookie);
 
-            Cookie shortTermCookie = new Cookie("shortTermCookie", tokens.get("shortTermToken"));
-            shortTermCookie.setHttpOnly(true);
-            shortTermCookie.setPath("/");
-            shortTermCookie.setMaxAge((int) shortTermExpiration / 1000);
-            shortTermCookie.setSecure(true);
-            shortTermCookie.setAttribute("SameSite", "None");
+            Cookie shortTermCookie = createCookie("shortTermCookie", tokens.get("shortTermToken"), (int) shortTermExpiration / 1000);
             response.addCookie(shortTermCookie);
             
             System.out.println("User found, returning: " + email);
@@ -126,43 +116,51 @@ public class AuthController {
     public ResponseEntity<?> autoLogin(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No cookies found");
+            System.out.println("Auto-login unsuccessful");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing necessary cookies");
         }
 
         String longTermToken = null;
+        String shortTermToken = null;
+
         for (Cookie cookie : cookies) {
             if ("longTermCookie".equals(cookie.getName())) {
                 longTermToken = cookie.getValue();
-                break;
+            } else if ("shortTermCookie".equals(cookie.getName())) {
+                shortTermToken = cookie.getValue();
             }
         }
 
-        if (longTermToken == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing long-term token");
+        if (shortTermToken == null || longTermToken == null) {
+            System.out.println("Auto-login unsuccessful");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing tokens");
+        }
+
+        if(jwtUtil.isTokenExpired(longTermToken)) {
+            System.out.println("Auto-login unsuccessful");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Long-term token expired");
+        }
+
+        Claims shortClaims = jwtUtil.validateToken(shortTermToken);
+        if (shortClaims == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid short-term token");
         }
 
         try {
-            Claims claims = jwtUtil.validateToken(longTermToken);
-            String userId = claims.getSubject();
-
-            User user = userService.getById(new ObjectId(userId));
+            ObjectId userId = new ObjectId(shortClaims.getSubject());
+            User user = userService.getById(userId);
             UserDTO userDTO = new UserDTO(user);
 
-            if(jwtUtil.isTokenExpired(longTermToken)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Long-term token expired");
-            }
-            
-            String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
+            if (jwtUtil.isTokenExpired(shortTermToken)) {
+                String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
+                Cookie shortTermCookie = createCookie("shortTermToken", newShortTermToken, (int) shortTermExpiration / 1000);
+                response.addCookie(shortTermCookie);
+            }       
 
-            Cookie shortTermCookie = new Cookie("shortTermCookie", newShortTermToken);
-            shortTermCookie.setHttpOnly(true);
-            shortTermCookie.setPath("/");
-            shortTermCookie.setMaxAge((int) shortTermExpiration / 1000);
-            shortTermCookie.setSecure(true);
-            response.addCookie(shortTermCookie);
-
+            System.out.println("Auto-login successful for " + userDTO.getEmail());
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
+            System.out.println("Auto-login unsuccessful");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired long-term token");
         }
     }
@@ -171,22 +169,23 @@ public class AuthController {
     public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest, HttpServletResponse response) {
         String emailString = logoutRequest.getEmail();
         System.out.println("Logout requested for " + emailString + ", clearing cookies");
-        Cookie longTermCookie = new Cookie("longTermCookie", null);
-        longTermCookie.setHttpOnly(true);
-        longTermCookie.setPath("/");
-        longTermCookie.setMaxAge(0); 
-        longTermCookie.setAttribute("SameSite", "None");
+        Cookie longTermCookie = createCookie("longTermCookie", null, 0);
         response.addCookie(longTermCookie);
 
-        Cookie shortTermCookie = new Cookie("shortTermCookie", null);
-        shortTermCookie.setHttpOnly(true);
-        shortTermCookie.setPath("/");
-        shortTermCookie.setMaxAge(0);
-        shortTermCookie.setAttribute("SameSite", "None");
+        Cookie shortTermCookie = createCookie("shortTermCookie", null, 0);
         response.addCookie(shortTermCookie);
-
         System.out.println(emailString + " logged out, cookies cleared");
 
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    private Cookie createCookie(String name, String value, int maxAge) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(maxAge);
+        cookie.setAttribute("SameSite", "None");
+        return cookie;
     }
 }

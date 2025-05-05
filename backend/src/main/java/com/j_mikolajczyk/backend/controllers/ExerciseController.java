@@ -23,7 +23,7 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/get-all")
     public ResponseEntity<List<Exercise>> getAllExercises() {
         return ResponseEntity.ok(exerciseService.getAllExercises());
     }
