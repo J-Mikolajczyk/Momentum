@@ -104,7 +104,7 @@ export default function Block({ blockName, userInfo }) {
                     : (<><button onClick={decrementWeek} className='font-anton text-2xl w-1/10'>&lt;</button></>)
                     }              
                     <p className='font-anton text-lg'>{weekText}</p>
-                    { weekNum === blockData?.weeks?.length ? (<button className='font-anton text-gray-300 text-2xl w-1/10'>&lt;</button>) 
+                    { (!blockData || !blockData.weeks || weekNum === blockData.weeks.length || blockData.weeks.length === 0) ? (<button className='font-anton text-gray-300 text-2xl w-1/10'>&lt;</button>) 
                     : (<><button onClick={incrementWeek} className='font-anton text-2xl w-1/10'>&gt;</button></>)
                     } 
                 </div>
