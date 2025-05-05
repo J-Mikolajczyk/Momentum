@@ -171,12 +171,14 @@ public class AuthController {
         longTermCookie.setHttpOnly(true);
         longTermCookie.setPath("/");
         longTermCookie.setMaxAge(0); 
+        longTermCookie.setAttribute("SameSite", "None");
         response.addCookie(longTermCookie);
 
         Cookie shortTermCookie = new Cookie("shortTermCookie", null);
         shortTermCookie.setHttpOnly(true);
         shortTermCookie.setPath("/");
         shortTermCookie.setMaxAge(0);
+        shortTermCookie.setAttribute("SameSite", "None");
         response.addCookie(shortTermCookie);
 
         System.out.println(emailString + " logged out, cookies cleared");
