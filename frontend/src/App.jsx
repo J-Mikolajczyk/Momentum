@@ -15,6 +15,7 @@ function App() {
   };
 
   useEffect(() => {
+    
     const autoLogin = async () => {
       try {
         const response = await fetch(ip +'/auth/auto-login', {
@@ -33,8 +34,10 @@ function App() {
         console.error('Error during auto-login:', err);
       }
     };
-  
-    autoLogin();
+
+    setTimeout(() => {
+      autoLogin();
+    } , 1400);
   }, []);
 
   return (
