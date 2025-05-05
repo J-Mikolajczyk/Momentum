@@ -148,6 +148,10 @@ public class AuthController {
             User user = userService.getById(new ObjectId(userId));
             UserDTO userDTO = new UserDTO(user);
 
+            if(jwtUtil.isTokenExpired(longTermToken)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Long-term token expired");
+            }
+            
             String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
 
             Cookie shortTermCookie = new Cookie("shortTermCookie", newShortTermToken);
