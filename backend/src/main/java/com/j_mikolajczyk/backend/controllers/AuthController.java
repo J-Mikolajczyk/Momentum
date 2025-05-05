@@ -154,6 +154,7 @@ public class AuthController {
             if (jwtUtil.isTokenExpired(shortTermToken)) {
                 String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
                 Cookie shortTermCookie = createCookie("shortTermToken", newShortTermToken, (int) shortTermExpiration / 1000);
+                Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000);
                 response.addCookie(shortTermCookie);
             }       
 
@@ -181,7 +182,7 @@ public class AuthController {
 
     private Cookie createCookie(String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
-        cookie.setDomain(".training-momentum.com");
+        cookie.setDomain("training-momentum.com");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
