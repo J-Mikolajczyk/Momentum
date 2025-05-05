@@ -80,15 +80,26 @@ public class JwtUtil {
         return shortTermToken;
     }
 
-    public Claims validateToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public Claims validateToken(String token){
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public boolean isTokenExpired(String token) {
-        return validateToken(token).getExpiration().before(new Date());
+        if (token == null || token.isEmpty()) {
+            return true;
+        }
+        Claims claims = validateToken(token);
+        if (claims == null) {
+            return true;
+        }
+        return claims.getExpiration().before(new Date());
     }
 }
