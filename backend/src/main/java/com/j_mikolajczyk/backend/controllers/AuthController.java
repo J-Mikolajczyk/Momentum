@@ -121,13 +121,10 @@ public class AuthController {
         }
 
         String longTermToken = null;
-        String shortTermToken = null;
 
         for (Cookie cookie : cookies) {
             if ("longTermCookie".equals(cookie.getName())) {
                 longTermToken = cookie.getValue();
-            } else if ("shortTermCookie".equals(cookie.getName())) {
-                shortTermToken = cookie.getValue();
             }
         }
 
@@ -138,24 +135,22 @@ public class AuthController {
 
         if(jwtUtil.isTokenExpired(longTermToken)) {
             System.out.println("Auto-login unsuccessful");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Long-term token expired");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is expired");
         }
 
-        Claims shortClaims = jwtUtil.validateToken(shortTermToken);
-        if (shortClaims == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid short-term token");
+        Claims claims = jwtUtil.validateToken(longTermToken);
+        if (claims == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
         try {
-            ObjectId userId = new ObjectId(shortClaims.getSubject());
+            ObjectId userId = new ObjectId(claims.getSubject());
             User user = userService.getById(userId);
             UserDTO userDTO = new UserDTO(user);
 
-            if (jwtUtil.isTokenExpired(shortTermToken)) {
-                String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
-                Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000);
-                response.addCookie(shortTermCookie);
-            }       
+            String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
+            Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000);
+            response.addCookie(shortTermCookie);    
 
             System.out.println("Auto-login successful for " + userDTO.getEmail());
             return ResponseEntity.ok(userDTO);
