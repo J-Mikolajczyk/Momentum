@@ -131,7 +131,7 @@ public class AuthController {
             }
         }
 
-        if (shortTermToken == null || longTermToken == null) {
+        if (longTermToken == null) {
             System.out.println("Auto-login unsuccessful");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing tokens");
         }
