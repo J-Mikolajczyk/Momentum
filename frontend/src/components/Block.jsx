@@ -113,7 +113,7 @@ export default function Block({ blockName, userInfo }) {
                     <>
                       {blockData.weeks.length < 1 ? (
                         <></>
-                      ) : ( <>  <button onClick={toggleAddDayPopup} className='flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-6 text-l border items-center justify-center border-gray-500 rounded-xs ml-auto' >Add Day</button> {blockData?.weeks[weekNum-1]?.days === null || blockData?.weeks[weekNum-1]?.days?.length === 0 ? 
+                      ) : ( <>  {blockData?.weeks[weekNum-1]?.days === null || blockData?.weeks[weekNum-1]?.days?.length === 0 ? 
                                   (<div className='flex flex-row w-full items-center justify-between'>
                                     <p className='text-gray-500 font-anton text-2xl'>No Days Created</p>
                                   </div>) : 
@@ -136,6 +136,7 @@ export default function Block({ blockName, userInfo }) {
                   ) : (
                     <></>
                   )}
+                  <button onClick={toggleAddDayPopup} className='flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-6 text-l border items-center justify-center border-gray-500 rounded-xs ml-auto' >Add Day</button> 
 
                     
                   
