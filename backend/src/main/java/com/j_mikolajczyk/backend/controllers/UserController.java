@@ -13,7 +13,7 @@ import com.j_mikolajczyk.backend.dto.UserDTO;
 import com.j_mikolajczyk.backend.services.UserService;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/secure/user")
 public class UserController {
 
     private final UserService userService;

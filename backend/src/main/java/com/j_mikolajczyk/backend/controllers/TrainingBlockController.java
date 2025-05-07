@@ -20,7 +20,7 @@ import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 
 @RestController
-@RequestMapping("/block")
+@RequestMapping("/secure/block")
 public class TrainingBlockController {
 
     private final TrainingBlockService blockService;
