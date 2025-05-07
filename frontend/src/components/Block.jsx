@@ -52,7 +52,7 @@ export default function Block({ blockName, userInfo }) {
     const weeks = blockData.weeks;
     console.log(weeks);
     try {
-       const updateResponse = await postRequest(ip + '/block/update', { name, id, weeks });
+       const updateResponse = await postRequest(ip + '/secure/block/update', { name, id, weeks });
        if (updateResponse.ok) {
          refresh();
        } else {
@@ -65,7 +65,7 @@ export default function Block({ blockName, userInfo }) {
 
   const refresh = async () => {
     try {
-      const refreshResponse = await getRequest(ip + '/block/get', { blockName, userId });
+      const refreshResponse = await getRequest(ip + '/secure/block/get', { blockName, userId });
       if (refreshResponse.ok) {
         const json = await refreshResponse.json();
         if (json.exists === false) {

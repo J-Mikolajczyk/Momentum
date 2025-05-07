@@ -39,7 +39,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo }) {
 
   const fetchData = async () => {
     try {
-                  const refreshResponse = await getRequest(ip+'/user/refresh', { userId });
+                  const refreshResponse = await getRequest(ip+'/secure/user/refresh', { userId });
                   if(refreshResponse.ok) {
                     const json = await refreshResponse.json();
                     if(json.exists === false) {

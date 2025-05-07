@@ -91,10 +91,10 @@ public class AuthController {
             UserDTO userDTO = userService.login(loginRequest);
             Map<String, String> tokens = jwtUtil.generateJwtToken(userDTO);
             
-            Cookie longTermCookie = createCookie("longTermCookie", tokens.get("longTermToken"), (int) longTermExpiration / 1000);
+            Cookie longTermCookie = createCookie("longTermCookie", tokens.get("longTermToken"), (int) longTermExpiration / 1000 , "/auth");
             response.addCookie(longTermCookie);
 
-            Cookie shortTermCookie = createCookie("shortTermCookie", tokens.get("shortTermToken"), (int) shortTermExpiration / 1000);
+            Cookie shortTermCookie = createCookie("shortTermCookie", tokens.get("shortTermToken"), (int) shortTermExpiration / 1000, "/secure");
             response.addCookie(shortTermCookie);
             
             System.out.println("User found, returning: " + email);
@@ -149,7 +149,7 @@ public class AuthController {
             UserDTO userDTO = new UserDTO(user);
 
             String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
-            Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000);
+            Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000, "/secure");
             response.addCookie(shortTermCookie);    
 
             System.out.println("Auto-login successful for " + userDTO.getEmail());
@@ -164,22 +164,22 @@ public class AuthController {
     public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest, HttpServletResponse response) {
         String emailString = logoutRequest.getEmail();
         System.out.println("Logout requested for " + emailString + ", clearing cookies");
-        Cookie longTermCookie = createCookie("longTermCookie", null, 0);
+        Cookie longTermCookie = createCookie("longTermCookie", null, 0, "/auth");
         response.addCookie(longTermCookie);
 
-        Cookie shortTermCookie = createCookie("shortTermCookie", null, 0);
+        Cookie shortTermCookie = createCookie("shortTermCookie", null, 0, "/secure");
         response.addCookie(shortTermCookie);
         System.out.println(emailString + " logged out, cookies cleared");
 
         return ResponseEntity.ok("Logged out successfully");
     }
 
-    private Cookie createCookie(String name, String value, int maxAge) {
+    private Cookie createCookie(String name, String value, int maxAge, String path) {
         Cookie cookie = new Cookie(name, value);
         cookie.setDomain("training-momentum.com");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
-        cookie.setPath("/");
+        cookie.setPath(path);
         cookie.setMaxAge(maxAge);
         cookie.setAttribute("SameSite", "Lax");
         return cookie;

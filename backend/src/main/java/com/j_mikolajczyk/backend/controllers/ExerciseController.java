@@ -13,7 +13,7 @@ import com.j_mikolajczyk.backend.requests.ExerciseRequest;
 import com.j_mikolajczyk.backend.services.ExerciseService;
 
 @RestController
-@RequestMapping("/exercises")
+@RequestMapping("/secure/exercises")
 public class ExerciseController {
 
     private final ExerciseService exerciseService;

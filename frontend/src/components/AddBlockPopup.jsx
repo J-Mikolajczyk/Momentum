@@ -32,7 +32,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
       e.preventDefault();
 
       try {
-              const response = await postRequest(ip+'/block/create', { blockName, userId });
+              const response = await postRequest(ip+'/secure/block/create', { blockName, userId });
               console.log(response);
               if (response.status === 201) {
                 fetchData();
