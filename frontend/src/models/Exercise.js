@@ -1,8 +1,10 @@
+import Set from './Set'
+
 export default class Exercise {
 
     constructor(name = null, sets = []) {
         this.name = name;
-        this.sets = sets;
+        this.sets = [...sets, new Set()];
     }
 
     getSets() {
