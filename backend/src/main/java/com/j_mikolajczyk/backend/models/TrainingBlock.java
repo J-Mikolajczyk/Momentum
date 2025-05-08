@@ -14,21 +14,25 @@ public class TrainingBlock {
     private String name;
     private List<Week> weeks;
     private ObjectId createdByUserID;
+    private int dayAmount;
 
 
     public TrainingBlock() {
     }
 
-    public TrainingBlock(String name, List<Week> weeks, ObjectId createdByUserID) {
+    public TrainingBlock(String name, List<Week> weeks, ObjectId createdByUserID, int dayAmount) {
         this.name = name;
         this.weeks = weeks;
         this.createdByUserID = createdByUserID;
+        this.dayAmount = dayAmount;
     }
 
-    public TrainingBlock(String name, ObjectId createdByUserID) {
+    public TrainingBlock(String name, ObjectId createdByUserID, int dayAmount) {
         this.name = name;
         this.weeks = new ArrayList<Week>();
+        this.weeks.add(new Week(dayAmount));
         this.createdByUserID = createdByUserID;
+        this.dayAmount = dayAmount;
     }
 
     public ObjectId getId() {
@@ -57,6 +61,14 @@ public class TrainingBlock {
 
     public void setCreatedByUserID(ObjectId createdByUserID) {
         this.createdByUserID = createdByUserID;
+    }
+
+    public int getDayAmount() {
+        return this.dayAmount;
+    }
+
+    public void setDayAmount(int dayAmount) {
+        this.dayAmount = dayAmount;
     }
 
     public void addWeek(Week week) {

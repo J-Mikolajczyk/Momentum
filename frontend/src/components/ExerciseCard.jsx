@@ -44,8 +44,8 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
     };
 
     return (
-        <div className="mb-6 p-4 border border-blue-800 rounded-md shadow-md w-full">
-            <h2 className="text-blue-800 font-anton text-2xl mb-2">{exercise?.name}</h2>
+        <div className="p-2 pr-3 border border-blue-800 rounded-md shadow-md w-full">
+            <h2 className="text-blue-800 font-anton text-xl mb-2">{exercise?.name}</h2>
 
             {exercise.sets?.map((set, setIndex) => (
                 <div key={setIndex} className="flex flex-row gap-4 mb-2">
@@ -53,7 +53,7 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
                         <label className="text-md font-anton">Weight:</label>
                         <input
                             type="number"
-                            className="ml-1 border rounded px-2 py-1 w-1/2 font-anton"
+                            className="ml-1 border rounded px-2 py-1 w-1/2 font-anton h-6"
                             value={inputValues[setIndex]?.weight || ''}
                             onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                             onBlur={() => handleBlur(setIndex, 'weight')}
@@ -63,7 +63,7 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
                         <label className="text-md font-anton">Reps:</label>
                         <input
                             type="number"
-                            className="ml-1 border rounded px-2 py-1 w-1/2 font-anton"
+                            className="ml-1 border rounded px-2 py-1 w-1/2 font-anton h-6"
                             value={inputValues[setIndex]?.reps || ''}
                             onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
                             onBlur={() => handleBlur(setIndex, 'reps')}

@@ -10,17 +10,12 @@ export default function Day ({ blockData, weekNum, dayNum, update, setDayIndex }
     const toggleAddExercisePopup = () => {
         setShowAddExercisePopup(!showAddExercisePopup);
     }
-
-    
     
     return(<>
-            <div className="flex flex-row w-full items-center mb-3">
-                <button onClick={() => setDayIndex(null)} className="absolute text-blue-800 font-anton w-1/7 min-w-10 h-8 text-lg border-2 rounded-sm">Back</button>
-                <p className="mx-auto text-blue-800 font-anton inline-block text-3xl">{blockData.weeks[weekNum].days[dayNum].name}</p>
-            </div>
+            <p className="mx-auto text-blue-800 font-anton inline-block text-3xl">{blockData?.weeks[weekNum]?.days[dayNum]?.name}</p>
             <div className="flex flex-col w-full flex-grow items-center gap-2 pb-8">
             {blockData?.weeks[weekNum]?.days[dayNum]?.exercises?.length > 0 ? (
-                blockData.weeks[weekNum].days[dayNum].exercises.map((exercise, exerciseIndex) => (
+                blockData?.weeks[weekNum].days[dayNum].exercises.map((exercise, exerciseIndex) => (
                     <ExerciseCard weekNum={weekNum} dayNum={dayNum} blockData={blockData} key={exerciseIndex} exercise={exercise} update={update} exerciseIndex={exerciseIndex}/>
                 ))
             ) : (
