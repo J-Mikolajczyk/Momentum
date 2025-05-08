@@ -5,11 +5,11 @@ export default class Day {
         this.exercises = exercises;
     }
 
-    getExercises() {
-        return this.exercises;
+    getExerciseSets() {
+        return this.exerciseSets;
     }
 
-    setExercises(exercises) {
+    setExerciseSets(exercises) {
         this.exercises = exercises;
     }
 

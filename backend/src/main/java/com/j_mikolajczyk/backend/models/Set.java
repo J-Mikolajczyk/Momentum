@@ -1,14 +1,14 @@
 package com.j_mikolajczyk.backend.models;
 
-public class ExerciseSet {
+public class Set {
     private double weight;
     private int reps;
 
 
-    public ExerciseSet() {
+    public Set() {
     }
 
-    public ExerciseSet(double weight, int reps) {
+    public Set(double weight, int reps) {
         this.weight = weight;
         this.reps = reps;
     }

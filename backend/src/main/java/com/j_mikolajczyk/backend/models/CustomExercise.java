@@ -1,5 +1,7 @@
 package com.j_mikolajczyk.backend.models;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -12,8 +14,8 @@ public class CustomExercise extends Exercise {
         createdByUserId = null;
     }
 
-    public CustomExercise(String name, String type, String muscleWorked, ObjectId createdByUserId) {
-        super(name, type, muscleWorked);
+    public CustomExercise(String name, List<Set> sets, ObjectId createdByUserId) {
+        super(name,sets);
         this.createdByUserId = createdByUserId;
     }
 
