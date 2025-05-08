@@ -8,6 +8,11 @@
     user-select: none;
 }
 
+.font-anton-no-italic {
+  font-family: 'Anton', sans-serif;
+  user-select: none;
+}
+
 html, body {
   height: 100%;
   overscroll-behavior: none;
