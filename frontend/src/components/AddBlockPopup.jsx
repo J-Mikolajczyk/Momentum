@@ -11,9 +11,9 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
     const email = userInfo?.email != null ? userInfo.email : null;
 
     const handleClose = () => {
-      toggleAddBlockMenu();
       setBlockName('');
       setMessage('');
+      toggleAddBlockMenu();
     }
 
     const handleOuterClick = () => {
@@ -36,7 +36,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
               console.log(response);
               if (response.status === 201) {
                 fetchData();
-                toggleAddBlockMenu();
+                handleClose();
                 return null;
               } else if (response.status === 409) {
                 setMessage(blockName + ' already exists.');

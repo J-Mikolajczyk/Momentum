@@ -1,24 +1,24 @@
 package com.j_mikolajczyk.backend.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "exercises")
 public class Exercise {
     private String name;
-    private String type;
-    private String muscleWorked;
+    private List<Set> sets;
 
 
     public Exercise() {
         this.name = null;
-        this.type = null;
-        this.muscleWorked = null;
+        this.sets = new ArrayList<Set>();
     }
 
-    public Exercise(String name, String type, String muscleWorked) {
+    public Exercise(String name, List<Set> sets) {
         this.name = name;
-        this.type = type;
-        this.muscleWorked = muscleWorked;
+        this.sets = sets;
     }
 
     public String getName() {
@@ -29,20 +29,12 @@ public class Exercise {
         this.name = name;
     }
 
-    public String getType() {
-        return this.type;
+    public List<Set> getSets() {
+        return this.sets;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getMuscleWorked() {
-        return this.muscleWorked;
-    }
-
-    public void setMuscleWorked(String muscleWorked) {
-        this.muscleWorked = muscleWorked;
+    public void setSets(List<Set> sets) {
+        this.sets = sets;
     }
     
 }
