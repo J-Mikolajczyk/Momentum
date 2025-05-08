@@ -5,6 +5,7 @@ import WeekMenu from './WeekMenu';
 import DayDashboard from './DayDashboard';
 import Day from './Day';
 import Week from '../models/Week';
+import MessagePopup from './MessagePopup'
 
 export default function Block({ blockName, userInfo }) {
 
@@ -14,29 +15,38 @@ export default function Block({ blockName, userInfo }) {
   const userId = userInfo?.id != null ? userInfo.id : null;
 
   const [blockData, setBlockData] = useState(null);
-  const [weekNum, setWeekNum] = useState(0);
+  const [weekNum, setWeekNum] = useState(1);
   const [showAddDayPopup, setShowAddDayPopup] = useState(false);
-  const [dayIndex, setDayIndex] = useState(null);
+  const [dayIndex, setDayIndex] = useState(0);
   const [weekText, setWeekText] = useState('Loading...');
+  const [message, setMessage] = useState(false);
 
   const openDay = (index) => {
     setDayIndex(index);
   };
 
-  const setWeekNameAndNum = (weekNum) => {
+  const setWeekAndDay = (weekNum, dayNum) => {
     setWeekNum(weekNum);
-    setWeekText("Week " + (weekNum));
-  }
+    setDayIndex(dayNum - 1); 
+    setWeekText(`Week ${weekNum} Day ${dayNum}`);
+  };
 
   const addWeek = async () => {
-    if (blockData.weeks.length === 0 || blockData.weeks[weekNum-1].length === 0 ) {
+    if (blockData.weeks.length >= 6) {
+      setMessage("Mesocycles longer than 6 weeks are not recommended. Please consider a deload.");
+      return;
+    }
+    proceedToAddWeek();
+  };
+
+  const proceedToAddWeek = () => {
+    if (blockData.weeks.length === 0 || blockData.weeks[weekNum - 1].length === 0) {
       blockData.weeks.push(new Week());
     } else {
-      blockData.weeks.push(new Week(blockData.weeks[weekNum-1].days))
+      blockData.weeks.push(new Week(blockData.weeks[weekNum - 1].days));
     }
-    
     update();
-  }
+  };
 
 
 
@@ -65,16 +75,8 @@ export default function Block({ blockName, userInfo }) {
           console.log('Issue with block data, block does not exist');
           return;
         }
-        if (json.weeks.length > 0) {
-          if(weekNum === 0) {
-            setWeekNameAndNum(1);
-          } else if (weekNum === json.weeks.length-1) {
-            setWeekNameAndNum(weekNum+1);
-          }
-        } else {
-          setWeekText('No Weeks Created');
-        }
         setBlockData(json);
+        setWeekAndDay(weekNum, dayIndex+1);
       } else {
         console.log('Non-OK response');
       }
@@ -89,19 +91,17 @@ export default function Block({ blockName, userInfo }) {
 
   return (
     <>
-      {dayIndex !== null ? 
-        (<Day blockData={blockData} dayNum={dayIndex} weekNum={weekNum - 1} update={update} setDayIndex={setDayIndex} />) : 
-        (<>
-          <div className="flex flex-row w-full justify-between items-center mb-3">
-            <p className="text-blue-800 font-anton inline-block text-3xl">{blockName}</p>
-            <button onClick={addWeek} className="inline-block elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs">Add Week</button>
+      <MessagePopup message={message} setMessage={setMessage} proceedToAddWeek={proceedToAddWeek}/>
+      <div className="flex flex-row w-full justify-between items-center mb-3">
+        <p className="text-blue-800 font-anton inline-block text-3xl">{blockName}</p>
+        <button onClick={addWeek} className="inline-block select-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs">Add Week</button>
+      </div>
+      <WeekMenu blockData={blockData} setWeekAndDay={setWeekAndDay} weekText={weekText}/>
+      <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8">
+          <div className="flex flex-col items-center p-2 rd">
+            <Day blockData={blockData} dayNum={dayIndex} weekNum={weekNum - 1} update={update} setDayIndex={setDayIndex} />
           </div>
-          <WeekMenu blockData={blockData} weekText={weekText} weekNum={weekNum} setWeekNameAndNum={setWeekNameAndNum}/>
-          <div className="flex flex-col w-full flex-grow items-center gap-2 pb-8">
-            <DayDashboard update={update} openDay={openDay} blockData={blockData} setBlockData={setBlockData} weekNum={weekNum} blockName={blockName}/>
-          </div>
-        </>
-      )}
+      </div>
     </>
   );
 }

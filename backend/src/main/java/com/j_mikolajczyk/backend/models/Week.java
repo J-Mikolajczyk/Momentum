@@ -9,6 +9,14 @@ public class Week {
         this.days = new ArrayList<Day>();
     }
 
+    public Week(int dayAmount) {
+        this.days = new ArrayList<Day>();
+
+        for (int i = 0; i < dayAmount; i++) {
+            days.add(new Day());
+        }
+    }
+
     public Week(List<Day> days) {
         this.days = days;
     }
