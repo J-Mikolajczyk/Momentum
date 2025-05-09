@@ -70,27 +70,6 @@ public class TrainingBlockController {
         }
     }
 
-    @PostMapping("/add-week")
-    public ResponseEntity<?> add(@RequestBody AddWeekRequest addWeekRequest){
-        String name = addWeekRequest.getBlockName();
-        String userId = addWeekRequest.getUserId().toString();
-        System.out.println("Week add requested from user: " + userId);
-        try {
-            blockService.addWeek(addWeekRequest);
-            System.out.println("Week addition successful for user: " + userId);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
-        } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(userId + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
-            } else if (e.getMessage().equals("409")) {
-                System.out.println(name + " block name already exists.");
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");
-            }
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @PostMapping("/update")
     public ResponseEntity<?> update(@RequestBody UpdateBlockRequest updateBlockRequest) throws Exception{
         String name = updateBlockRequest.getName();
