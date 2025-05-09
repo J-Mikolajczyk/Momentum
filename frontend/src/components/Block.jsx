@@ -98,7 +98,7 @@ export default function Block({ blockName, userInfo }) {
       </div>
       <WeekMenu blockData={blockData} setWeekAndDay={setWeekAndDay} weekText={weekText}/>
       <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8">
-          <div className="flex flex-col items-center p-2 rd">
+          <div className="flex flex-col items-center p-2 rd w-full">
             <Day blockData={blockData} dayNum={dayIndex} weekNum={weekNum - 1} update={update} setDayIndex={setDayIndex} />
           </div>
       </div>

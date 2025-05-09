@@ -22,9 +22,9 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText }) {
 
       {isDropdownOpen && blockData?.weeks?.length > 0 && (
         <div className="absolute left-0 right-0 w-full top-8 mx-auto bg-gray-300 shadow-md z-10 overflow-x-auto">
-            <div className="flex p-2 justify-between gap-2 pr-4">
+            <div className="flex p-2 justify-around gap-2 pr-4">
                 {blockData.weeks.map((week, weekIndex) => (
-                  <div key={`week-col-${weekIndex}`} className="flex flex-col items-center gap-1">
+                  <div key={`week-col-${weekIndex}`} className="flex flex-col w-1/5 min-w-11 items-center gap-1">
                     <div className="text-center font-anton text-sm text-gray-700"> Week {weekIndex + 1}</div>
                     {Array.from({ length: maxDays }).map((_, dayIndex) => {
                       const dayExists = week.days[dayIndex];
@@ -36,7 +36,7 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText }) {
                               setDropdownOpen(false);
                             }
                           }}
-                          className={`h-6 w-12 border bg-white border-gray-400 rounded-md text-blue-800 font-anton text-sm flex items-center justify-center cursor-pointer ${
+                          className={`h-6 w-full border bg-white border-gray-400 rounded-md text-blue-800 font-anton text-sm flex items-center justify-center cursor-pointer ${
                             dayExists ? 'hover:bg-gray-200' : 'text-gray-400 cursor-default'
                           }`}
                         >
