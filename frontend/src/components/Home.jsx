@@ -7,7 +7,7 @@ import setThemeColor from '../hooks/useThemeColor'
 import {getRequest, postRequest} from '../utils/api'
 
 
-function Home({ setLoggedIn, userInfo, setUserInfo, setshowEmailForm }) {
+function Home({ setLoggedIn, userInfo, setUserInfo }) {
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -23,7 +23,6 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setshowEmailForm }) {
     setLoggedIn(false);
     setUserInfo(null);
     setThemeColor('#ffffff'); 
-    setshowEmailForm(true);
   }
 
   const logOutUser = async () => {
@@ -86,7 +85,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setshowEmailForm }) {
     <div className='h-full w-full flex flex-col bg-white'>
       <Navigation goHome={goHome} toggleSidebar={toggleSidebar}></Navigation>
       <Sidebar logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      <div className='flex flex-col flex-grow items-center pt-3 mx-4 gap-2 pb-8'>
+      <div className='flex flex-col flex-grow items-center gap-2 pb-8'>
            <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu}/>
       </div> 
       

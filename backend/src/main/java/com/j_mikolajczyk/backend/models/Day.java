@@ -17,6 +17,11 @@ public class Day {
         this.exercises = exercises;
     }
 
+    public Day(String name) {
+        this.name = name;
+        this.exercises = null;
+    }
+
     public String getName() {
         return this.name;
     }

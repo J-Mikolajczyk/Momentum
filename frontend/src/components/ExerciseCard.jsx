@@ -3,7 +3,7 @@ import Set from '../models/Set';
 
 export default function ExerciseCard({ blockData, exercise, exerciseIndex, update, weekNum, dayNum }) {
     const [inputValues, setInputValues] = useState(() => {
-        return exercise.sets?.map(set => ({
+        return exercise?.sets?.map(set => ({
             weight: set.weight || '',
             reps: set.reps || '',
         })) || [];
@@ -72,12 +72,12 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
 
     return (
         <div className="p-2 pr-3 border border-blue-800 rounded-md shadow-md w-full">
-            <h2 className="text-blue-800 font-anton text-xl mb-2">{exercise?.name}</h2>
+            <h2 className="text-blue-800 font-anton text-2xl mb-2">{exercise?.name}</h2>
 
             {exercise.sets?.map((set, setIndex) => (
-                <div key={setIndex} className="flex flex-row gap-4 mb-2">
-                    <div>
-                        <label className="text-md font-anton">Weight:</label>
+                <div key={setIndex} className="flex flex-row mb-2 w-full">
+                    <div className='w-1/2 flex items-center space-between'>
+                        <label className="text-2xl font-anton">Weight:</label>
                         <input
                             type="number"
                             className="ml-1 border rounded px-2 py-1 w-1/2 font-anton h-6"
@@ -86,8 +86,8 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
                             onBlur={() => handleBlur(setIndex, 'weight')}
                         />
                     </div>
-                    <div>
-                        <label className="text-md font-anton">Reps:</label>
+                    <div className='w-1/2 flex items-center space-between'>
+                        <label className="text-2xl font-anton">Reps:</label>
                         <input
                             type="number"
                             className="ml-1 border rounded px-2 py-1 w-1/2 font-anton h-6"

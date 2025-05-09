@@ -4,21 +4,19 @@ import java.util.List;
 
 public class Week {
     private List<Day> days;
+    private List<String> selectedDays;
 
     public Week() {
         this.days = new ArrayList<Day>();
+        this.selectedDays = new ArrayList<String>();
     }
 
-    public Week(int dayAmount) {
+    public Week(List<String> selectedDays) {
         this.days = new ArrayList<Day>();
 
-        for (int i = 0; i < dayAmount; i++) {
-            days.add(new Day());
+        for (int i = 0; i < selectedDays.size(); i++) {
+            days.add(new Day(selectedDays.get(i)));
         }
-    }
-
-    public Week(List<Day> days) {
-        this.days = days;
     }
 
     public List<Day> getDays() {
