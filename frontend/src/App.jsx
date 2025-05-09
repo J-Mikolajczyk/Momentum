@@ -9,9 +9,10 @@ function App() {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [autoLoginFail, setAutoLoginFail] = useState(false);
 
   const handleShowEmailForm = () => {
-    setShowEmailForm(true); 
+    setShowEmailForm(!showEmailForm); 
   };
 
   useEffect(() => {
@@ -20,7 +21,7 @@ function App() {
       try {
         const response = await fetch(ip +'/auth/auto-login', {
           method: 'POST',
-          credentials: 'include', // Include cookies in the request
+          credentials: 'include',
         });
   
         if (response.ok) {
@@ -28,6 +29,7 @@ function App() {
           setLoggedIn(true);
           setUserInfo(user);
         } else {
+          handleShowEmailForm();
           console.log('Auto-login failed');
         }
       } catch (err) {
@@ -43,11 +45,11 @@ function App() {
   return (
     <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
       { loggedIn ? 
-        (<><Home setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/></>)
+        (<><Home setShowEmailForm={setShowEmailForm} setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/></>)
         :(<div className='flex flex-col bg-white h-full w-full rounded-lg items-center justify-center'> 
           { showEmailForm ?
           (<><EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/></>)
-            :(<><SplashScreen onClick={handleShowEmailForm} /></>)} </div>
+            :(<><SplashScreen/></>)} </div>
           )
       }
     </div>

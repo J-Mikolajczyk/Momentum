@@ -23,25 +23,52 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
     };
 
     const handleAddSet = (exerciseIndex) => {
-        const newSet = new Set();
-        blockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].sets.push(newSet);
+        const targetName = blockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].name;
+      
+        for (let i = weekNum; i < blockData.weeks.length; i++) {
+          const day = blockData.weeks[i].days[dayNum];
+          const matchingExercise = day.exercises.find(ex => ex.name === targetName);
+      
+          if (matchingExercise) {
+            matchingExercise.sets.push(new Set());
+          }
+        }
+      
         setInputValues(prev => [...prev, { weight: '', reps: '' }]);
         update();
-    };
+      };
+      
+      
 
-    const handleSetDelete = (exerciseIndex, setIndex) => {
+      const handleSetDelete = (exerciseIndex, setIndex) => {
         const updatedBlockData = { ...blockData };
-        updatedBlockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].sets.splice(setIndex, 1);
-
+        const targetName = updatedBlockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].name;
+      
+        for (let i = weekNum; i < updatedBlockData.weeks.length; i++) {
+          const day = updatedBlockData.weeks[i].days[dayNum];
+          const matchingExerciseIndex = day.exercises.findIndex(ex => ex.name === targetName);
+      
+          if (matchingExerciseIndex !== -1) {
+            const exercise = day.exercises[matchingExerciseIndex];
+      
+            if (exercise.sets.length > setIndex) {
+              exercise.sets.splice(setIndex, 1);
+      
+              if (exercise.sets.length === 0) {
+                day.exercises.splice(matchingExerciseIndex, 1);
+              }
+            }
+          }
+        }
+      
         const newInputValues = [...inputValues];
         newInputValues.splice(setIndex, 1);
         setInputValues(newInputValues);
-
-        if (updatedBlockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].sets.length === 0) {
-            updatedBlockData.weeks[weekNum].days[dayNum].exercises.splice(exerciseIndex, 1);
-        }
+      
         update();
-    };
+      };
+      
+      
 
     return (
         <div className="p-2 pr-3 border border-blue-800 rounded-md shadow-md w-full">

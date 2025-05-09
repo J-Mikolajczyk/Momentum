@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function MessagePopup({ message, setMessage, proceedToAddWeek, onCancel }) {
+export default function MessagePopup({ message, setMessage, ignoreMethod }) {
   if (!message) {
     return null;
   }
@@ -23,9 +23,10 @@ export default function MessagePopup({ message, setMessage, proceedToAddWeek, on
         {message && (
           <p className="font-anton text-red-700 text-xl mt-2 text-center">{message}</p>
         )}
-        <div className="flex justify-between gap-4 mt-4 mx-6">
-            <button onClick={() => { proceedToAddWeek(); handleClose(); }}  className="bg-blue-500 font-anton text-white px-4 py-2 rounded-md hover:bg-blue-600"> Ignore</button>
-            <button onClick={() => { handleClose(); }} className="bg-gray-500 font-anton text-white px-4 py-2 rounded-md hover:bg-gray-600" >Cancel </button>
+        <div className="flex justify-around gap-4 mt-4 mx-6">
+          { ignoreMethod !== null ? 
+            (<button onClick={() => { ignoreMethod(); handleClose(); }}  className="bg-blue-500 font-anton text-white px-4 py-2 rounded-md hover:bg-blue-600"> Ignore</button>) : (<></>)}
+          <button onClick={() => { handleClose(); }} className="bg-gray-500 font-anton text-white px-4 py-2 rounded-md hover:bg-gray-600" >Cancel </button>
         </div>
       </div>
     </div>

@@ -15,7 +15,6 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(exists) {
       try {
         const response = await postRequest(ip+'/auth/login', { email, password });
 
@@ -31,15 +30,17 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
             setLoggedIn(true);
             setUserInfo(json);
           }
+          return;
         } else if(response.status === 401) {
           setMessage('Incorrect password.');
+          return
         } else {
           setMessage('Other issue. Try again later.');
+          return
         }
       } catch (err) {
         setMessage('Server error. Try again later.');
       }
-    } else if(notFound) {
       if(password != confirmPassword) {
         setMessage('Passwords do not match!');
         return;
@@ -70,36 +71,14 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
       } catch (err) {
         setMessage('Server error. Try again later.');
       }
-    } else {
-      try {
-        const response = await postRequest(ip+'/auth/exists', { email });
-
-        if (response.ok) {
-          const json = await response.json();
-          if(json.exists) {
-            setMessage('Please enter your password.');
-            setExists(true);
-          } else {
-            setMessage('User not found. Please register.');
-            setNotFound(true);
-          }
-        } else {
-          setMessage('Other issue. Try again later.');
-        }
-      } catch (err) {
-        setMessage('Server error. Try again later.');
-      }
     } 
-  };
 
   return (
     <div className='flex flex-col bg-white h-full w-full rounded-lg items-center justify-center'>
       <form  onSubmit={handleSubmit}  className='w-full h-1/2 flex flex-col items-center justify-around font-anton rounded-md text-blue-800 text-4xl'  >
       <h1 className='text-blue-800 font-anton text-5xl text-shadow-lg'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
         <input className='bg-white font-anton rounded-md text-blue-800 h-15 w-6/7 pl-3 text-2xl border-blue-800 border-2' placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
-        {
-          (exists || notFound) ? <input className='bg-white font-anton rounded-md text-blue-800 h-15 w-6/7 pl-3 text-2xl border-blue-800 border-2' placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required /> : <></>
-        }
+        <input className='bg-white font-anton rounded-md text-blue-800 h-15 w-6/7 pl-3 text-2xl border-blue-800 border-2' placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required />
         {
           notFound ? <><input className='bg-white font-anton rounded-md text-blue-800 h-15 w-6/7 pl-3 text-2xl border-blue-800 border-2' placeholder='Confirm Password' type='password' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                         <input className='bg-white font-anton rounded-md text-blue-800 h-15 w-6/7 pl-3 text-2xl border-blue-800 border-2' placeholder='Name' value={name} onChange={(e) => setName(e.target.value)} required />  </>
