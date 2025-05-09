@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, removeWeek }) {
+export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, removeWeek, refresh }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -16,48 +16,52 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, 
 
   return (
     <div className="relative w-full">
-      <div className="relative bg-gray-300 h-8 w-full flex items-center">
-        <p className="absolute left-1/2 transform -translate-x-1/2 font-anton text-lg cursor-pointer text-center w-3/4" onClick={toggleDropdown}>{weekText}</p>
-        { isDropdownOpen ? (
-          <div className="ml-auto flex gap-1 h-2/3">
-            <button onClick={removeWeek} className="flex items-center justify-center bg-gray-400 text-gray-500 font-anton-no-italic aspect-square h-full text-xl border border-gray-500">-</button>
-            <button onClick={addWeek} className="flex items-center justify-center bg-gray-400 text-gray-500 font-anton-no-italic aspect-square h-full text-xl border border-gray-500 mr-1">+</button>
-          </div>) : (<></>)
-        }
-        
+        <div className="relative bg-blue-800 h-16 w-full flex flex-col justify-center px-4">
+          <p className="text-white font-anton text-xl cursor-pointer h-1/2" onClick={toggleDropdown}>{blockData?.name}</p>
+          <p className="text-white font-anton text-2xl cursor-pointer h-1/2" onClick={toggleDropdown}>{weekText}</p>
+        </div>
+
+        {isDropdownOpen && (
+  <div className="absolute top-16 left-0 w-full bg-blue-800 z-20 shadow-lg">
+    <div className="px-4 h-10 flex items-end justify-between border-t-1 border-gray-500 pb-1">
+      <p className="text-white font-anton text-md cursor-pointer w-full" onClick={toggleDropdown}>Weeks</p>
+      <div className="flex gap-2">
+        <button onClick={removeWeek} className="bg-white text-blue-800 font-anton-no-italic h-6 w-8 text-2xl rounded-md border border-gray-500 flex items-center justify-center pb-0.5">-</button>
+        <button onClick={addWeek} className="bg-white text-blue-800 font-anton-no-italic h-6 w-8 text-2xl rounded-md border border-gray-500 flex items-center justify-center pb-1">+</button>
       </div>
-
-
-      {isDropdownOpen && blockData?.weeks?.length > 0 && (
-        <div className="absolute left-0 right-0 w-full top-8 mx-auto bg-gray-300 shadow-md z-10 overflow-x-auto">
-            <div className="flex p-2 justify-around gap-2">
-                {blockData.weeks.map((week, weekIndex) => (
-                  <div key={`week-col-${weekIndex}`} className="flex flex-col w-1/5 min-w-11 items-center gap-1">
-                    <div className="text-center font-anton text-sm text-gray-700"> Week {weekIndex + 1}</div>
-                    {Array.from({ length: maxDays }).map((_, dayIndex) => {
-                      const dayExists = week.days[dayIndex];
-                      const label = `Day ${dayIndex + 1}`;
-                      return (
-                        <div key={`${weekIndex}-${dayIndex}`} onClick={() => {
-                            if (dayExists) {
-                              setWeekAndDay(weekIndex + 1, dayIndex + 1);
-                              setDropdownOpen(false);
-                            }
-                          }}
-                          className={`h-6 w-full border bg-white border-gray-400 rounded-md text-blue-800 font-anton text-sm flex items-center justify-center cursor-pointer ${
-                            dayExists ? 'hover:bg-gray-200' : 'text-gray-400 cursor-default'
-                          }`}
-                        >
-                          {label}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-
-          </div>
-        )}
     </div>
-  );
+
+    {blockData?.weeks?.length > 0 && (
+      <div className="w-full bg-blue-800 shadow-md overflow-x-auto border-t border-blue-800">
+        <div className="flex p-1 justify-around gap-1">
+          {blockData.weeks.map((week, weekIndex) => (
+            <div key={`week-col-${weekIndex}`} className="flex flex-col w-1/5 min-w-11 items-center gap-1">
+              <div className="text-center font-anton text-sm text-white">{weekIndex + 1}</div>
+              {Array.from({ length: maxDays }).map((_, dayIndex) => {
+                const dayExists = week.days[dayIndex];
+                const label = `${(week.days[dayIndex].name).substring(0,3).toUpperCase()}`;
+                return (
+                  <div
+                    key={`${weekIndex}-${dayIndex}`}
+                    onClick={() => {
+                      if (dayExists) {
+                        refresh(weekIndex + 1, dayIndex + 1);
+                        setDropdownOpen(false);
+                      }
+                    }}
+                    className={`pt-0.5 h-6 w-full border bg-white border-gray-400 rounded-md text-blue-800 font-anton text-sm flex items-center justify-center cursor-pointer ${
+                      dayExists ? 'hover:bg-gray-200' : 'text-gray-400 cursor-default'
+                    }`}
+                  >
+                    {label}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+    </div>)}
+  </div>);
 }

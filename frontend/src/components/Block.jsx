@@ -22,9 +22,6 @@ export default function Block({ blockName, userInfo }) {
   const [message, setMessage] = useState(false);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
 
-  const openDay = (index) => {
-    setDayIndex(index);
-  };
 
   const setWeekAndDay = (weekNum, dayNum) => {
     setWeekNum(weekNum);
@@ -105,8 +102,14 @@ export default function Block({ blockName, userInfo }) {
           console.log('Issue with block data, block does not exist');
           return;
         }
+        const week = json.weeks?.[newWeekNum - 1];
+        const day = week?.days?.[newDayNum - 1];
+        const dayName = day?.name || `Day ${newDayNum}`;
+
         setBlockData(json);
-        setWeekAndDay(newWeekNum, newDayNum);
+        setWeekNum(newWeekNum);
+        setDayIndex(newDayNum - 1);
+        setWeekText(('Week ' + newWeekNum + ' Day ' + newDayNum + ' ' + dayName));
       } else {
         console.log('Non-OK response');
       }
@@ -114,6 +117,7 @@ export default function Block({ blockName, userInfo }) {
       console.log(err);
     }
   };
+
   
 
   useEffect(() => {
@@ -123,11 +127,9 @@ export default function Block({ blockName, userInfo }) {
   return (
     <>
       <MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod}/>
-      <div className="flex flex-row w-full justify-between items-center mb-3">
-        <p className="text-blue-800 font-anton inline-block text-3xl">{blockName}</p>
-      </div>
-      <WeekMenu blockData={blockData} setWeekAndDay={setWeekAndDay} weekText={weekText} addWeek={addWeek} removeWeek={removeWeek}/>
-      <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8">
+
+      <WeekMenu blockData={blockData} setWeekAndDay={setWeekAndDay} weekText={weekText} addWeek={addWeek} removeWeek={removeWeek} refresh={refresh}/>
+      <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8 px-4">
           <div className="flex flex-col items-center rd w-full">
             <Day blockData={blockData} dayNum={dayIndex} weekNum={weekNum - 1} update={update} setDayIndex={setDayIndex} />
           </div>

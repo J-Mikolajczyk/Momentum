@@ -71,7 +71,7 @@ public class TrainingBlockService {
             throw new RuntimeException("UserID is required.");
         }
 
-        TrainingBlock block = new TrainingBlock(createBlockRequest.getBlockName(), createBlockRequest.getUserId(), createBlockRequest.getDayAmount());
+        TrainingBlock block = new TrainingBlock(createBlockRequest.getBlockName(), createBlockRequest.getUserId(), createBlockRequest.getSelectedDays());
 
         try {
             blockRepository.save(block);

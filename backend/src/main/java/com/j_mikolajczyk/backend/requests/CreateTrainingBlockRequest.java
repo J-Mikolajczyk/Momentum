@@ -1,23 +1,25 @@
 package com.j_mikolajczyk.backend.requests;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 
 public class CreateTrainingBlockRequest {
 
     private final String blockName;
     private final ObjectId userId;
-    private final int dayAmount;
+    private final List<String> selectedDays;
 
     public CreateTrainingBlockRequest() {
         this.blockName = null;
         this.userId = null;
-        this.dayAmount = -1;
+        this.selectedDays = null;
     }
 
-    public CreateTrainingBlockRequest(String blockName, ObjectId userId, int dayAmount) {
+    public CreateTrainingBlockRequest(String blockName, ObjectId userId, List<String> selectedDays) {
         this.blockName = blockName;
         this.userId = userId;
-        this.dayAmount = dayAmount;
+        this.selectedDays = selectedDays;
     }
 
     public String getBlockName() {
@@ -28,7 +30,7 @@ public class CreateTrainingBlockRequest {
         return userId;
     }
 
-    public int getDayAmount() {
-        return dayAmount;
+    public List<String> getSelectedDays() {
+        return selectedDays;
     }
 }

@@ -12,7 +12,6 @@ export default function Day ({ blockData, weekNum, dayNum, update, setDayIndex }
     }
     
     return(<>
-            <p className="mx-auto text-blue-800 font-anton inline-block text-3xl">{blockData?.weeks[weekNum]?.days[dayNum]?.name}</p>
             <div className="flex flex-col w-full flex-grow items-center gap-2 pb-8">
             {blockData?.weeks[weekNum]?.days[dayNum]?.exercises?.length > 0 ? (
                 blockData?.weeks[weekNum].days[dayNum].exercises.map((exercise, exerciseIndex) => (

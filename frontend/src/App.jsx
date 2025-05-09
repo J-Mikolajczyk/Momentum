@@ -11,7 +11,7 @@ function App() {
   const [userInfo, setUserInfo] = useState(null);
   const [autoLoginFail, setAutoLoginFail] = useState(false);
 
-  const handleShowEmailForm = () => {
+  const toggleShowEmailForm = () => {
     setShowEmailForm(!showEmailForm); 
   };
 
@@ -29,7 +29,7 @@ function App() {
           setLoggedIn(true);
           setUserInfo(user);
         } else {
-          handleShowEmailForm();
+          toggleShowEmailForm();
           console.log('Auto-login failed');
         }
       } catch (err) {
@@ -45,7 +45,7 @@ function App() {
   return (
     <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
       { loggedIn ? 
-        (<><Home setShowEmailForm={setShowEmailForm} setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/></>)
+        (<><Home setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/></>)
         :(<div className='flex flex-col bg-white h-full w-full rounded-lg items-center justify-center'> 
           { showEmailForm ?
           (<><EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo}/></>)
