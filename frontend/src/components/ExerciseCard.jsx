@@ -96,7 +96,7 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
                             onBlur={() => handleBlur(setIndex, 'reps')}
                         />
                     </div>
-                    <button onClick={() => handleSetDelete(exerciseIndex, setIndex)} className='font-anton'>X</button>
+                    <button onClick={() => handleSetDelete(exerciseIndex, setIndex)} className='font-anton-no-italic'>X</button>
                 </div>
             ))}
 

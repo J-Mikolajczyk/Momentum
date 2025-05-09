@@ -16,12 +16,12 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, 
 
   return (
     <div className="relative w-full">
-      <div className="relative bg-gray-300 h-8 w-full flex items-center px-2">
-        <p className="absolute left-1/2 transform -translate-x-1/2 font-anton text-lg cursor-pointer text-center" onClick={toggleDropdown}>{weekText}</p>
+      <div className="relative bg-gray-300 h-8 w-full flex items-center">
+        <p className="absolute left-1/2 transform -translate-x-1/2 font-anton text-lg cursor-pointer text-center w-3/4" onClick={toggleDropdown}>{weekText}</p>
         { isDropdownOpen ? (
           <div className="ml-auto flex gap-1 h-2/3">
-            <button onClick={removeWeek} className="flex items-center justify-center bg-gray-400 text-gray-500 font-anton aspect-square h-full text-xl border border-gray-500 pr-1">-</button>
-            <button onClick={addWeek} className="flex items-center justify-center bg-gray-400 text-gray-500 font-anton aspect-square h-full text-xl border border-gray-500 pr-1">+</button>
+            <button onClick={removeWeek} className="flex items-center justify-center bg-gray-400 text-gray-500 font-anton-no-italic aspect-square h-full text-xl border border-gray-500">-</button>
+            <button onClick={addWeek} className="flex items-center justify-center bg-gray-400 text-gray-500 font-anton-no-italic aspect-square h-full text-xl border border-gray-500 mr-1">+</button>
           </div>) : (<></>)
         }
         
