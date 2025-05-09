@@ -83,26 +83,6 @@ public class TrainingBlockService {
 
     }
 
-    public void addWeek(AddWeekRequest addWeekRequest) throws Exception{
-        ObjectId id = addWeekRequest.getUserId();
-        String blockName = addWeekRequest.getBlockName();
-
-        if(id == null || blockName == null) {
-            throw new RuntimeException("UserID and Block Name is required.");
-        }
-
-        Week week = new Week();
-
-        try {
-            TrainingBlock block = this.get(blockName, id);
-            block.addWeek(week);
-            blockRepository.save(block);
-        } catch (Exception e) {
-            throw e;
-        }
-
-    }
-
     public void update(UpdateBlockRequest updateBlockRequest) throws Exception{
         ObjectId id = updateBlockRequest.getId();
 
