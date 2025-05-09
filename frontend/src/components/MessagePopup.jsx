@@ -31,7 +31,7 @@ export default function MessagePopup({ message, setMessage, ignoreMethod }) {
         )}
         <div className="flex justify-around gap-4 mt-4 mx-6">
           { ignoreMethod !== null ? 
-            (<button onClick={() => { ignoreMethod(); handleClose(); }}  className="bg-blue-500 font-anton text-white px-4 py-2 rounded-md hover:bg-blue-600"> Ignore</button>) : (<></>)}
+            (<button onClick={() => { ignoreMethod(); handleClose(); }}  className="bg-blue-800 font-anton text-white px-4 py-2 rounded-md hover:bg-blue-600"> Ignore</button>) : (<></>)}
           <button onClick={() => { handleClose(); }} className="bg-gray-500 font-anton text-white px-4 py-2 rounded-md hover:bg-gray-600" >Cancel </button>
         </div>
       </div>

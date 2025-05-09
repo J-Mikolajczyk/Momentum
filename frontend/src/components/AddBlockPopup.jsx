@@ -83,7 +83,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
           <input className='mt-1.5 bg-white font-anton rounded-md text-blue-800 h-1/4 w-6/7 text-xl border-blue-800 border-2 pl-3' placeholder='Block Name' value={blockName} onChange={(e) => setBlockName(e.target.value)} required /> 
           <p className='text-blue-800 font-anton text-xl mt-1.5'>Select Training Days:</p>
             <div className='flex flex-row justify-around w-full'>
-              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thurday', 'Friday', 'Saturday'].map((day) => {
+              {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => {
                 const isSelected = selectedDays?.includes(day);
                 return (
                   <label
