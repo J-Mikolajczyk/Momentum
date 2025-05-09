@@ -18,6 +18,11 @@ export default function AddExercisePopup( {show, toggle, blockData, index, weekN
 
     const addExercise = async (e) => {
       e.preventDefault();
+
+      if (exerciseName === '' || exerciseName === null ) {
+        setMessage('Exercise name is required.')
+        return null;
+      }
       for (let i = weekNum; i < blockData.weeks.length; i++) {
         blockData.weeks[i].days[index].exercises.push(new Exercise(exerciseName));
       }
@@ -46,7 +51,7 @@ export default function AddExercisePopup( {show, toggle, blockData, index, weekN
 
     return (
         <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/4">
+          <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/5">
             <div className='flex justify-between'>
             <p className='inline text-blue-800 font-anton text-2xl'>Add an exercise</p>
             <button onClick={handleClose} className="font-anton inlinetext-gray-500 hover:text-gray-700 text-2xl ">X</button>
