@@ -47,24 +47,6 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/exists")
-    public ResponseEntity<?> userExists(@RequestBody UserRequest userRequest){
-        String email = userRequest.getEmail().toLowerCase();
-        System.out.println("Existence requested for user: " + email);
-        try {
-            userService.exists(userRequest);
-            System.out.println(email + " found, returning true");
-            return ResponseEntity.ok("{\"exists\": true}");
-        } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(email + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
-            }
-            System.out.println(email + " Existence check unsuccessful, returning bad request");
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest){
         String email = registerRequest.getEmail().toLowerCase();

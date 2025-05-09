@@ -13,10 +13,12 @@ export default function AddExercisePopup( {show, toggle, blockData, index, weekN
 
     const addExercise = async (e) => {
       e.preventDefault();
-      blockData.weeks[weekNum].days[index].exercises.push(new Exercise(exerciseName));
+      for (let i = weekNum; i < blockData.weeks.length; i++) {
+        blockData.weeks[i].days[index].exercises.push(new Exercise(exerciseName));
+      }
       update();
       handleClose();
-    }
+    };
 
 
     const handleClose = () => {

@@ -20,6 +20,7 @@ export default function Block({ blockName, userInfo }) {
   const [dayIndex, setDayIndex] = useState(0);
   const [weekText, setWeekText] = useState('Loading...');
   const [message, setMessage] = useState(false);
+  const [ignoreMethod, setIgnoreMethod] = useState(null);
 
   const openDay = (index) => {
     setDayIndex(index);
@@ -34,9 +35,12 @@ export default function Block({ blockName, userInfo }) {
   const addWeek = async () => {
     if (blockData.weeks.length >= 6) {
       setMessage("Mesocycles longer than 6 weeks are not recommended. Please consider a deload.");
+      setIgnoreMethod(() => proceedToAddWeek);
       return;
     }
+    setIgnoreMethod(null);
     proceedToAddWeek();
+    
   };
 
   const proceedToAddWeek = () => {
@@ -48,25 +52,51 @@ export default function Block({ blockName, userInfo }) {
     update();
   };
 
+  const removeWeek = async () => {
+    if (blockData.weeks.length === 1) {
+      setMessage("Cannot remove only week in training block.");
+      setIgnoreMethod(() => null);
+      return;
+    } else if (blockData.weeks.length <= 4) {
+      setMessage("Mesocycles less than 4 weeks are not recommended.");
+      setIgnoreMethod(() => proceedToRemoveWeek);
+      return;
+    }
+    proceedToRemoveWeek();
+    setIgnoreMethod(null);
+  };
+  
+  const proceedToRemoveWeek = () => {
+    if (blockData.weeks.length > 1) {
+      blockData.weeks.pop();
+  
+      const newWeekNum = Math.min(weekNum, blockData.weeks.length);
+      setWeekNum(newWeekNum);
+  
+      update(newWeekNum, dayIndex + 1);
+    }
+  };
+  
 
 
-  const update = async () => {
+  const update = async (newWeekNum = weekNum, newDayNum = dayIndex + 1) => {
     const id = blockData.id;
     const name = blockName;
     const weeks = blockData.weeks;
     try {
-       const updateResponse = await postRequest(ip + '/secure/block/update', { name, id, weeks });
-       if (updateResponse.ok) {
-         refresh();
-       } else {
-         console.log('Issue updating block');
-       }
-     } catch (err) {
-       console.log(err);
-     }
-  }
+      const updateResponse = await postRequest(ip + '/secure/block/update', { name, id, weeks });
+      if (updateResponse.ok) {
+        refresh(newWeekNum, newDayNum);
+      } else {
+        console.log('Issue updating block');
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
 
-  const refresh = async () => {
+  const refresh = async (newWeekNum = weekNum, newDayNum = dayIndex + 1) => {
     try {
       const refreshResponse = await getRequest(ip + '/secure/block/get', { blockName, userId });
       if (refreshResponse.ok) {
@@ -76,7 +106,7 @@ export default function Block({ blockName, userInfo }) {
           return;
         }
         setBlockData(json);
-        setWeekAndDay(weekNum, dayIndex+1);
+        setWeekAndDay(newWeekNum, newDayNum);
       } else {
         console.log('Non-OK response');
       }
@@ -84,6 +114,7 @@ export default function Block({ blockName, userInfo }) {
       console.log(err);
     }
   };
+  
 
   useEffect(() => {
     refresh(); 
@@ -91,12 +122,11 @@ export default function Block({ blockName, userInfo }) {
 
   return (
     <>
-      <MessagePopup message={message} setMessage={setMessage} proceedToAddWeek={proceedToAddWeek}/>
+      <MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod}/>
       <div className="flex flex-row w-full justify-between items-center mb-3">
         <p className="text-blue-800 font-anton inline-block text-3xl">{blockName}</p>
-        <button onClick={addWeek} className="inline-block select-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs">Add Week</button>
       </div>
-      <WeekMenu blockData={blockData} setWeekAndDay={setWeekAndDay} weekText={weekText}/>
+      <WeekMenu blockData={blockData} setWeekAndDay={setWeekAndDay} weekText={weekText} addWeek={addWeek} removeWeek={removeWeek}/>
       <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8">
           <div className="flex flex-col items-center p-2 rd w-full">
             <Day blockData={blockData} dayNum={dayIndex} weekNum={weekNum - 1} update={update} setDayIndex={setDayIndex} />
