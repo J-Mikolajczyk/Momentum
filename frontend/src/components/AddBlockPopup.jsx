@@ -24,7 +24,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
     const handleClose = () => {
       setBlockName('');
       setMessage('');
-      setSelectedDays(null);
+      setSelectedDays([]);
       toggleAddBlockMenu();
     }
 
@@ -46,10 +46,13 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
         setMessage('Block name is required.')
         return null;
       }
+
       
+      const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      const sortedDays = [...selectedDays].sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
 
       try {
-              const response = await postRequest(ip+'/secure/block/create', { blockName, userId, selectedDays });
+              const response = await postRequest(ip+'/secure/block/create', { blockName, userId, sortedDays });
               console.log(response);
               if (response.status === 201) {
                 fetchData();

@@ -8,18 +8,18 @@ public class CreateTrainingBlockRequest {
 
     private final String blockName;
     private final ObjectId userId;
-    private final List<String> selectedDays;
+    private final List<String> sortedDays;
 
     public CreateTrainingBlockRequest() {
         this.blockName = null;
         this.userId = null;
-        this.selectedDays = null;
+        this.sortedDays = null;
     }
 
-    public CreateTrainingBlockRequest(String blockName, ObjectId userId, List<String> selectedDays) {
+    public CreateTrainingBlockRequest(String blockName, ObjectId userId, List<String> sortedDays) {
         this.blockName = blockName;
         this.userId = userId;
-        this.selectedDays = selectedDays;
+        this.sortedDays = sortedDays;
     }
 
     public String getBlockName() {
@@ -30,7 +30,7 @@ public class CreateTrainingBlockRequest {
         return userId;
     }
 
-    public List<String> getSelectedDays() {
-        return selectedDays;
+    public List<String> getSortedDays() {
+        return sortedDays;
     }
 }
