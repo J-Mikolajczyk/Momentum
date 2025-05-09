@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Day from '../models/Day';
+import setThemeColor from '../hooks/useThemeColor'
 import { postRequest, getRequest } from '../utils/api';
 
 export default function AddDayPopup( {show, toggle, blockData, blockName, weekNum, update} ) {
@@ -7,6 +8,10 @@ export default function AddDayPopup( {show, toggle, blockData, blockName, weekNu
     if (!show) {
         return <></>;
     }
+
+    useEffect(() => {
+      setThemeColor('#0D1E5C'); 
+    }, []);
 
     const addDay = async (e) => {
       e.preventDefault();
@@ -21,6 +26,7 @@ export default function AddDayPopup( {show, toggle, blockData, blockName, weekNu
     const handleClose = () => {
         toggle();
         setMessage('');
+        setThemeColor('#193cb8')
     }
 
     const handleOuterClick = () => {

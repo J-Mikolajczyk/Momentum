@@ -1,12 +1,18 @@
 import React from 'react';
+import setThemeColor from '../hooks/useThemeColor'
 
 export default function MessagePopup({ message, setMessage, ignoreMethod }) {
   if (!message) {
     return null;
   }
 
+  useEffect(() => {
+          setThemeColor('#0D1E5C'); 
+  }, []);
+
   const handleClose = () => {
     setMessage(null);
+    setThemeColor('#193cb8')
   };
 
   const handleOuterClick = () => {

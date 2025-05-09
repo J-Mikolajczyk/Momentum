@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Day from '../models/Day';
 import { postRequest, getRequest } from '../utils/api';
+import setThemeColor from '../hooks/useThemeColor'
 
 export default function RenameBlockPopup( {show, toggle, blockData, userInfo, update, index} ) {
 
     if (!show) {
         return <></>;
     }
+
+    useEffect(() => {
+        setThemeColor('#0D1E5C'); 
+    }, []);
 
     const renameBlock = async (e) => {
       e.preventDefault();
@@ -17,6 +22,7 @@ export default function RenameBlockPopup( {show, toggle, blockData, userInfo, up
 
     const handleClose = () => {
         toggle();
+        setThemeColor('#193cb8')
     }
 
     const handleOuterClick = () => {

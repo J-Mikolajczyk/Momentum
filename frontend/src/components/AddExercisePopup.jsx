@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Exercise from '../models/Exercise';
 import { postRequest, getRequest } from '../utils/api';
+import setThemeColor from '../hooks/useThemeColor'
 
 export default function AddExercisePopup( {show, toggle, blockData, index, weekNum, update} ) {
 
     if (!show) {
         return <></>;
     }
+
+    useEffect(() => {
+        setThemeColor('#0D1E5C'); 
+      }, []);
 
     const [exerciseName, setExerciseName] = useState('');
     const [message, setMessage] = useState('');
@@ -24,6 +29,7 @@ export default function AddExercisePopup( {show, toggle, blockData, index, weekN
     const handleClose = () => {
         toggle();
         setMessage('');
+        setThemeColor('#193cb8')
     }
 
     const handleOuterClick = () => {
