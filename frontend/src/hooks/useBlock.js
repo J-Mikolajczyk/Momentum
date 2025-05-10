@@ -65,7 +65,7 @@ export default function useBlock(blockName, userInfo) {
       refreshBlockInternal(1, 1); 
     } else {
       setBlockData(null);
-      setWeekText('Loading user or block info...');
+      setWeekText('Loading...');
       setCurrentWeekNum(1);
       setCurrentDayIndex(0);
     }
