@@ -11,7 +11,7 @@ export default function BlockDashboard({blockName, setBlockName, userInfo, toggl
 
   return(<>
     { blockName === null ? 
-      (<div className="p-2"><div className='flex w-full items-center mb-3'>
+      (<div className="p-4"><div className='flex w-full items-center mb-3'>
             <p className='text-blue-800 font-anton inline-block text-3xl'>Welcome, {name}</p>
             <button onClick={toggleAddBlockMenu} className='inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs' >Add Block</button>
           </div>

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Exercise from '../models/Exercise';
-import { postRequest, getRequest } from '../utils/api';
 import setThemeColor from '../hooks/useThemeColor'
 
-export default function AddExercisePopup( {show, toggle, blockData, index, weekNum, update} ) {
+export default function AddExercisePopup( {
+  show, 
+  toggle, 
+  currentDayIndex, 
+  currentWeekNumIndex, 
+  addExerciseToDay 
+}) {
 
     if (!show) {
         return <></>;
@@ -23,10 +27,7 @@ export default function AddExercisePopup( {show, toggle, blockData, index, weekN
         setMessage('Exercise name is required.')
         return null;
       }
-      for (let i = weekNum; i < blockData.weeks.length; i++) {
-        blockData.weeks[i].days[index].exercises.push(new Exercise(exerciseName));
-      }
-      update();
+      addExerciseToDay(exerciseName, currentWeekNumIndex, currentDayIndex);
       handleClose();
     };
 
@@ -44,10 +45,6 @@ export default function AddExercisePopup( {show, toggle, blockData, index, weekN
     const handleInnerClick = (e) => {
       e.stopPropagation();
     };
-
-    if (!open) {
-        return <></>;
-    }
 
     return (
         <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

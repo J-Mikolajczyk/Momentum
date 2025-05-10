@@ -1,7 +1,13 @@
 import { useState } from 'react';
-import Set from '../models/Set';
 
-export default function ExerciseCard({ blockData, exercise, exerciseIndex, update, weekNum, dayNum }) {
+export default function ExerciseCard({ 
+    exercise, 
+    currentWeekNumIndex, 
+    currentDayIndex,     
+    addSetToExercise,
+    deleteSetFromExercise,
+    updateSetData 
+}) {
     const [inputValues, setInputValues] = useState(() => {
         return exercise?.sets?.map(set => ({
             weight: set.weight || '',
@@ -17,55 +23,21 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
 
     const handleBlur = (setIndex, field) => {
         const value = inputValues[setIndex][field];
-        const updatedBlockData = { ...blockData };
-        updatedBlockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].sets[setIndex][field] = value;
-        update();
+        updateSetData(exercise.name, setIndex, field, value, currentWeekNumIndex, currentDayIndex);
     };
 
-    const handleAddSet = (exerciseIndex) => {
-        const targetName = blockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].name;
-      
-        for (let i = weekNum; i < blockData.weeks.length; i++) {
-          const day = blockData.weeks[i].days[dayNum];
-          const matchingExercise = day.exercises.find(ex => ex.name === targetName);
-      
-          if (matchingExercise) {
-            matchingExercise.sets.push(new Set());
-          }
-        }
-      
+    const handleAddSet = () => {
+        addSetToExercise(exercise.name, currentWeekNumIndex, currentDayIndex);
         setInputValues(prev => [...prev, { weight: '', reps: '' }]);
-        update();
       };
       
       
 
-      const handleSetDelete = (exerciseIndex, setIndex) => {
-        const updatedBlockData = { ...blockData };
-        const targetName = updatedBlockData.weeks[weekNum].days[dayNum].exercises[exerciseIndex].name;
-      
-        for (let i = weekNum; i < updatedBlockData.weeks.length; i++) {
-          const day = updatedBlockData.weeks[i].days[dayNum];
-          const matchingExerciseIndex = day.exercises.findIndex(ex => ex.name === targetName);
-      
-          if (matchingExerciseIndex !== -1) {
-            const exercise = day.exercises[matchingExerciseIndex];
-      
-            if (exercise.sets.length > setIndex) {
-              exercise.sets.splice(setIndex, 1);
-      
-              if (exercise.sets.length === 0) {
-                day.exercises.splice(matchingExerciseIndex, 1);
-              }
-            }
-          }
-        }
-      
+      const handleSetDelete = (setIndexToDelete) => {
+        deleteSetFromExercise(exercise.name, setIndexToDelete, currentWeekNumIndex, currentDayIndex);
         const newInputValues = [...inputValues];
-        newInputValues.splice(setIndex, 1);
+        newInputValues.splice(setIndexToDelete, 1);
         setInputValues(newInputValues);
-      
-        update();
       };
       
       
@@ -74,7 +46,7 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
         <div className="p-2 pr-3 border border-blue-800 rounded-md shadow-md w-full">
             <h2 className="text-blue-800 font-anton text-2xl mb-2">{exercise?.name}</h2>
 
-            {exercise.sets?.map((set, setIndex) => (
+            {exercise?.sets?.map((set, setIndex) => (
                 <div key={setIndex} className="flex flex-row mb-2 w-full">
                     <div className='w-1/2 flex items-center space-between'>
                         <label className="text-2xl font-anton">Weight:</label>
@@ -96,12 +68,12 @@ export default function ExerciseCard({ blockData, exercise, exerciseIndex, updat
                             onBlur={() => handleBlur(setIndex, 'reps')}
                         />
                     </div>
-                    <button onClick={() => handleSetDelete(exerciseIndex, setIndex)} className='font-anton-no-italic'>X</button>
-                </div>
+                    <button onClick={() => handleSetDelete(setIndex)} className='font-anton-no-italic'>X</button>
+                 </div>
             ))}
 
             <button
-                onClick={() => handleAddSet(exerciseIndex)}
+                onClick={handleAddSet}
                 className="bg-blue-800 text-white px-4 py-1 rounded shadow-md mt-2 font-anton"
             >
                 Add Set

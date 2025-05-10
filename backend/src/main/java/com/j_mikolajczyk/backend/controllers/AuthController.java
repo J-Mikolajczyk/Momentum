@@ -158,7 +158,6 @@ public class AuthController {
 
     private Cookie createCookie(String name, String value, int maxAge, String path) {
         Cookie cookie = new Cookie(name, value);
-        cookie.setDomain("training-momentum.com");
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath(path);

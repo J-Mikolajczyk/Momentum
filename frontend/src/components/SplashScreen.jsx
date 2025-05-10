@@ -9,7 +9,7 @@ function SplashScreen({ onClick }) {
   }, []);
 
   return (
-    <div className='flex flex-col bg-white h-1/3 w-full rounded-lg items-center justify-around'>
+    <div className='flex flex-col bg-white h-1/8 w-full rounded-lg items-center justify-around'>
       <h1 className="text-blue-800 font-anton text-7xl text-shadow-lg">MOMENTUM</h1>
     </div>
   );
