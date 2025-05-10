@@ -10,12 +10,16 @@ public class BlockDTO {
     private String name;
     private List<Week> weeks;
     private String createdByUserID;
+    private int mostRecentDayOpen;
+    private int mostRecentWeekOpen;
 
     public BlockDTO(TrainingBlock trainingBlock) {
         this.id = trainingBlock.getId().toString();
         this.name = trainingBlock.getName();    
         this.weeks = trainingBlock.getWeeks();
         this.createdByUserID = trainingBlock.getCreatedByUserID().toString();
+        this.mostRecentDayOpen = trainingBlock.getMostRecentDayOpen();
+        this.mostRecentWeekOpen = trainingBlock.getMostRecentWeekOpen();
     }
 
     public String getId() {
@@ -32,6 +36,14 @@ public class BlockDTO {
 
     public String getCreatedByUserID() {
         return this.createdByUserID;
+    } 
+
+    public int getMostRecentDayOpen() {
+        return this.mostRecentDayOpen;
+    }
+
+    public int getMostRecentWeekOpen() {
+        return this.mostRecentWeekOpen;
     }
     
 }

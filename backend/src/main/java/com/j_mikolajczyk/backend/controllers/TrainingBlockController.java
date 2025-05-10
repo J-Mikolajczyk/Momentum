@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.dto.BlockDTO;
+import com.j_mikolajczyk.backend.models.Day;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
@@ -83,6 +84,18 @@ public class TrainingBlockController {
                 System.out.println(name + " not found, returning false");
                 return ResponseEntity.ok("{\"exists\": false}");
             }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/get-day")
+    public ResponseEntity<?> getDay(@RequestParam("blockId") String stringId, @RequestParam("weekIndex") int weekIndex, @RequestParam("dayIndex") int dayIndex) {
+        System.out.println("Week " + (weekIndex+1) + " Day " + (dayIndex+1) + " in Block " + stringId + " requested");
+        
+        try {
+            Day day = blockService.getDay(stringId, weekIndex, dayIndex);
+            return ResponseEntity.ok(day);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

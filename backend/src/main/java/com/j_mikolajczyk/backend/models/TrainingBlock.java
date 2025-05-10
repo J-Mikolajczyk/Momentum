@@ -15,6 +15,8 @@ public class TrainingBlock {
     private List<Week> weeks;
     private ObjectId createdByUserID;
     private List<String> selectedDays;
+    private int mostRecentDayOpen;
+    private int mostRecentWeekOpen;
 
 
     public TrainingBlock() {
@@ -25,6 +27,8 @@ public class TrainingBlock {
         this.weeks = weeks;
         this.createdByUserID = createdByUserID;
         this.selectedDays = selectedDays;
+        this.mostRecentDayOpen = 0;
+        this.mostRecentWeekOpen = 0;
     }
 
     public TrainingBlock(String name, ObjectId createdByUserID, List<String> selectedDays) {
@@ -33,6 +37,8 @@ public class TrainingBlock {
         this.weeks.add(new Week(selectedDays));
         this.createdByUserID = createdByUserID;
         this.selectedDays = selectedDays;
+        this.mostRecentDayOpen = 0;
+        this.mostRecentWeekOpen = 0;
     }
 
     public ObjectId getId() {
@@ -69,6 +75,22 @@ public class TrainingBlock {
 
     public void setSelectedDays(List<String> selectedDays) {
         this.selectedDays = selectedDays;
+    }
+
+    public int getMostRecentDayOpen() {
+        return this.mostRecentDayOpen;
+    }
+
+    public void setMostRecentDayOpen(int mostRecentDayOpen) {
+        this.mostRecentDayOpen = mostRecentDayOpen;
+    }
+
+    public int getMostRecentWeekOpen() {
+        return this.mostRecentWeekOpen;
+    }
+
+    public void setMostRecentWeekOpen(int mostRecentWeekOpen) {
+        this.mostRecentWeekOpen = mostRecentWeekOpen;
     }
     
 }

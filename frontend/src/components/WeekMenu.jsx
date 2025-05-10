@@ -45,7 +45,7 @@ export default function WeekMenu({ blockData, setDisplayWeekAndDay, weekText, ad
                     key={`${weekIndex}-${dayIndex}`}
                     onClick={() => {
                       if (dayExists) {
-                        setDisplayWeekAndDay(weekIndex + 1, dayIndex + 1);
+                        setDisplayWeekAndDay(weekIndex+1, dayIndex+1);
                         setDropdownOpen(false);
                       }
                     }}

@@ -15,6 +15,7 @@ export default function useBlock(blockName, userInfo) {
   const [weekText, setWeekText] = useState('Loading...');
   const [message, setMessage] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
+  const [currentDayData, setCurrentDayData] = useState(null);
 
   const refreshBlockInternal = useCallback(async (newWeekNumToSet, newDayNumToSet) => {
     if (!userId || !blockName) {
@@ -68,7 +69,6 @@ export default function useBlock(blockName, userInfo) {
       setCurrentWeekNum(1);
       setCurrentDayIndex(0);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blockName, userId, refreshBlockInternal]);
 
   const updateBlock = useCallback(async (updatedWeeks, newWeekNumAfterUpdate = currentWeekNum, newDayNumAfterUpdate = currentDayIndex + 1) => {
@@ -91,19 +91,33 @@ export default function useBlock(blockName, userInfo) {
     }
   }, [blockData, refreshBlockInternal, currentWeekNum, currentDayIndex]);
 
-  const setDisplayWeekAndDay = useCallback((weekNum, dayNum) => {
-    refreshBlockInternal(weekNum, dayNum);
-  }, [refreshBlockInternal]);
+  const setDisplayWeekAndDay = useCallback(async (weekNum, dayNum) => {
+    
+    try {
+        const response = await getRequest(`${ip}/secure/block/get-day`, { blockId: blockData.id, weekIndex: weekNum - 1, dayIndex: dayNum - 1 });
+        if (response.ok) {
+            const dayData = await response.json()
+            setCurrentWeekNum(weekNum);
+            setCurrentDayIndex(dayNum - 1);
+            setCurrentDayData(dayData); 
+            setWeekText(`Week ${weekNum} Day ${dayNum} ${dayData.name}`);
+          } else {
+            console.error('Failed to fetch day data');
+        }
+    } catch (err) {
+        console.error(err);
+    }
+  } , [blockData?.id]);
 
-  const proceedToAddWeek = useCallback(async () => {
+    const proceedToAddWeek = useCallback(async () => {
     if (!blockData) return;
-    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks)); // Deep copy
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
     if (newWeeks.length === 0 || newWeeks[newWeeks.length - 1].days.length === 0) {
       newWeeks.push(new Week());
     } else {
       newWeeks.push(new Week(newWeeks[newWeeks.length - 1].days));
     }
-    await updateBlock(newWeeks, newWeeks.length, 1);
+    await updateBlock(newWeeks, currentWeekNum, currentDayIndex+1);
   }, [blockData, updateBlock]);
 
   const addWeek = useCallback(async () => {
@@ -119,10 +133,11 @@ export default function useBlock(blockName, userInfo) {
 
   const proceedToRemoveWeek = useCallback(async () => {
     if (!blockData || blockData.weeks.length <= 1) return;
-    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks)); // Deep copy
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
     newWeeks.pop();
     const newSelectedWeekNum = Math.min(currentWeekNum, newWeeks.length);
     await updateBlock(newWeeks, newSelectedWeekNum, currentDayIndex + 1);
+    setDisplayWeekAndDay(newSelectedWeekNum, currentDayIndex+1);
   }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
 
   const removeWeek = useCallback(async () => {

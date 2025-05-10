@@ -15,6 +15,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if(!notFound){
       try {
         const response = await postRequest(ip+'/auth/login', { email, password });
 
@@ -40,7 +41,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         }
       } catch (err) {
         setMessage('Server error. Try again later.');
-      }
+      }}
       try {
         const response = await postRequest(ip+'/auth/register', { email, password, name });
         if (response.ok) {
