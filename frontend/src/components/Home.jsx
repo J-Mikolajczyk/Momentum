@@ -7,7 +7,7 @@ import setThemeColor from '../hooks/useThemeColor'
 import {getRequest, postRequest} from '../utils/api'
 
 
-function Home({ setLoggedIn, userInfo, setUserInfo, toggleShowEmailForm }) {
+function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -21,7 +21,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo, toggleShowEmailForm }) {
   const logOut = () => {
     logOutUser();
     setLoggedIn(false);
-    toggleShowEmailForm();
+    setShowEmailForm(true);
     setUserInfo(null);
     setThemeColor('#ffffff'); 
   }
