@@ -10,14 +10,18 @@ public class UpdateBlockRequest {
     private ObjectId id;
     private String name;
     private List<Week> weeks;
+    private int weekIndex;
+    private int dayIndex;
 
     public UpdateBlockRequest() {
     }
 
-    public UpdateBlockRequest(String id, String name, List<Week> weeks) {
+    public UpdateBlockRequest(String id, String name, List<Week> weeks, int weekIndex, int dayIndex) {
         this.id = new ObjectId(id);
         this.name = name;
         this.weeks = weeks;
+        this.weekIndex = weekIndex;
+        this.dayIndex = dayIndex;
     }
 
     public ObjectId getId() {
@@ -31,6 +35,14 @@ public class UpdateBlockRequest {
 
     public List<Week> getWeeks() {
         return this.weeks;
+    }
+
+    public int getWeekIndex() {
+        return this.weekIndex;
+    }
+
+    public int getDayIndex() {
+        return this.dayIndex;
     }
     
 }

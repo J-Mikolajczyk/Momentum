@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function WeekMenu({ blockData, setDisplayWeekAndDay, weekText, addWeek, removeWeek }) {
+export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, removeWeek }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -45,7 +45,8 @@ export default function WeekMenu({ blockData, setDisplayWeekAndDay, weekText, ad
                     key={`${weekIndex}-${dayIndex}`}
                     onClick={() => {
                       if (dayExists) {
-                        setDisplayWeekAndDay(weekIndex+1, dayIndex+1);
+                        console.log('WeekMenu ' + weekIndex + ' ' + dayIndex)
+                        setWeekAndDay(weekIndex, dayIndex);
                         setDropdownOpen(false);
                       }
                     }}

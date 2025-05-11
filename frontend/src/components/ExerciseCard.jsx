@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export default function ExerciseCard({ 
     exercise, 
-    currentWeekNumIndex, 
+    currentWeekIndex, 
     currentDayIndex,     
     addSetToExercise,
     deleteSetFromExercise,
@@ -23,18 +23,18 @@ export default function ExerciseCard({
 
     const handleBlur = (setIndex, field) => {
         const value = inputValues[setIndex][field];
-        updateSetData(exercise.name, setIndex, field, value, currentWeekNumIndex, currentDayIndex);
+        updateSetData(exercise.name, setIndex, field, value, currentWeekIndex, currentDayIndex);
     };
 
     const handleAddSet = () => {
-        addSetToExercise(exercise.name, currentWeekNumIndex, currentDayIndex);
+        addSetToExercise(exercise.name, currentWeekIndex, currentDayIndex);
         setInputValues(prev => [...prev, { weight: '', reps: '' }]);
       };
       
       
 
       const handleSetDelete = (setIndexToDelete) => {
-        deleteSetFromExercise(exercise.name, setIndexToDelete, currentWeekNumIndex, currentDayIndex);
+        deleteSetFromExercise(exercise.name, setIndexToDelete, currentWeekIndex, currentDayIndex);
         const newInputValues = [...inputValues];
         newInputValues.splice(setIndexToDelete, 1);
         setInputValues(newInputValues);

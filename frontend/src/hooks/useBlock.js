@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { postRequest, getRequest } from '../utils/api';
 import Week from '../models/Week';
 import Exercise from '../models/Exercise';
@@ -10,253 +10,191 @@ export default function useBlock(blockName, userInfo) {
   const userId = userInfo?.id ?? null;
 
   const [blockData, setBlockData] = useState(null);
-  const [currentWeekNum, setCurrentWeekNum] = useState(1);
+  const [currentWeekNum, setCurrentWeekNum] = useState(0);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [weekText, setWeekText] = useState('Loading...');
   const [message, setMessage] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
-  const [currentDayData, setCurrentDayData] = useState(null);
 
-  const refreshBlockInternal = useCallback(async (newWeekNumToSet, newDayNumToSet) => {
+  const computeWeekText = (data, weekNum, dayIndex) => {
+    const day = data?.weeks?.[weekNum]?.days?.[dayIndex];
+    const dayName = day?.name ?? '';
+    return `Week ${weekNum + 1} Day ${dayIndex + 1} ${dayName}`;
+  };
+
+  const fetchBlock = useCallback(async () => {
     if (!userId || !blockName) {
       setBlockData(null);
-      setCurrentWeekNum(1);
-      setCurrentDayIndex(0);
-      setWeekText(userId && blockName ? 'Loading...' : 'Please select a block or user.');
+      setWeekText('Please select a block or user.');
       return;
     }
+
     try {
-      const refreshResponse = await getRequest(`${ip}/secure/block/get`, { blockName, userId });
-      if (refreshResponse.ok) {
-        const json = await refreshResponse.json();
-        if (json.exists === false) {
-          setBlockData(null);
-          setWeekText('Block not found.');
-          setCurrentWeekNum(1);
-          setCurrentDayIndex(0);
-          return;
-        }
-        
-        setBlockData(json);
+      const response = await getRequest(`${ip}/secure/block/get`, { blockName, userId });
+      if (!response.ok) throw new Error('Failed to fetch block');
 
-        const targetWeekNum = Math.min(newWeekNumToSet, json.weeks?.length || 1);
-        const weekForDayCount = json.weeks?.[targetWeekNum - 1];
-        const maxDayIndexForTargetWeek = Math.max(0, (weekForDayCount?.days?.length || 1) - 1);
-        const targetDayIndex = Math.min(newDayNumToSet - 1, maxDayIndexForTargetWeek);
-        
-        const day = json.weeks?.[targetWeekNum - 1]?.days?.[targetDayIndex];
-        const dayName = day?.name || `Day ${targetDayIndex + 1}`;
-
-        setCurrentWeekNum(targetWeekNum);
-        setCurrentDayIndex(targetDayIndex);
-        setWeekText(`Week ${targetWeekNum} Day ${targetDayIndex + 1} ${dayName}`);
-      } else {
-        console.log('Non-OK response during refresh');
-        setWeekText('Error loading block.');
+      const json = await response.json();
+      if (json.exists === false) {
+        setBlockData(null);
+        setWeekText('Block not found.');
+        return;
       }
+
+      setBlockData(json);
+      const { mostRecentWeekOpen, mostRecentDayOpen } = json;
+      setCurrentWeekNum(mostRecentWeekOpen);
+      setCurrentDayIndex(mostRecentDayOpen);
+      setWeekText(computeWeekText(json, mostRecentWeekOpen, mostRecentDayOpen));
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setWeekText('Error loading block.');
     }
   }, [blockName, userId]);
 
   useEffect(() => {
-    if (blockName && userId) {
-      refreshBlockInternal(1, 1); 
-    } else {
-      setBlockData(null);
-      setWeekText('Loading...');
-      setCurrentWeekNum(1);
-      setCurrentDayIndex(0);
-    }
-  }, [blockName, userId, refreshBlockInternal]);
+    fetchBlock();
+  }, [fetchBlock]);
 
-  const updateBlock = useCallback(async (updatedWeeks, newWeekNumAfterUpdate = currentWeekNum, newDayNumAfterUpdate = currentDayIndex + 1) => {
-    if (!blockData?.id || !blockData?.name) {
-      console.log("Block data, ID, or name is missing, cannot update.");
-      return;
-    }
-    const { id, name } = blockData;
+  const updateBlock = useCallback(async (updatedWeeks, weekIndex, dayIndex, options = {}) => {
+    if (!blockData?.id || !blockData?.name) return;
+
     try {
-      const updateResponse = await postRequest(`${ip}/secure/block/update`, { name, id, weeks: updatedWeeks });
-      if (updateResponse.ok) {
-        await refreshBlockInternal(newWeekNumAfterUpdate, newDayNumAfterUpdate);
-      } else {
-        console.log('Issue updating block');
-        setMessage('Failed to update block. Please try again.');
+      const response = await postRequest(`${ip}/secure/block/update`, {
+        id: blockData.id,
+        name: blockData.name,
+        weeks: updatedWeeks,
+        weekIndex,
+        dayIndex
+      });
+
+      if (!response.ok) throw new Error('Failed to update block');
+
+      if (!options.skipRefresh) {
+        const updated = {
+          ...blockData,
+          weeks: updatedWeeks,
+          mostRecentWeekOpen: weekIndex,
+          mostRecentDayOpen: dayIndex
+        };
+        setBlockData(updated);
+        setCurrentWeekNum(weekIndex);
+        setCurrentDayIndex(dayIndex);
+        setWeekText(computeWeekText(updated, weekIndex, dayIndex));
       }
     } catch (err) {
-      console.log(err);
-      setMessage('An error occurred while updating. Please try again.');
+      console.error(err);
+      setMessage('Error updating block.');
     }
-  }, [blockData, refreshBlockInternal, currentWeekNum, currentDayIndex]);
+  }, [blockData]);
 
-  const setDisplayWeekAndDay = useCallback(async (weekNum, dayNum) => {
-    
-    try {
-        const response = await getRequest(`${ip}/secure/block/get-day`, { blockId: blockData.id, weekIndex: weekNum - 1, dayIndex: dayNum - 1 });
-        if (response.ok) {
-            const dayData = await response.json()
-            setCurrentWeekNum(weekNum);
-            setCurrentDayIndex(dayNum - 1);
-            setCurrentDayData(dayData); 
-            setWeekText(`Week ${weekNum} Day ${dayNum} ${dayData.name}`);
-          } else {
-            console.error('Failed to fetch day data');
-        }
-    } catch (err) {
-        console.error(err);
-    }
-  } , [blockData?.id]);
+  const setWeekAndDay = useCallback(async (weekNum, dayNum) => {
 
-    const proceedToAddWeek = useCallback(async () => {
-    if (!blockData) return;
-    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    if (newWeeks.length === 0 || newWeeks[newWeeks.length - 1].days.length === 0) {
-      newWeeks.push(new Week());
-    } else {
-      newWeeks.push(new Week(newWeeks[newWeeks.length - 1].days));
-    }
-    await updateBlock(newWeeks, currentWeekNum, currentDayIndex+1);
+    setCurrentWeekNum(weekNum);
+    setCurrentDayIndex(dayNum);
+    setWeekText(computeWeekText(blockData, weekNum, dayNum));
+    await updateBlock(blockData.weeks, weekNum, dayNum, { skipRefresh: true });
   }, [blockData, updateBlock]);
 
   const addWeek = useCallback(async () => {
     if (!blockData) return;
+
     if (blockData.weeks.length >= 6) {
-      setMessage("Mesocycles longer than 6 weeks are not recommended. Please consider a deload.");
-      setIgnoreMethod(() => () => proceedToAddWeek());
+      setMessage('Mesocycles longer than 6 weeks are not recommended.');
+      setIgnoreMethod(() => () => proceedAddWeek());
       return;
     }
-    setIgnoreMethod(null);
-    await proceedToAddWeek();
-  }, [blockData, proceedToAddWeek]);
+    proceedAddWeek();
+  }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
 
-  const proceedToRemoveWeek = useCallback(async () => {
-    if (!blockData || blockData.weeks.length <= 1) return;
-    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    newWeeks.pop();
-    const newSelectedWeekNum = Math.min(currentWeekNum, newWeeks.length);
-    await updateBlock(newWeeks, newSelectedWeekNum, currentDayIndex + 1);
-    setDisplayWeekAndDay(newSelectedWeekNum, currentDayIndex+1);
+  const proceedAddWeek = useCallback(async () => {
+    const newWeeks = [...blockData.weeks];
+    const lastWeek = newWeeks[newWeeks.length - 1];
+    newWeeks.push(new Week(lastWeek?.days || []));
+    await updateBlock(newWeeks, currentWeekNum, currentDayIndex);
   }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
 
   const removeWeek = useCallback(async () => {
-    if (!blockData) return;
-    if (blockData.weeks.length === 1) {
-      setMessage("Cannot remove only week in training block.");
-      setIgnoreMethod(() => null);
-      return;
-    } else if (blockData.weeks.length <= 4) {
-      setMessage("Mesocycles less than 4 weeks are not recommended.");
-      setIgnoreMethod(() => () => proceedToRemoveWeek());
+    if (!blockData || blockData.weeks.length === 1) {
+      setMessage('Cannot remove only week.');
       return;
     }
-    setIgnoreMethod(null);
-    await proceedToRemoveWeek();
-  }, [blockData, proceedToRemoveWeek]);
 
-  const addExerciseToDay = useCallback(async (exerciseName, targetWeekNumIndex, targetDayIndex) => {
-    if (!blockData || !exerciseName) return;
-    const newBlockDataWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    for (let i = targetWeekNumIndex; i < newBlockDataWeeks.length; i++) {
-      if (newBlockDataWeeks[i] && newBlockDataWeeks[i].days[targetDayIndex]) {
-        if (!newBlockDataWeeks[i].days[targetDayIndex].exercises) {
-          newBlockDataWeeks[i].days[targetDayIndex].exercises = [];
-        }
-        newBlockDataWeeks[i].days[targetDayIndex].exercises.push(new Exercise(exerciseName));
-      }
+    if (blockData.weeks.length <= 4) {
+      setMessage('Mesocycles under 4 weeks are not recommended.');
+      setIgnoreMethod(() => () => proceedRemoveWeek());
+      return;
     }
-    await updateBlock(newBlockDataWeeks, targetWeekNumIndex + 1, targetDayIndex + 1);
-  }, [blockData, updateBlock]);
+    proceedRemoveWeek();
 
-  const addSetToExercise = useCallback(async (exerciseNameToAddSetTo, targetWeekNumIndex, targetDayIndex) => {
-    if (!blockData) return;
-    const newBlockDataWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    for (let i = targetWeekNumIndex; i < newBlockDataWeeks.length; i++) {
-      const day = newBlockDataWeeks[i]?.days?.[targetDayIndex];
-      if (day) {
-        const exercise = day.exercises?.find(ex => ex.name === exerciseNameToAddSetTo);
-        if (exercise) {
-          if (!exercise.sets) exercise.sets = [];
-          exercise.sets.push(new Set());
-        }
-      }
-    }
-    await updateBlock(newBlockDataWeeks, targetWeekNumIndex + 1, targetDayIndex + 1);
-  }, [blockData, updateBlock]);
+    }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
 
-  const deleteSetFromExercise = useCallback(async (exerciseNameToDeleteFrom, setIndexToDelete, targetWeekNumIndex, targetDayIndex) => {
-  if (!blockData) return;
-
-  const newBlockDataWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-
-  const syncSetsAcrossWeeks = (startingWeekIndex) => {
-    const targetExercise = newBlockDataWeeks[startingWeekIndex]?.days?.[targetDayIndex]?.exercises?.find(ex => ex.name === exerciseNameToDeleteFrom);
-
-    if (targetExercise) {
-      const numSets = targetExercise.sets.length;
-
-      for (let i = startingWeekIndex + 1; i < newBlockDataWeeks.length; i++) {
-        const futureDay = newBlockDataWeeks[i]?.days?.[targetDayIndex];
-        if (futureDay) {
-          const futureExerciseIndex = futureDay.exercises?.findIndex(ex => ex.name === exerciseNameToDeleteFrom);
-          if (futureExerciseIndex !== -1 && futureDay.exercises[futureExerciseIndex]) {
-            const futureExercise = futureDay.exercises[futureExerciseIndex];
-            const diff = futureExercise.sets.length - numSets;
-
-            if (diff > 0) {
-              futureExercise.sets.splice(numSets);
-            } else if (diff < 0) {
-              for (let i = 0; i < Math.abs(diff); i++) {
-                futureExercise.sets.push({});
-              }
-            }
-          }
-        }
-      }
-    }
-  };
-  for (let i = targetWeekNumIndex; i < newBlockDataWeeks.length; i++) {
-    const day = newBlockDataWeeks[i]?.days?.[targetDayIndex];
-    if (day) {
-      const exerciseIndex = day.exercises?.findIndex(ex => ex.name === exerciseNameToDeleteFrom);
-      if (exerciseIndex !== -1 && day.exercises[exerciseIndex]) {
-        const exercise = day.exercises[exerciseIndex];
-        if (exercise.sets && exercise.sets.length > setIndexToDelete) {
-          exercise.sets.splice(setIndexToDelete, 1);
-
-          if (exercise.sets.length === 0) {
-            day.exercises.splice(exerciseIndex, 1);
-          }
-
-          syncSetsAcrossWeeks(i);
-          break; 
-        }
-      }
-    }
-  }
-  await updateBlock(newBlockDataWeeks, targetWeekNumIndex + 1, targetDayIndex + 1);
-}, [blockData, updateBlock]);
-
-
-  const updateSetData = useCallback(async (exerciseNameToUpdate, setIndex, field, value, targetWeekNumIndex, targetDayIndex) => {
-    if (!blockData) return;
-    const newBlockDataWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    const day = newBlockDataWeeks[targetWeekNumIndex]?.days?.[targetDayIndex];
-    if (day) {
-      const exercise = day.exercises?.find(ex => ex.name === exerciseNameToUpdate);
-      if (exercise && exercise.sets && exercise.sets[setIndex]) {
-        exercise.sets[setIndex][field] = field === 'weight' || field === 'reps' ? Number(value) || 0 : value;
-      }
-    }
-
-    await updateBlock(newBlockDataWeeks, currentWeekNum, currentDayIndex + 1);
+  const proceedRemoveWeek = useCallback(async () => {
+    const newWeeks = blockData.weeks.slice(0, -1);
+    await updateBlock(newWeeks, Math.min(currentWeekNum, newWeeks.length - 1), currentDayIndex);
   }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
-  
-  const refreshBlock = useCallback(() => {
-      refreshBlockInternal(currentWeekNum, currentDayIndex + 1);
-  }, [refreshBlockInternal, currentWeekNum, currentDayIndex]);
 
+  const addExerciseToDay = useCallback(async (exerciseName, weekIndex, dayIndex) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    for (let i = weekIndex; i < newWeeks.length; i++) {
+      const day = newWeeks[i].days?.[dayIndex];
+      if (day) {
+        day.exercises = day.exercises || [];
+        day.exercises.push(new Exercise(exerciseName));
+      }
+    }
+    console.log(currentWeekNum);
+    await updateBlock(newWeeks, currentWeekNum, currentDayIndex);
+  }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
+
+  const addSetToExercise = useCallback(async (exerciseName, weekIndex, dayIndex) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    for (let i = weekIndex; i < newWeeks.length; i++) {
+      const exercise = newWeeks[i]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
+      if (exercise) {
+        exercise.sets = exercise.sets || [];
+        exercise.sets.push(new Set());
+      }
+    }
+    await updateBlock(newWeeks, weekIndex, dayIndex);
+  }, [blockData, updateBlock]);
+
+  const deleteSetFromExercise = useCallback(async (exerciseName, setIndex, weekIndex, dayIndex) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+
+    const syncAcrossWeeks = (baseSetsLength) => {
+      for (let i = weekIndex + 1; i < newWeeks.length; i++) {
+        const exercise = newWeeks[i]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
+        if (!exercise) continue;
+
+        const diff = exercise.sets.length - baseSetsLength;
+        if (diff > 0) exercise.sets.splice(baseSetsLength);
+        else for (let j = 0; j < -diff; j++) exercise.sets.push({});
+      }
+    };
+
+    for (let i = weekIndex; i < newWeeks.length; i++) {
+      const exercises = newWeeks[i]?.days?.[dayIndex]?.exercises;
+      const exIndex = exercises?.findIndex(ex => ex.name === exerciseName);
+      if (exIndex !== -1) {
+        const sets = exercises[exIndex].sets;
+        sets.splice(setIndex, 1);
+        if (sets.length === 0) exercises.splice(exIndex, 1);
+        syncAcrossWeeks(sets.length);
+        break;
+      }
+    }
+
+    await updateBlock(newWeeks, weekIndex, dayIndex);
+  }, [blockData, updateBlock]);
+
+  const updateSetData = useCallback(async (exerciseName, setIndex, field, value, weekIndex, dayIndex) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    const exercise = newWeeks[weekIndex]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
+    if (exercise && exercise.sets[setIndex]) {
+      exercise.sets[setIndex][field] = ['weight', 'reps'].includes(field) ? Number(value) || 0 : value;
+    }
+    await updateBlock(newWeeks, weekIndex, dayIndex);
+  }, [blockData, updateBlock]);
 
   return {
     blockData,
@@ -267,10 +205,9 @@ export default function useBlock(blockName, userInfo) {
     setMessage,
     ignoreMethod,
     setIgnoreMethod,
-    setDisplayWeekAndDay,
+    setWeekAndDay,
     addWeek,
     removeWeek,
-    refreshBlock,
     addExerciseToDay,
     addSetToExercise,
     deleteSetFromExercise,

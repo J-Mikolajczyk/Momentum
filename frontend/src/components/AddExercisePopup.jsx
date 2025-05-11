@@ -5,7 +5,7 @@ export default function AddExercisePopup( {
   show, 
   toggle, 
   currentDayIndex, 
-  currentWeekNumIndex, 
+  currentWeekIndex, 
   addExerciseToDay 
 }) {
 
@@ -27,7 +27,7 @@ export default function AddExercisePopup( {
         setMessage('Exercise name is required.')
         return null;
       }
-      addExerciseToDay(exerciseName, currentWeekNumIndex, currentDayIndex);
+      addExerciseToDay(exerciseName, currentWeekIndex, currentDayIndex);
       handleClose();
     };
 

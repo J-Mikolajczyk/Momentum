@@ -96,6 +96,8 @@ public class TrainingBlockService {
             TrainingBlock block = this.get(id);
             block.setName(updateBlockRequest.getName());
             block.setWeeks(updateBlockRequest.getWeeks());
+            block.setMostRecentWeekOpen(updateBlockRequest.getWeekIndex());
+            block.setMostRecentDayOpen(updateBlockRequest.getDayIndex());
             blockRepository.save(block);
         } catch (Exception e) {
             throw e;

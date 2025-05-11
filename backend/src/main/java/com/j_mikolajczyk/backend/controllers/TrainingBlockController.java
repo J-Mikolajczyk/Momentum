@@ -18,6 +18,7 @@ import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.UpdateBlockIndexRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 
 @RestController
@@ -73,12 +74,13 @@ public class TrainingBlockController {
 
     @PostMapping("/update")
     public ResponseEntity<?> update(@RequestBody UpdateBlockRequest updateBlockRequest) throws Exception{
+        System.out.println("Block update requested for block: " + updateBlockRequest.getName());
+        
         String name = updateBlockRequest.getName();
-        System.out.println("Block update requested for block " + name);
         try {
             blockService.update(updateBlockRequest);
-            System.out.println("Block update successful for block " + name);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Update successful");
+            System.out.println("Block update successful for block " + name + " new week index is: " + updateBlockRequest.getWeekIndex() + " new day index is: " + updateBlockRequest.getDayIndex());
+            return ResponseEntity.status(HttpStatus.OK).body("Update successful");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
                 System.out.println(name + " not found, returning false");
@@ -88,15 +90,4 @@ public class TrainingBlockController {
         }
     }
 
-    @GetMapping("/get-day")
-    public ResponseEntity<?> getDay(@RequestParam("blockId") String stringId, @RequestParam("weekIndex") int weekIndex, @RequestParam("dayIndex") int dayIndex) {
-        System.out.println("Week " + (weekIndex+1) + " Day " + (dayIndex+1) + " in Block " + stringId + " requested");
-        
-        try {
-            Day day = blockService.getDay(stringId, weekIndex, dayIndex);
-            return ResponseEntity.ok(day);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 }
