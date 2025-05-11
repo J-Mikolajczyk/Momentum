@@ -1,15 +1,10 @@
 import React, { useEffect } from 'react';
 import Day from './Day';
-import MessagePopup from './MessagePopup';
-import useBlock from '../hooks/useBlock';
 
-export default function Block({ blockData, addExerciseToDay, addSetToExercise, deleteSetFromExercise, updateSetData }) {
-
-  const currentWeekIndex = blockData?.mostRecentWeekOpen;
-  const currentDayIndex = blockData?.mostRecentDayOpen;
+export default function Block({ currentWeekIndex, currentDayIndex, blockData, addExerciseToDay, addSetToExercise, deleteSetFromExercise, updateSetData }) {
 
   if (!blockData) {
-    return <div className="p-4 text-center">Initializing...</div>;
+    return;
   }
 
   return (

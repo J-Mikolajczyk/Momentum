@@ -3,7 +3,7 @@ import { postRequest, getRequest } from '../utils/api';
 import Block from './Block';
 import WeekMenu from './WeekMenu';
 import MessagePopup from './MessagePopup';
-import useBlock from '../hooks/useBlock';
+import Exercise from '../models/Exercise';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -18,7 +18,11 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
   const userId = userInfo?.id;
 
   useEffect(() => {
-    if (blockName) fetchBlock();
+    if (blockName) {
+      fetchBlock();
+    } else {
+      setBlockData(null);
+    }
   }, [blockName]);
 
   const computeWeekText = (data, weekNum, dayIndex) => {
@@ -62,6 +66,10 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
 
     const updateBlock = async (updatedWeeks, weekIndex, dayIndex, options = {}) => {
         if (!blockData?.id || !blockData?.name) return;
+
+        if(weekIndex === blockData.weeks.length-1 && updatedWeeks.length < blockData.weeks.length) {
+          weekIndex--;
+        }
     
         try {
           const response = await postRequest(`${ip}/secure/block/update`, {
@@ -81,13 +89,10 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
               mostRecentWeekOpen: weekIndex,
               mostRecentDayOpen: dayIndex
             };
-            if(updatedWeeks.length === blockData.weeks.length-1) {
-              setCurrentWeekIndex(weekIndex-1);
-              setWeekText(computeWeekText(updated, weekIndex-1, dayIndex));
-            } else {
-              setCurrentWeekIndex(weekIndex);
-              setWeekText(computeWeekText(updated, weekIndex, dayIndex));
-            }
+            
+            
+            setCurrentWeekIndex(weekIndex);
+            setWeekText(computeWeekText(updated, weekIndex, dayIndex));
             setBlockData(updated);
             setCurrentDayIndex(dayIndex);
           }
@@ -118,43 +123,71 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
     };
 
   const addSetToExercise = async (exerciseName, weekIndex, dayIndex) => {
-        const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-        for (let i = weekIndex; i < newWeeks.length; i++) {
-          const exercise = newWeeks[i]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
-          if (exercise) {
-            exercise.sets = exercise.sets || [];
-            exercise.sets.push(new Set());
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    let baseSetsLength = 0;
+
+    for (let i = weekIndex; i < newWeeks.length; i++) {
+      const exercise = newWeeks[i]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
+      if (exercise) {
+        exercise.sets = exercise.sets || [];
+        if (i === weekIndex) {
+          exercise.sets.push({ weight: '', reps: '' });
+          baseSetsLength = exercise.sets.length;
+        }
+      }
+    }
+
+    syncAcrossWeeks(baseSetsLength, exerciseName, weekIndex, dayIndex, newWeeks);
+    await updateBlock(newWeeks, weekIndex, dayIndex);
+  };
+
+  const syncAcrossWeeks = (baseSetsLength, exerciseName, weekIndex, dayIndex, newWeeks) => {
+    for (let i = weekIndex + 1; i < newWeeks.length; i++) {
+      const day = newWeeks[i]?.days?.[dayIndex];
+      if (!day) continue;
+
+      const exercises = day.exercises;
+      const exIndex = exercises.findIndex(ex => ex.name === exerciseName);
+      if (exIndex === -1) continue;
+
+      const exercise = exercises[exIndex];
+
+      if (baseSetsLength === 0) {
+        exercises.splice(exIndex, 1);
+      } else {
+        const currentLength = exercise.sets.length;
+        const diff = currentLength - baseSetsLength;
+        if (diff > 0) {
+          exercise.sets.splice(baseSetsLength); 
+        } else if (diff < 0) {
+          for (let j = 0; j < -diff; j++) {
+            exercise.sets.push({}); 
           }
         }
-        await updateBlock(newWeeks, weekIndex, dayIndex);
+      }
+    }
   };
+
 
   const deleteSetFromExercise = async (exerciseName, setIndex, weekIndex, dayIndex) => {
     const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
 
-    const syncAcrossWeeks = (baseSetsLength) => {
-      for (let i = weekIndex + 1; i < newWeeks.length; i++) {
-        const exercise = newWeeks[i]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
-        if (!exercise) continue;
+    const baseWeek = newWeeks[weekIndex];
+    const exercises = baseWeek?.days?.[dayIndex]?.exercises;
+    const exIndex = exercises?.findIndex(ex => ex.name === exerciseName);
+    if (exIndex === -1) return;
 
-        const diff = exercise.sets.length - baseSetsLength;
-        if (diff > 0) exercise.sets.splice(baseSetsLength);
-        else for (let j = 0; j < -diff; j++) exercise.sets.push({});
-      }
-    };
+    const sets = exercises[exIndex].sets;
+    sets.splice(setIndex, 1); // Remove the set
 
-    for (let i = weekIndex; i < newWeeks.length; i++) {
-      const exercises = newWeeks[i]?.days?.[dayIndex]?.exercises;
-      const exIndex = exercises?.findIndex(ex => ex.name === exerciseName);
-      if (exIndex !== -1) {
-        const sets = exercises[exIndex].sets;
-        sets.splice(setIndex, 1);
-        if (sets.length === 0) exercises.splice(exIndex, 1);
-        syncAcrossWeeks(sets.length);
-        break;
-      }
+    let baseSetsLength = sets.length;
+
+    if (baseSetsLength === 0) {
+      // Remove the exercise if no sets remain
+      exercises.splice(exIndex, 1);
     }
 
+    syncAcrossWeeks(baseSetsLength, exerciseName, weekIndex, dayIndex, newWeeks);
     await updateBlock(newWeeks, weekIndex, dayIndex);
   };
 
@@ -175,7 +208,6 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
 
   return (
     <>
-      <MessagePopup/>
       {blockName === null ? (
         <div className="p-4 w-full">
           <div className="flex w-full items-center mb-3">
@@ -211,6 +243,8 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
           />
           <Block 
             blockData={blockData}
+            currentWeekIndex={currentWeekIndex}
+            currentDayIndex={currentDayIndex}
             addExerciseToDay={addExerciseToDay}
             addSetToExercise={addSetToExercise} 
             deleteSetFromExercise={deleteSetFromExercise}

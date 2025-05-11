@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ExerciseCard({ 
     exercise, 
@@ -8,6 +8,16 @@ export default function ExerciseCard({
     deleteSetFromExercise,
     updateSetData 
 }) {
+
+    useEffect(() => {
+        setInputValues(
+            exercise?.sets?.map(set => ({
+                weight: set.weight || '',
+                reps: set.reps || '',
+            })) || []
+        );
+    }, [exercise.sets]);
+
     const [inputValues, setInputValues] = useState(() => {
         return exercise?.sets?.map(set => ({
             weight: set.weight || '',
@@ -47,22 +57,22 @@ export default function ExerciseCard({
             <h2 className="text-blue-800 font-anton text-2xl mb-2">{exercise?.name}</h2>
 
             {exercise?.sets?.map((set, setIndex) => (
-                <div key={setIndex} className="flex flex-row mb-2 w-full">
-                    <div className='w-1/2 flex items-center space-between'>
-                        <label className="text-2xl font-anton">Weight:</label>
+                <div key={setIndex} className="flex flex-row mb-2 w-full justify-between items-center gap-2">
+                    <div className=' flex items-center w-full'>
+                        <label className="text-lg font-anton">Weight:</label>
                         <input
                             type="number"
-                            className="ml-1 border rounded px-2 py-1 w-1/2 font-anton h-6"
+                            className="flex text-center justify-center ml-1 border rounded w-full font-anton h-full text-lg pr-1"
                             value={inputValues[setIndex]?.weight || ''}
                             onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                             onBlur={() => handleBlur(setIndex, 'weight')}
                         />
                     </div>
-                    <div className='w-1/2 flex items-center space-between'>
-                        <label className="text-2xl font-anton">Reps:</label>
+                    <div className=' flex items-center w-full'>
+                        <label className="text-lg font-anton">Reps:</label>
                         <input
                             type="number"
-                            className="ml-1 border rounded px-2 py-1 w-1/2 font-anton h-6"
+                            className="flex text-center justify-center ml-1 border rounded w-full font-anton h-full text-lg pr-1"
                             value={inputValues[setIndex]?.reps || ''}
                             onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
                             onBlur={() => handleBlur(setIndex, 'reps')}

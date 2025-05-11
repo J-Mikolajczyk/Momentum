@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import MessagePopup from './MessagePopup';
 import Week from '../models/Week';
 
@@ -42,7 +42,7 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
       }
   
       if (blockData.weeks.length <= 4) {
-        setMessage('Mesocycles under 4 weeks are not recommended.');
+        setMessage('Mesocycles shorter than 4 weeks are not recommended.');
         setIgnoreMethod(() => () => proceedRemoveWeek());
         return;
       }

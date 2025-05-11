@@ -34,7 +34,9 @@ public class TrainingBlock {
     public TrainingBlock(String name, ObjectId createdByUserID, List<String> selectedDays) {
         this.name = name;
         this.weeks = new ArrayList<Week>();
-        this.weeks.add(new Week(selectedDays));
+        for (int i = 0; i < 4; i++) {
+            this.weeks.add(new Week(selectedDays));
+        }
         this.createdByUserID = createdByUserID;
         this.selectedDays = selectedDays;
         this.mostRecentDayOpen = 0;
