@@ -1,7 +1,12 @@
 import { useState } from 'react';
+import MessagePopup from './MessagePopup';
+import Week from '../models/Week';
 
-export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, removeWeek }) {
+export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWeeks }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  const [message, setMessage] = useState(null);
+  const [ignoreMethod, setIgnoreMethod] = useState(null);
 
   const toggleDropdown = () => {
     setDropdownOpen(prev => !prev);
@@ -12,9 +17,49 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, 
     return Math.max(...blockData.weeks.map(week => week.days.length));
   };
 
+  const addWeek = async () => {
+      if (!blockData) return;
+  
+      if (blockData.weeks.length >= 6) {
+        setMessage('Mesocycles longer than 6 weeks are not recommended.');
+        setIgnoreMethod(() => () => proceedAddWeek());
+        return;
+      }
+      proceedAddWeek();
+    };
+  
+    const proceedAddWeek = async () => {
+      const newWeeks = [...blockData.weeks];
+      const lastWeek = newWeeks[newWeeks.length - 1];
+      newWeeks.push(new Week(lastWeek?.days || []));
+      await updateWeeks(newWeeks);
+    };
+  
+    const removeWeek = async () => {
+      if (!blockData || blockData.weeks.length === 1) {
+        setMessage('Cannot remove only week.');
+        return;
+      }
+  
+      if (blockData.weeks.length <= 4) {
+        setMessage('Mesocycles under 4 weeks are not recommended.');
+        setIgnoreMethod(() => () => proceedRemoveWeek());
+        return;
+      }
+      proceedRemoveWeek();
+  
+    };
+  
+    const proceedRemoveWeek = async () => {
+      const newWeeks = blockData.weeks.slice(0, -1);
+      await updateWeeks(newWeeks);
+    };
+
   const maxDays = getMaxDays();
 
   return (
+    <><MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod} />
+      
     <div className="relative w-full">
         <div className="relative bg-blue-800 h-18 w-full flex flex-col justify-center px-4">
           <p className="text-white font-anton text-xl cursor-pointer h-1/2" onClick={toggleDropdown}>{blockData?.name}</p>
@@ -64,5 +109,5 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, addWeek, 
       </div>
     )}
     </div>)}
-  </div>);
+  </div></>);
 }

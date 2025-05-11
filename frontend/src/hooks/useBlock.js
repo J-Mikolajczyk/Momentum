@@ -13,7 +13,6 @@ export default function useBlock(blockName, userInfo) {
   const [currentWeekNum, setCurrentWeekNum] = useState(0);
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [weekText, setWeekText] = useState('Loading...');
-  const [message, setMessage] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
 
   const computeWeekText = (data, weekNum, dayIndex) => {
@@ -22,34 +21,7 @@ export default function useBlock(blockName, userInfo) {
     return `Week ${weekNum + 1} Day ${dayIndex + 1} ${dayName}`;
   };
 
-  const fetchBlock = useCallback(async () => {
-    if (!userId || !blockName) {
-      setBlockData(null);
-      setWeekText('Please select a block or user.');
-      return;
-    }
-
-    try {
-      const response = await getRequest(`${ip}/secure/block/get`, { blockName, userId });
-      if (!response.ok) throw new Error('Failed to fetch block');
-
-      const json = await response.json();
-      if (json.exists === false) {
-        setBlockData(null);
-        setWeekText('Block not found.');
-        return;
-      }
-
-      setBlockData(json);
-      const { mostRecentWeekOpen, mostRecentDayOpen } = json;
-      setCurrentWeekNum(mostRecentWeekOpen);
-      setCurrentDayIndex(mostRecentDayOpen);
-      setWeekText(computeWeekText(json, mostRecentWeekOpen, mostRecentDayOpen));
-    } catch (err) {
-      console.error(err);
-      setWeekText('Error loading block.');
-    }
-  }, [blockName, userId]);
+  
 
   useEffect(() => {
     fetchBlock();
@@ -87,76 +59,12 @@ export default function useBlock(blockName, userInfo) {
     }
   }, [blockData]);
 
-  const setWeekAndDay = useCallback(async (weekNum, dayNum) => {
+  
 
-    setCurrentWeekNum(weekNum);
-    setCurrentDayIndex(dayNum);
-    setWeekText(computeWeekText(blockData, weekNum, dayNum));
-    await updateBlock(blockData.weeks, weekNum, dayNum, { skipRefresh: true });
-  }, [blockData, updateBlock]);
 
-  const addWeek = useCallback(async () => {
-    if (!blockData) return;
+  
 
-    if (blockData.weeks.length >= 6) {
-      setMessage('Mesocycles longer than 6 weeks are not recommended.');
-      setIgnoreMethod(() => () => proceedAddWeek());
-      return;
-    }
-    proceedAddWeek();
-  }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
-
-  const proceedAddWeek = useCallback(async () => {
-    const newWeeks = [...blockData.weeks];
-    const lastWeek = newWeeks[newWeeks.length - 1];
-    newWeeks.push(new Week(lastWeek?.days || []));
-    await updateBlock(newWeeks, currentWeekNum, currentDayIndex);
-  }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
-
-  const removeWeek = useCallback(async () => {
-    if (!blockData || blockData.weeks.length === 1) {
-      setMessage('Cannot remove only week.');
-      return;
-    }
-
-    if (blockData.weeks.length <= 4) {
-      setMessage('Mesocycles under 4 weeks are not recommended.');
-      setIgnoreMethod(() => () => proceedRemoveWeek());
-      return;
-    }
-    proceedRemoveWeek();
-
-    }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
-
-  const proceedRemoveWeek = useCallback(async () => {
-    const newWeeks = blockData.weeks.slice(0, -1);
-    await updateBlock(newWeeks, Math.min(currentWeekNum, newWeeks.length - 1), currentDayIndex);
-  }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
-
-  const addExerciseToDay = useCallback(async (exerciseName, weekIndex, dayIndex) => {
-    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    for (let i = weekIndex; i < newWeeks.length; i++) {
-      const day = newWeeks[i].days?.[dayIndex];
-      if (day) {
-        day.exercises = day.exercises || [];
-        day.exercises.push(new Exercise(exerciseName));
-      }
-    }
-    console.log(currentWeekNum);
-    await updateBlock(newWeeks, currentWeekNum, currentDayIndex);
-  }, [blockData, updateBlock, currentWeekNum, currentDayIndex]);
-
-  const addSetToExercise = useCallback(async (exerciseName, weekIndex, dayIndex) => {
-    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-    for (let i = weekIndex; i < newWeeks.length; i++) {
-      const exercise = newWeeks[i]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
-      if (exercise) {
-        exercise.sets = exercise.sets || [];
-        exercise.sets.push(new Set());
-      }
-    }
-    await updateBlock(newWeeks, weekIndex, dayIndex);
-  }, [blockData, updateBlock]);
+  
 
   const deleteSetFromExercise = useCallback(async (exerciseName, setIndex, weekIndex, dayIndex) => {
     const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
