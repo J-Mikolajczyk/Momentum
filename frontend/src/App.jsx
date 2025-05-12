@@ -44,7 +44,7 @@ function App() {
   }, []);
 
   return (
-    <div className='h-screen w-screen flex flex-col items-center justify-center bg-white overflow-hidden'>
+    <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
       {loggedIn ? (
         <Home setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo} setShowEmailForm={setShowEmailForm} />
       ) : (
