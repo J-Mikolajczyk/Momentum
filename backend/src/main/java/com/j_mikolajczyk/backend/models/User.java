@@ -28,6 +28,11 @@ public class User {
         this.trainingBlockNames = new ArrayList<String>();
     }
 
+    public void updateBlockPosition(String name) {
+        trainingBlockNames.remove(name);
+        trainingBlockNames.add(0, name); 
+    }
+
     public ObjectId getId() {
         return this.id;
     }
@@ -70,7 +75,11 @@ public class User {
         if(trainingBlockNames.contains(name)) {
             throw new Exception("409");
         }
-        this.trainingBlockNames.add(name);
+        this.trainingBlockNames.add(0, name);
+    }
+
+    public void deleteBlock(String name) throws Exception {
+        this.trainingBlockNames.remove(name);
     }
     
 }

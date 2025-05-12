@@ -18,6 +18,7 @@ import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.DeleteBlockRequest;
 import com.j_mikolajczyk.backend.requests.UpdateBlockIndexRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 
@@ -80,6 +81,24 @@ public class TrainingBlockController {
         try {
             blockService.update(updateBlockRequest);
             System.out.println("Block update successful for block " + name + " new week index is: " + updateBlockRequest.getWeekIndex() + " new day index is: " + updateBlockRequest.getDayIndex());
+            return ResponseEntity.status(HttpStatus.OK).body("Update successful");
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) {
+                System.out.println(name + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
+            }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody DeleteBlockRequest deleteBlockRequest) throws Exception{
+        String name = deleteBlockRequest.getBlockName();
+        System.out.println("Block deletion requested for block: " + name);
+
+        try {
+            blockService.delete(deleteBlockRequest);
+            System.out.println("Block deletion successful for block " + name);
             return ResponseEntity.status(HttpStatus.OK).body("Update successful");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {

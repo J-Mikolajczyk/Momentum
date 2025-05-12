@@ -13,6 +13,12 @@
   user-select: none;
 }
 
+.font-anton-no-italic-bold {
+  font-family: 'Anton', sans-serif;
+  font-weight: bold;
+  user-select: none;
+}
+
 html, body {
   height: 100%;
   margin: 0;
