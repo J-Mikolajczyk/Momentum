@@ -299,7 +299,7 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
   return (
     <>
       {blockName === null ? (
-        <div className="p-4 w-full overflow-y-auto scrollbar-hide min-h-[100dvh] pb-20" >
+        <div className="p-4 w-full overflow-y-auto scrollbar-hide min-h-[100dvh] pb-40" >
           <div className="flex w-full items-center mb-3">
             <p className="text-blue-800 font-anton inline-block text-3xl">Welcome, {name}</p>
             <button
