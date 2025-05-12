@@ -17,6 +17,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
   const name = userInfo?.name != null ? userInfo.name : null;
   const userId = userInfo?.id != null ? userInfo.id : null;
   const email = userInfo?.email != null ? userInfo.email : null;
+  const [weekText, setWeekText] = useState('Loading...');
 
   const logOut = () => {
     logOutUser();
@@ -73,6 +74,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
 
   const goHome = () => {
     setBlockName(null);
+    setWeekText('Loading...');
     fetchData();
   }
 
@@ -86,9 +88,8 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
     <div className='h-full w-full flex flex-col bg-white'>
       <Navigation goHome={goHome} toggleSidebar={toggleSidebar}></Navigation>
       <Sidebar logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu}/>
+      <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText}/>
       <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      
     </div>
   );
 }

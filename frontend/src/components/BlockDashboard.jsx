@@ -7,10 +7,9 @@ import Exercise from '../models/Exercise';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
-export default function BlockDashboard({ blockName, setBlockName, userInfo, toggleAddBlockMenu }) {
+export default function BlockDashboard({ weekText, setWeekText, blockName, setBlockName, userInfo, toggleAddBlockMenu }) {
 
   const [blockData, setBlockData] = useState(null);
-  const [weekText, setWeekText] = useState('Loading...');
   const [currentWeekIndex, setCurrentWeekIndex] = useState(null);
   const [currentDayIndex, setCurrentDayIndex] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
