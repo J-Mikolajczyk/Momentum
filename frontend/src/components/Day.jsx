@@ -31,7 +31,7 @@ export default function Day({
 
 
   return (
-    <div className="flex flex-col w-full flex-grow items-start gap-4 px-4 pt-4 overflow-y-auto scrollbar-hide" style={{ maxHeight: 'calc(100dvh - 140px)' }}>
+    <div className="flex flex-col w-full flex-grow items-start gap-4 px-4 pt-4 overflow-y-auto scrollbar-hide" style={{ maxHeight: 'calc(100dvh - 160px)' }}>
           
         
       {exercises?.length > 0 ? (
