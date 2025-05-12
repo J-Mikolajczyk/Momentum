@@ -33,6 +33,10 @@ public class UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
     public void register(RegisterRequest registerRequest) throws Exception{
         if(registerRequest.getEmail() == null || registerRequest.getPassword() == null) {
             throw new RuntimeException("Email and password are required.");

@@ -16,6 +16,7 @@ import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.DeleteBlockRequest;
 
 @Service
 public class TrainingBlockService {
@@ -46,26 +47,38 @@ public class TrainingBlockService {
         Optional<TrainingBlock> fetchedBlock = blockRepository.findByNameAndCreatedByUserID(blockName, userId);
 
         if (fetchedBlock.isPresent()) {
-            return fetchedBlock.get();
+            TrainingBlock block = fetchedBlock.get();
+
+            User user = userService.getById(block.getCreatedByUserID());
+            user.updateBlockPosition(block.getName());
+            userService.save(user);
+            return block;
         } else {
             throw new NotFoundException();
         }
     }
 
 
-    public TrainingBlock get(ObjectId id) throws Exception{
-        if(id == null) {
-            throw new RuntimeException("Email and Block Name are required.");
+    public TrainingBlock get(ObjectId id) throws Exception {
+        if (id == null) {
+            throw new RuntimeException("Block ID is required.");
         }
 
         Optional<TrainingBlock> fetchedBlock = blockRepository.findById(id);
 
         if (fetchedBlock.isPresent()) {
-            return fetchedBlock.get();
+            TrainingBlock block = fetchedBlock.get();
+
+            User user = userService.getById(block.getCreatedByUserID());
+            user.updateBlockPosition(block.getName());
+            userService.save(user);
+
+            return block;
         } else {
             throw new NotFoundException();
         }
     }
+
 
     public void create(CreateTrainingBlockRequest createBlockRequest) throws Exception{
 
@@ -99,32 +112,33 @@ public class TrainingBlockService {
             block.setMostRecentWeekOpen(updateBlockRequest.getWeekIndex());
             block.setMostRecentDayOpen(updateBlockRequest.getDayIndex());
             blockRepository.save(block);
+
+            User user = userService.getById(block.getCreatedByUserID());
+            user.updateBlockPosition(block.getName());
+            userService.save(user);
         } catch (Exception e) {
             throw e;
         }
-
     }
 
-    public Day getDay(String stringId, int weekIndex, int dayIndex) throws Exception{
-        if(stringId == null) {
+    public void delete(DeleteBlockRequest deleteBlockRequest) throws Exception{
+        String blockName = deleteBlockRequest.getBlockName();
+        ObjectId userId = deleteBlockRequest.getUserId();
+
+        if(userId == null || blockName == null) {
             throw new RuntimeException("Block ID and Block Name is required.");
         }
-        
-        ObjectId blockId = new ObjectId(stringId);
 
         try {
-            TrainingBlock block = this.get(blockId);
-            List<Week> weeks = block.getWeeks();
-            Week week = weeks.get(weekIndex);
+            TrainingBlock block = this.get(blockName, userId);
+            blockRepository.delete(block);
 
-            block.setMostRecentDayOpen(dayIndex);
-            block.setMostRecentWeekOpen(weekIndex);
-            blockRepository.save(block);
-            System.out.println("Set most recent day/week for block " + block.getName() + ", returning day");
-            return week.getDays().get(dayIndex);
+            User user = userService.getById(block.getCreatedByUserID());
+            user.deleteBlock(block.getName());
+            userService.save(user);
         } catch (Exception e) {
             throw e;
         }
-
     }
+
 }

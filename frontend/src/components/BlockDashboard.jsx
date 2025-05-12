@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { postRequest, getRequest } from '../utils/api';
-import Block from './Block';
+import Day from './Day';
 import WeekMenu from './WeekMenu';
-import MessagePopup from './MessagePopup';
 import Exercise from '../models/Exercise';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
-export default function BlockDashboard({ weekText, setWeekText, blockName, setBlockName, userInfo, toggleAddBlockMenu }) {
+export default function BlockDashboard({ fetchData, weekText, setWeekText, blockName, setBlockName, userInfo, toggleAddBlockMenu }) {
 
   const [blockData, setBlockData] = useState(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(null);
   const [currentDayIndex, setCurrentDayIndex] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
+  const [activeMenuIndex, setActiveMenuIndex] = useState(null);
 
   const userId = userInfo?.id;
+
+  const handleActiveMenu = (index) => {
+    if (index === activeMenuIndex) {
+      setActiveMenuIndex(null);
+      return;
+    }
+    setActiveMenuIndex(index);
+    
+  }
 
   useEffect(() => {
     if (blockName) {
@@ -61,6 +70,21 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, setBl
         console.error(err);
         setWeekText('Error loading block.');
       }
+    };
+
+
+    const deleteBlock = async (blockName) => {
+  
+      try {
+        const response = await postRequest(`${ip}/secure/block/delete`, { blockName, userId });
+        if (!response.ok) throw new Error('Failed to delete block');
+  
+  
+      } catch (err) {
+        console.error(err);
+      }
+      setActiveMenuIndex(null);
+      fetchData();
     };
 
     const updateBlock = async (updatedWeeks, weekIndex, dayIndex, options = {}) => {
@@ -177,12 +201,11 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, setBl
     if (exIndex === -1) return;
 
     const sets = exercises[exIndex].sets;
-    sets.splice(setIndex, 1); // Remove the set
+    sets.splice(setIndex, 1);
 
     let baseSetsLength = sets.length;
 
     if (baseSetsLength === 0) {
-      // Remove the exercise if no sets remain
       exercises.splice(exIndex, 1);
     }
 
@@ -205,6 +228,73 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, setBl
     setBlockName(blockName);
   };
 
+  const moveExercise = async (direction, index) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    const day = newWeeks[currentWeekIndex].days[currentDayIndex];
+    const exercises = day.exercises;
+    if (!exercises || exercises.length < 2) return;
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= exercises.length) return;
+    [exercises[index], exercises[targetIndex]] = [exercises[targetIndex], exercises[index]];
+
+    const movedExerciseName = exercises[targetIndex].name;
+    const swappedWithName = exercises[index].name;
+
+    for (let i = currentWeekIndex + 1; i < newWeeks.length; i++) {
+      const futureDay = newWeeks[i]?.days?.[currentDayIndex];
+      if (!futureDay) continue;
+      const futureExercises = futureDay.exercises;
+      const currentIndex = futureExercises.findIndex(ex => ex.name === movedExerciseName);
+      const swapIndex = futureExercises.findIndex(ex => ex.name === swappedWithName);
+      if (currentIndex === -1 || swapIndex === -1) continue;
+      [futureExercises[currentIndex], futureExercises[swapIndex]] = [futureExercises[swapIndex], futureExercises[currentIndex]];
+    }
+
+    await updateBlock(newWeeks, currentWeekIndex, currentDayIndex);
+  };
+
+  const renameExercise = async (exerciseName, newName) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    const day = newWeeks[currentWeekIndex].days[currentDayIndex];
+    const exercises = day.exercises;
+
+    exercises.forEach(ex => {
+      if (ex.name === exerciseName) {
+        ex.name = newName;
+      }
+    });
+
+    for (let i = currentWeekIndex + 1; i < newWeeks.length; i++) {
+      const futureDay = newWeeks[i]?.days?.[currentDayIndex];
+      if (!futureDay) continue;
+      futureDay.exercises.forEach(ex => {
+        if (ex.name === exerciseName) {
+          ex.name = newName;
+        }
+      });
+    }
+
+    await updateBlock(newWeeks, currentWeekIndex, currentDayIndex);
+  };
+
+
+  const deleteExercise = async (exerciseName) => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+
+    const day = newWeeks[currentWeekIndex].days[currentDayIndex];
+    day.exercises = day.exercises.filter(ex => ex.name !== exerciseName);
+
+    for (let i = currentWeekIndex; i < newWeeks.length; i++) {
+      const futureDay = newWeeks[i]?.days?.[currentDayIndex];
+      if (!futureDay) continue;
+      futureDay.exercises = futureDay.exercises.filter(ex => ex.name !== exerciseName);
+    }
+
+    await updateBlock(newWeeks, currentWeekIndex, currentDayIndex);
+  };
+
+
+
   return (
     <>
       {blockName === null ? (
@@ -220,13 +310,16 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, setBl
           </div>
           {userInfo?.trainingBlockNames?.length > 0 ? (
             userInfo.trainingBlockNames.map((blockName, index) => (
-              <button
-                onClick={() => openBlock(blockName)}
-                key={index}
-                className="bg-blue-50 text-blue-800 font-anton px-4 py-2 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1"
-              >
-                {blockName}
-              </button>
+              <div key={index} className="flex flex-row items-center justify-between bg-blue-50 text-blue-800 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1">
+                <button onClick={() => openBlock(blockName)} className="font-anton text-blue-800 w-9/10 text-left px-2 py-2 ">{blockName}</button>
+                <button onClick={() => handleActiveMenu(index)} className="text-blue-800 font-anton-no-italic-bold text-2xl px-4 py-2 text-right w-1/10 relative">⫶</button>
+                {activeMenuIndex === index && (
+                        <div className="absolute right-10 mt-25 w-32 bg-white border border-gray-300 rounded shadow-md z-10">
+                            <button onClick={() => handleRename()} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md">Rename</button>
+                            <button onClick={() => deleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md">Delete</button>
+                        </div>
+                )}
+              </div>
             ))
           ) : (
             <p className="text-gray-500 font-anton text-2xl">No Training Blocks Created</p>
@@ -240,14 +333,18 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, setBl
             weekText={weekText}
             updateWeeks={updateWeeks}
           />
-          <Block 
-            blockData={blockData}
-            currentWeekIndex={currentWeekIndex}
-            currentDayIndex={currentDayIndex}
-            addExerciseToDay={addExerciseToDay}
-            addSetToExercise={addSetToExercise} 
-            deleteSetFromExercise={deleteSetFromExercise}
-            updateSetData={updateSetData}/>
+          <Day
+              blockData={blockData}
+              currentWeekIndex={currentWeekIndex}
+              currentDayIndex={currentDayIndex}
+              addExerciseToDay={addExerciseToDay}
+              addSetToExercise={addSetToExercise}
+              deleteSetFromExercise={deleteSetFromExercise}
+              updateSetData={updateSetData}
+              moveExercise={moveExercise}
+              renameExercise={renameExercise}
+              deleteExercise={deleteExercise}
+            />
         </>
       )}
     </>

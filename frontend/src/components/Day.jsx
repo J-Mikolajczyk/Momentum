@@ -3,14 +3,22 @@ import ExerciseCard from './ExerciseCard';
 import AddExercisePopup from './AddExercisePopup';
 
 export default function Day({
-  blockData,
-  currentWeekIndex,
-  currentDayIndex,
-  addExerciseToDay,
-  addSetToExercise,
-  deleteSetFromExercise,
-  updateSetData,
-}) {
+    blockData,
+    currentWeekIndex,
+    currentDayIndex,
+    addExerciseToDay,
+    addSetToExercise,
+    deleteSetFromExercise,
+    updateSetData,
+    moveExercise,
+    renameExercise,
+    deleteExercise
+  }) {
+
+  if (!blockData) {
+    return;
+  }
+
   const [showAddExercisePopup, setShowAddExercisePopup] = useState(false);
 
   const toggleAddExercisePopup = () => {
@@ -21,18 +29,25 @@ export default function Day({
   const currentDay = currentWeek?.days?.[currentDayIndex];
   const exercises = currentDay?.exercises;
 
+
   return (
-    <div className="flex flex-col w-full flex-grow items-center gap-2 pb-8">
+    <div className="flex flex-col w-full flex-grow items-start gap-4 px-4 pt-4 overflow-y-auto scrollbar-hide" style={{ maxHeight: 'calc(100dvh - 140px)' }}>
+          
+        
       {exercises?.length > 0 ? (
         exercises.map((exercise, exerciseIndex) => (
           <ExerciseCard
             key={exerciseIndex}
             exercise={exercise}
+            exerciseIndex={exerciseIndex}
             currentWeekIndex={currentWeekIndex}
             currentDayIndex={currentDayIndex}
             addSetToExercise={addSetToExercise}
             deleteSetFromExercise={deleteSetFromExercise}
             updateSetData={updateSetData}
+            moveExercise={moveExercise}
+            renameExercise={renameExercise}
+            deleteExercise={deleteExercise}
           />
         ))
       ) : null}
