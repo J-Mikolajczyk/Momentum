@@ -226,6 +226,7 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
 
   const openBlock = (blockName) => {
     setBlockName(blockName);
+    setActiveMenuIndex(null);
   };
 
   const moveExercise = async (direction, index) => {

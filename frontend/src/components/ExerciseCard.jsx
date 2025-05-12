@@ -103,6 +103,8 @@ export default function ExerciseCard({ exercise,  currentWeekIndex,  currentDayI
                         <label className="text-lg font-anton mr-1">Reps:</label>
                         <input
                             type="number"
+                            inputMode="decimal"
+                            pattern="[0-9]*(\.[0-9]*)?"
                             className="text-center border rounded w-full font-anton h-full text-lg"
                             value={inputValues[setIndex]?.reps || ''}
                             onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
