@@ -209,7 +209,7 @@ export default function BlockDashboard({ blockName, setBlockName, userInfo, togg
   return (
     <>
       {blockName === null ? (
-        <div className="p-4 w-full overflow-y-auto scrollbar-hide" style={{ maxHeight: 'calc(100dvh - 70px)' }}>
+        <div className="p-4 w-full overflow-y-auto scrollbar-hide" style={{ maxHeight: 'calc(100dvh - 100px)' }}>
           <div className="flex w-full items-center mb-3">
             <p className="text-blue-800 font-anton inline-block text-3xl">Welcome, {name}</p>
             <button
