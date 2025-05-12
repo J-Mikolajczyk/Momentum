@@ -9,7 +9,7 @@ export default function Block({ currentWeekIndex, currentDayIndex, blockData, ad
 
   return (
     <>
-      <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8 px-4 pt-4">
+      <div className="flex flex-row w-full flex-grow items-start gap-4 pb-8 px-4 pt-4 overflow-y-auto">
         <div className="flex flex-col items-center rd w-full">
           <Day
               blockData={blockData}
