@@ -44,11 +44,11 @@ function App() {
   }, []);
 
   return (
-    <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
+    <div className='h-screen w-screen flex flex-col items-center justify-center bg-white overflow-hidden'>
       {loggedIn ? (
         <Home setLoggedIn={setLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo} setShowEmailForm={setShowEmailForm} />
       ) : (
-        <div className='flex flex-col bg-white h-full w-full items-center justify-center'>
+        <div className='flex flex-col bg-white h-full w-full items-center justify-center overflow-hidden'>
           <motion.div initial={{ y: 0 }} animate={showEmailForm ? { y: -100 } : { y: 0 }}transition={{ type: 'spring', stiffness: 100, damping: 15 }}>
             <SplashScreen />
           </motion.div>
