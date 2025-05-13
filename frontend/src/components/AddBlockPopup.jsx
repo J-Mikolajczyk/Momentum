@@ -80,7 +80,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
         <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-7/8 min-h-1/4">
         <div className='flex justify-between'>
           <p className='inline text-blue-800 font-anton text-xl'>Add a Training Block</p>
-          <button onClick={handleClose} className="font-anton inline text-gray-500 hover:text-gray-700 text-xl">X</button>
+          <button onClick={handleClose} className="font-anton inline text-gray-500 hover:text-gray-700 text-xl  cursor-pointer">X</button>
         </div>
         <form>
           <input className='mt-1.5 bg-white font-anton rounded-md text-blue-800 h-1/4 w-6/7 text-xl border-blue-800 border-2 pl-3' placeholder='Block Name' value={blockName} onChange={(e) => setBlockName(e.target.value)} required /> 
@@ -103,7 +103,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
 
 
 
-          <button type='submit' onClick={handleSubmit} className='mt-3 bg-white font-anton rounded-md text-blue-800 hover:bg-gray-200 transition duration-300 h-1/4 px-10 text-xl border-blue-800 border-2'>Add</button>
+          <button type='submit' onClick={handleSubmit} className='mt-3 bg-white font-anton rounded-md text-blue-800 hover:bg-gray-200 transition duration-300 h-1/4 px-10 text-xl border-blue-800 border-2 cursor-pointer'>Add</button>
           {message && (<p className='font-anton text-red-700 text-xl mt-2'>{message}</p> )}
         </form>
         </div>

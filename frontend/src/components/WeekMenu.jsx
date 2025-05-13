@@ -61,18 +61,22 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
     <><MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod} setIgnoreMethod={setIgnoreMethod} />
       
     <div className="relative w-full">
-        <div className="relative bg-blue-800 h-18 w-full flex flex-col justify-center px-4">
-          <p className="text-white font-anton text-xl cursor-pointer h-1/2" onClick={toggleDropdown}>{blockData?.name}</p>
-          <p className="text-white font-anton text-2xl cursor-pointer h-2/3" onClick={toggleDropdown}>{weekText}</p>
+        <div className="relative bg-blue-800 h-18 w-full flex flex-col justify-center">
+          <p className="text-white font-anton text-xl cursor-pointer h-1/2 px-4" onClick={toggleDropdown}>{blockData?.name}</p>
+          <p className="text-white font-anton text-2xl cursor-pointer h-2/3 flex items-center gap-2 px-4" onClick={toggleDropdown}>
+            {weekText}
+            <span className='ml-auto font-anton-no-italic text-xl'>{isDropdownOpen ? '▲' : '▼'}</span>
+          </p>
+
         </div>
 
         {isDropdownOpen && (
   <div className="absolute top-18 left-0 w-full bg-blue-800 z-20 shadow-lg">
     <div className="px-4 h-10 flex items-end justify-between border-t-1 border-blue-900 pb-1">
-      <p className="text-white font-anton text-lg cursor-pointer w-full" onClick={toggleDropdown}>Weeks</p>
+      <p className="text-white font-anton text-lg w-full">Weeks</p>
       <div className="flex gap-2">
-        <button onClick={removeWeek} className="bg-white text-blue-800 font-anton-no-italic h-6 w-8 text-3xl rounded-md border border-gray-500 flex items-center justify-center pb-1.5">-</button>
-        <button onClick={addWeek} className="bg-white text-blue-800 font-anton-no-italic h-6 w-8 text-3xl rounded-md border border-gray-500 flex items-center justify-center pb-1.5">+</button>
+        <button onClick={removeWeek} className="bg-white text-blue-800 font-anton-no-italic h-6 w-8 text-3xl rounded-md border border-gray-500 flex items-center justify-center pb-1.5 cursor-pointer">-</button>
+        <button onClick={addWeek} className="bg-white text-blue-800 font-anton-no-italic h-6 w-8 text-3xl rounded-md border border-gray-500 flex items-center justify-center pb-1.5  cursor-pointer">+</button>
       </div>
     </div>
 
