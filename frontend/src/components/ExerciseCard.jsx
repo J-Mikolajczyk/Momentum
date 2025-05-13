@@ -1,26 +1,40 @@
 import { useEffect, useState } from 'react';
 import RenamePopup from './RenamePopup';
 
-export default function ExerciseCard({ exercise,  currentWeekIndex,  currentDayIndex, addSetToExercise, deleteSetFromExercise, updateSetData, exerciseIndex, moveExercise, renameExercise, deleteExercise }) {
+export default function ExerciseCard({ exercise, priorExercise,  currentWeekIndex,  currentDayIndex, addSetToExercise, deleteSetFromExercise, updateSetData, exerciseIndex, moveExercise, renameExercise, deleteExercise }) {
 
     useEffect(() => {
-        setInputValues(
-            exercise?.sets?.map(set => ({
-                weight: set.weight || '',
-                reps: set.reps || '',
-            })) || []
-        );
+        const anyFieldDirty = dirtyFields.some(fields => fields.weight || fields.reps);
+        if (!anyFieldDirty) {
+            setInputValues(
+                exercise?.sets?.map(set => ({
+                    weight: set.weight || '',
+                    reps: set.reps || '',
+                })) || []
+            );
+        }
     }, [exercise.sets]);
 
+    const [dirtyFields, setDirtyFields] = useState(() => {
+        return exercise?.sets?.map(() => ({ weight: false, reps: false })) || [];
+    });
     const [inputValues, setInputValues] = useState(() => {
         return exercise?.sets?.map(set => ({
             weight: set.weight || '',
             reps: set.reps || '',
         })) || [];
     });
-
     const [showMenu, setShowMenu] = useState(false);
     const [showRenamePopup, setShowRenamePopup] = useState(false);
+
+    const handleFocus = (setIndex, field) => {
+        setDirtyFields(prev => {
+            const updated = [...prev];
+            updated[setIndex] = { ...updated[setIndex], [field]: true };
+            return updated;
+        });
+    };
+
 
     const handleLocalChange = (setIndex, field, value) => {
         const updatedInputs = [...inputValues];
@@ -31,7 +45,14 @@ export default function ExerciseCard({ exercise,  currentWeekIndex,  currentDayI
     const handleBlur = (setIndex, field) => {
         const value = inputValues[setIndex][field];
         updateSetData(exercise.name, setIndex, field, value, currentWeekIndex, currentDayIndex);
+
+        setDirtyFields(prev => {
+            const updated = [...prev];
+            updated[setIndex] = { ...updated[setIndex], [field]: false };
+            return updated;
+        });
     };
+
 
     const handleAddSet = () => {
         addSetToExercise(exercise.name, currentWeekIndex, currentDayIndex);
@@ -93,8 +114,10 @@ export default function ExerciseCard({ exercise,  currentWeekIndex,  currentDayI
                             type="number"
                             inputMode="decimal"
                             pattern="[0-9]*(\.[0-9]*)?"
+                            placeholder={priorExercise?.sets?.[setIndex]?.weight || ''}
                             className="text-center border rounded w-full font-anton h-full text-lg"
                             value={inputValues[setIndex]?.weight || ''}
+                            onFocus={() => handleFocus(setIndex, 'weight')}
                             onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                             onBlur={() => handleBlur(setIndex, 'weight')}
                         />
@@ -105,9 +128,11 @@ export default function ExerciseCard({ exercise,  currentWeekIndex,  currentDayI
                             type="number"
                             inputMode="decimal"
                             pattern="[0-9]*(\.[0-9]*)?"
+                            placeholder={priorExercise?.sets?.[setIndex]?.reps || ''}
                             className="text-center border rounded w-full font-anton h-full text-lg"
                             value={inputValues[setIndex]?.reps || ''}
-                            onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
+                            onFocus={() => handleFocus(setIndex, 'reps')}
+                             onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
                             onBlur={() => handleBlur(setIndex, 'reps')}
                         />
                     </div>
