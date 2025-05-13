@@ -121,6 +121,7 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
           }
         } catch (err) {
           console.error(err);
+          setMessage('Error updating block.');
         }
     };
 
@@ -303,7 +304,7 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
             <p className="text-blue-800 font-anton inline-block text-3xl">Welcome, {name}</p>
             <button
               onClick={toggleAddBlockMenu}
-              className="inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs  cursor-pointer"
+              className="inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs"
             >
               Add Block
             </button>
@@ -311,11 +312,12 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
           {userInfo?.trainingBlockNames?.length > 0 ? (
             userInfo.trainingBlockNames.map((blockName, index) => (
               <div key={index} className="flex flex-row items-center justify-between bg-blue-50 text-blue-800 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1">
-                <button onClick={() => openBlock(blockName)} className="font-anton text-blue-800 w-9/10 text-left px-2 py-2  cursor-pointer">{blockName}</button>
-                <button onClick={() => handleActiveMenu(index)} className="text-blue-800 font-anton-no-italic-bold text-2xl px-4 py-2 text-right w-1/10 relative  cursor-pointer">⫶</button>
+                <button onClick={() => openBlock(blockName)} className="font-anton text-blue-800 w-9/10 text-left px-2 py-2 ">{blockName}</button>
+                <button onClick={() => handleActiveMenu(index)} className="text-blue-800 font-anton-no-italic-bold text-2xl px-4 py-2 text-right w-1/10 relative">⫶</button>
                 {activeMenuIndex === index && (
                         <div className="absolute right-10 mt-25 w-32 bg-white border border-gray-300 rounded shadow-md z-10">
-                            <button onClick={() => deleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Delete</button>
+                            <button onClick={() => handleRename()} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md">Rename</button>
+                            <button onClick={() => deleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md">Delete</button>
                         </div>
                 )}
               </div>

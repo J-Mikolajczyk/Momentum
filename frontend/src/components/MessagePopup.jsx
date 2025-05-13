@@ -32,9 +32,7 @@ export default function MessagePopup({ message, setMessage, ignoreMethod, setIgn
         )}
         <div className="flex justify-around w-full">
           { ignoreMethod !== null ? 
-            (<button onClick={() => { ignoreMethod(); handleClose(); }}  className="w-1/3 bg-blue-800 font-anton text-white rounded-md hover:bg-blue-600 flex items-center justify-center min-w-12 pr-1 cursor-pointer"> Ignore</button>) : (<></>)}
-          <button onClick={() => { handleClose(); }} className="w-1/3 bg-gray-500 font-anton text-white rounded-md hover:bg-gray-600 flex items-center justify-center pr-1 min-w-12 cursor-pointer" >Cancel </button>
-            (<button onClick={() => { console.log(ignoreMethod); ignoreMethod(); handleClose(); }}  className="w-1/3 bg-blue-800 font-anton text-white rounded-md hover:bg-blue-600 flex items-center justify-center min-w-12 pr-1"> Ignore</button>) : (<></>)
+            (<button onClick={() => { console.log(ignoreMethod); ignoreMethod(); handleClose(); }}  className="w-1/3 bg-blue-800 font-anton text-white rounded-md hover:bg-blue-600 flex items-center justify-center min-w-12 pr-1"> Ignore</button>) : (<></>)}
           <button onClick={() => { handleClose(); }} className="w-1/3 bg-gray-500 font-anton text-white rounded-md hover:bg-gray-600 flex items-center justify-center pr-1 min-w-12" >Cancel </button>
         </div>
       </div>
