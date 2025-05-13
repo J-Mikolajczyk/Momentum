@@ -58,7 +58,7 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
   const maxDays = getMaxDays();
 
   return (
-    <><MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod} />
+    <><MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod} setIgnoreMethod={setIgnoreMethod} />
       
     <div className="relative w-full">
         <div className="relative bg-blue-800 h-18 w-full flex flex-col justify-center px-4">
