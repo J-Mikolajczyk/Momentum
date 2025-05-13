@@ -1,7 +1,13 @@
 export default class Week {
 
     constructor(days = []) {
-        this.days = days;
+        this.days = days.map(day => ({
+            ...day,
+            exercises: day.exercises.map(exercise => ({
+                ...exercise,
+                sets: exercise.sets.map(() => ({ weight: '', reps: '' }))
+            }))
+        }));
     }
 
     getDays() {
