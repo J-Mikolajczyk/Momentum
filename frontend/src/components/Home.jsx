@@ -68,7 +68,7 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
                       return;
                     }
                     setUserInfo(json);
-                    setBlockName(json.trainingBlockNames[0];
+                    setBlockName(json.trainingBlockNames[0]);
                   } else {
                     console.log('Response not OK');
                   }
