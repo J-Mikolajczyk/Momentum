@@ -3,7 +3,7 @@
 @import "tailwindcss";
 
 .font-anton {
-    font-family: 'Anton', sans-serif;
+    font-family: 'Anton';
     font-style: italic;
     user-select: none;
 }
