@@ -3,18 +3,18 @@
 @import "tailwindcss";
 
 .font-anton {
-    font-family: 'Anton';
+    font-family: 'Anton', sans-serif;
     font-style: italic;
     user-select: none;
 }
 
 .font-anton-no-italic {
-  font-family: 'Anton';
+  font-family: 'Anton', sans-serif;
   user-select: none;
 }
 
 .font-anton-no-italic-bold {
-  font-family: 'Anton';
+  font-family: 'Anton', sans-serif;
   font-weight: bold;
   user-select: none;
 }
