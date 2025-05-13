@@ -57,9 +57,29 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
                   console.log(err);
          }
   }
+  
+  const openDashboard = async () => {
+    try {
+                  const refreshResponse = await getRequest(ip+'/secure/user/refresh', { userId });
+                  if(refreshResponse.ok) {
+                    const json = await refreshResponse.json();
+                    if(json.exists === false) {
+                      console.log('User does not exist, redirecting to login');
+                      return;
+                    }
+                    setUserInfo(json);
+                    setBlockName(json.trainingBlockNames[0];
+                  } else {
+                    console.log('Response not OK');
+                  }
+                } catch (err) {
+                  console.log(err);
+         }
+  }
 
   useEffect(() => {
     setThemeColor('#193cb8'); 
+    openDashboard();
   }, []);
   
   
