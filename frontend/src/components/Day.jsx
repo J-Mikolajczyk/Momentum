@@ -29,27 +29,37 @@ export default function Day({
   const currentDay = currentWeek?.days?.[currentDayIndex];
   const exercises = currentDay?.exercises;
 
+  const previousWeek = currentWeekIndex > 0 ? blockData?.weeks?.[currentWeekIndex - 1]: null;
+  const previousDay = previousWeek?.days?.[currentDayIndex];
+  const previousExercises = previousDay?.exercises || [];
+
 
   return (
     <div className="flex flex-col w-full flex-grow items-start gap-4 px-4 pt-4 overflow-y-auto scrollbar-hide min-h-[100dvh] pb-50" >
           
         
       {exercises?.length > 0 ? (
-        exercises.map((exercise, exerciseIndex) => (
-          <ExerciseCard
-            key={exerciseIndex}
-            exercise={exercise}
-            exerciseIndex={exerciseIndex}
-            currentWeekIndex={currentWeekIndex}
-            currentDayIndex={currentDayIndex}
-            addSetToExercise={addSetToExercise}
-            deleteSetFromExercise={deleteSetFromExercise}
-            updateSetData={updateSetData}
-            moveExercise={moveExercise}
-            renameExercise={renameExercise}
-            deleteExercise={deleteExercise}
-          />
-        ))
+        exercises.map((exercise, exerciseIndex) => {
+          const priorExercise = previousExercises.find(
+            (prevExercise) => prevExercise.name === exercise.name
+          );
+          return (
+              <ExerciseCard
+                key={exerciseIndex}
+                exercise={exercise}
+                priorExercise={priorExercise}
+                exerciseIndex={exerciseIndex}
+                currentWeekIndex={currentWeekIndex}
+                currentDayIndex={currentDayIndex}
+                addSetToExercise={addSetToExercise}
+                deleteSetFromExercise={deleteSetFromExercise}
+                updateSetData={updateSetData}
+                moveExercise={moveExercise}
+                renameExercise={renameExercise}
+                deleteExercise={deleteExercise}
+              />
+          );
+        })
       ) : null}
       <div className="flex flex-row w-full items-center justify-between">
         <button
