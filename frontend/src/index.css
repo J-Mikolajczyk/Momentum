@@ -9,12 +9,12 @@
 }
 
 .font-anton-no-italic {
-  font-family: 'Anton', sans-serif;
+  font-family: 'Anton';
   user-select: none;
 }
 
 .font-anton-no-italic-bold {
-  font-family: 'Anton', sans-serif;
+  font-family: 'Anton';
   font-weight: bold;
   user-select: none;
 }
