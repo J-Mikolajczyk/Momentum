@@ -1,5 +1,6 @@
 import React, { useState, useSyncExternalStore, useEffect } from 'react';
 import { postRequest } from '../utils/api';
+import setThemeColor from '../hooks/useThemeColor';
 
 function EmailForm({ setLoggedIn, setUserInfo }) {
 
@@ -30,6 +31,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
             setMessage('User logged in.');
             setLoggedIn(true);
             setUserInfo(json);
+            setThemeColor('#193cb8');
           }
           return;
         } else if(response.status === 401) {

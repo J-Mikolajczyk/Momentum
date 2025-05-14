@@ -23,6 +23,7 @@ function App() {
   };
 
   useEffect(() => {
+    setThemeColor('#ffffff');
     const autoLogin = async () => {
       try {
         const response = await fetch(ip + '/auth/auto-login', {
@@ -31,6 +32,7 @@ function App() {
         });
 
         if (response.ok) {
+          setThemeColor('#193cb8');
           const user = await response.json();
           setLoggedIn(true);
           setUserInfo(user);
@@ -50,8 +52,6 @@ function App() {
     setTimeout(() => {
       autoLogin();
     }, 1400);
-
-    setThemeColor('#193cb8'); 
   }, []);
 
     const ip = import.meta.env.VITE_IP_ADDRESS;
