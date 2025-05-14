@@ -69,7 +69,7 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
         </div>
 
         {isDropdownOpen && (
-  <div className="absolute top-18 left-0 w-full bg-blue-800 z-20 shadow-lg">
+  <div className="absolute top-18 left-0 w-full bg-blue-800 z-4 shadow-lg">
     <div className="px-4 h-10 flex items-end justify-between border-t-1 border-blue-900 pb-1">
       <p className="text-white font-anton text-lg w-full">Weeks</p>
       <div className="flex gap-2">
