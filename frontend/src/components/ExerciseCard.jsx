@@ -28,8 +28,8 @@ export default function ExerciseCard({
     const menuRef = useRef(null); 
 
     useEffect(() => {
-        const anyFieldDirty = dirtyFields.some(fields => fields.weight || fields.reps);
-        if (!anyFieldDirty) {
+        const allFieldsClean = dirtyFields.every(fields => !fields.weight && !fields.reps);
+        if (allFieldsClean) {
             setInputValues(
                 exercise?.sets?.map(set => ({
                     weight: set.weight || '',
@@ -38,6 +38,7 @@ export default function ExerciseCard({
             );
         }
     }, [exercise.sets]);
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -69,16 +70,32 @@ export default function ExerciseCard({
         setInputValues(updatedInputs);
     };
 
-    const handleBlur = (setIndex, field) => {
-        const value = inputValues[setIndex][field];
-        updateSetData(exercise.name, setIndex, field, value, currentWeekIndex, currentDayIndex);
+    const blurTimeout = useRef(null);
 
-        setDirtyFields(prev => {
-            const updated = [...prev];
-            updated[setIndex] = { ...updated[setIndex], [field]: false };
-            return updated;
-        });
+    const handleBlur = (setIndex, field) => {
+        if (blurTimeout.current) {
+            clearTimeout(blurTimeout.current);
+        }
+
+        blurTimeout.current = setTimeout(() => {
+            const value = inputValues[setIndex][field];
+            updateSetData(
+                exercise.name,
+                setIndex,
+                field,
+                value,
+                currentWeekIndex,
+                currentDayIndex
+            );
+
+            setDirtyFields(prev => {
+                const updated = [...prev];
+                updated[setIndex] = { ...updated[setIndex], [field]: false };
+                return updated;
+            });
+        }, 150); 
     };
+
 
     const handleAddSet = () => {
         addSetToExercise(exercise.name, currentWeekIndex, currentDayIndex);
