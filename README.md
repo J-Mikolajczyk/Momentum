@@ -2,7 +2,7 @@
 
 Momentum is a full-stack progressive web app that allows users to log their strength training workouts. It is built with Java Spring Boot, React, and MongoDB. Users can plan and create training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
 
-> 🚧 This project is a work in progress. Features like pre-made training templates and a finalized user profile page are currently in development.
+> 🚧 This project is a work in progress. Features listed below are currently in development or planned for future releases.
 
 ---
 ## ☁️ Deployment Platforms
@@ -34,6 +34,7 @@ Momentum is a full-stack progressive web app that allows users to log their stre
 ### Future Updates
 - Email/phone login using one-time passcodes
 - Pre-made training templates to choose from
+- Dark Mode
 ---
 
 ## 🚀 Personal Deployment
