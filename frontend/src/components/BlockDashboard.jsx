@@ -6,7 +6,7 @@ import Exercise from '../models/Exercise';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
-export default function BlockDashboard({ fetchData, weekText, setWeekText, blockName, setBlockName, userInfo, toggleAddBlockMenu }) {
+export default function BlockDashboard({ fetchData, weekText, setWeekText, blockName, setBlockName, userInfo, toggleAddBlockMenu, logOut }) {
 
   const [blockData, setBlockData] = useState(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(null);
@@ -52,7 +52,12 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
   
       try {
         const response = await getRequest(`${ip}/secure/block/get`, { blockName, userId });
-        if (!response.ok) throw new Error('Failed to fetch block');
+        if (response.status === 403 || response.status === 401) {
+            logOut();
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to update block');
   
         const json = await response.json();
         if (json.exists === false) {
@@ -77,8 +82,12 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
   
       try {
         const response = await postRequest(`${ip}/secure/block/delete`, { blockName, userId });
-        if (!response.ok) throw new Error('Failed to delete block');
-  
+        if (response.status === 403 || response.status === 401) {
+            logOut();
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to update block');
   
       } catch (err) {
         console.error(err);
@@ -103,6 +112,11 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
             dayIndex
           });
     
+          if (response.status === 403 || response.status === 401) {
+            logOut();
+            return;
+          }
+
           if (!response.ok) throw new Error('Failed to update block');
     
           if (!options.skipRefresh) {

@@ -7,7 +7,7 @@ import setThemeColor from '../hooks/useThemeColor'
 import {getRequest, postRequest} from '../utils/api'
 
 
-function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
+export default function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -50,7 +50,12 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
                       return;
                     }
                     setUserInfo(json);
-                  } else {
+                  } else if (refreshResponse.status === 403 || refreshResponse.status === 401) {
+                    logOut();
+                    return;
+                  }
+                  else {
+                    refreshResponse.status
                     console.log('Response not OK');
                   }
                 } catch (err) {
@@ -110,10 +115,8 @@ function Home({ setLoggedIn, userInfo, setUserInfo, setShowEmailForm }) {
     <div className='h-full w-full flex flex-col bg-white'>
       <Navigation goHome={goHome} toggleSidebar={toggleSidebar}></Navigation>
       <Sidebar logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-      <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData}/>
+      <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
       <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
     </div>
   );
 }
-
-export default Home;
