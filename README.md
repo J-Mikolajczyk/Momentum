@@ -1,17 +1,9 @@
 # Momentum <img src="frontend/src/assets/favicon.ico" alt="Momentum Logo" width="24" height="24" />
 
-Momentum is a full-stack strength training tracker PWA built with Java Spring Boot, React, and MongoDB. It allows users to plan and track their training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
+Momentum is a full-stack progressive web app that allows users to log their strength training workouts. It is built with Java Spring Boot, React, and MongoDB. Users can plan and create training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
 
-> 🚧 This project is a work in progress. Features like JWT authentication and a finalized user profile page are currently in development.
+> 🚧 This project is a work in progress. Features like pre-made training templates and a finalized user profile page are currently in development.
 
----
-
-## ✨ Features to be Implemented
-
-- User login and account system (JWT + Spring Security coming soon)
-- Add custom days (e.g., Chest Day, Leg Day, etc.)
-- Add exercises to each day
-- Track detailed sets: reps, weight, and more
 ---
 ## ☁️ Deployment Platforms
 
@@ -35,9 +27,13 @@ Momentum is a full-stack strength training tracker PWA built with Java Spring Bo
 - **MongoDB** via Spring Data
 
 ### In Progress
-- JWT Authentication
-- Spring Security
+- Email verification
+- Sidebar for better navigation
+- User profile page
 
+### Future Updates
+- Email/phone login using one-time passcodes
+- Pre-made training templates to choose from
 ---
 
 ## 🚀 Personal Deployment
