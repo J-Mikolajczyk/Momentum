@@ -1,7 +1,11 @@
-async function handle401Retry(originalRequestFn, ...args) {
+
+
+const ip = import.meta.env.VITE_IP_ADDRESS;
+
+async function handleAuthFailureRetry(originalRequestFn, ...args) {
   const response = await originalRequestFn(...args);
-  if (response.status === 401) {
-    const refreshResponse = await fetch('/auth/auto-login', {
+  if (response.status === 403 || response.status === 401) {
+    const refreshResponse = await fetch(ip + '/auth/auto-login', {
       credentials: 'include',
       method: 'POST',
     });
@@ -9,7 +13,7 @@ async function handle401Retry(originalRequestFn, ...args) {
     if (refreshResponse.ok) {
       return originalRequestFn(...args);
     } else {
-      throw new Error('Unauthorized and token refresh failed');
+      return refreshResponse;
     }
   }
 
@@ -17,7 +21,7 @@ async function handle401Retry(originalRequestFn, ...args) {
 }
 
 export async function postRequest(url, data) {
-  return handle401Retry(async () => {
+  return handleAuthFailureRetry(async () => {
     return fetch(url, {
       credentials: 'include',
       method: 'POST',
@@ -30,7 +34,7 @@ export async function postRequest(url, data) {
 }
 
 export async function getRequest(url, params = {}) {
-  return handle401Retry(async () => {
+  return handleAuthFailureRetry(async () => {
     const queryString = new URLSearchParams(params).toString();
     const fullUrl = queryString ? `${url}?${queryString}` : url;
 
