@@ -4,16 +4,16 @@
 
 .font-anton {
     font-family: 'Anton', sans-serif;
+    user-select: none;
+}
+
+.font-anton-italic {
+    font-family: 'Anton', sans-serif;
     font-style: italic;
     user-select: none;
 }
 
-.font-anton-no-italic {
-  font-family: 'Anton', sans-serif;
-  user-select: none;
-}
-
-.font-anton-no-italic-bold {
+.font-anton-bold {
   font-family: 'Anton', sans-serif;
   font-weight: bold;
   user-select: none;

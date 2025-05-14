@@ -120,7 +120,7 @@ export default function ExerciseCard({
                     <div ref={menuRef} className="relative w-1/10 mb-2">
                         <button
                             onClick={toggleMenu}
-                            className="text-blue-800 font-anton-no-italic-bold text-2xl w-full text-center cursor-pointer"
+                            className="text-blue-800 font-anton-bold text-2xl w-full text-center cursor-pointer"
                         >
                             ⫶
                         </button>
@@ -165,7 +165,7 @@ export default function ExerciseCard({
                                 onBlur={() => handleBlur(setIndex, 'reps')}
                             />
                         </div>
-                        <button onClick={() => handleSetDelete(setIndex)} className="font-anton-no-italic cursor-pointer">X</button>
+                        <button onClick={() => handleSetDelete(setIndex)} className="font-anton cursor-pointer">X</button>
                     </div>
                 ))}
 
