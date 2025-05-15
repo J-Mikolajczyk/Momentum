@@ -7,7 +7,7 @@ import Sidebar from './components/Sidebar';
 import BlockDashboard from './components/BlockDashboard';
 import Navigation from './components/Navigation';
 import setThemeColor from './hooks/useThemeColor'
-import {getRequest, postRequest} from './utils/api'
+import {getRequest, postRequest, logoutRequest} from './utils/api'
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -65,7 +65,7 @@ function App() {
   const [weekText, setWeekText] = useState('Loading...');
 
   const logOut = () => {
-    logOutUser();
+    logoutRequest(email);
     setLoggedIn(false);
     setShowEmailForm(true);
     setBlockName(null);
@@ -73,19 +73,6 @@ function App() {
     setUserInfo(null);
     setShowSidebar(false);
     setThemeColor('#ffffff'); 
-  }
-
-  const logOutUser = async () => {
-    try {
-      const response = await postRequest(ip+'/auth/logout', {email});
-      if (response.ok) {
-        console.log('User logged out successfully.');
-      } else {
-        console.log('Error logging out user.');
-      }
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   const fetchData = async () => {

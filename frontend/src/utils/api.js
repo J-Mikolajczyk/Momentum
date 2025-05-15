@@ -47,3 +47,16 @@ export async function getRequest(url, params = {}) {
     });
   });
 }
+
+export async function logoutRequest(email) {
+  try {
+      const response = await postRequest(ip+'/auth/logout', {email});
+      if (response.ok) {
+        console.log('User logged out successfully.');
+      } else {
+        console.log('Error logging out user.');
+      }
+    } catch (err) {
+      console.log(err);
+  }
+}
