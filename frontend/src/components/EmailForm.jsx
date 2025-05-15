@@ -21,7 +21,14 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         const response = await postRequest(ip+'/auth/login', { email, password });
 
         if (response.ok) {
-          console.log(response);
+          try { 
+            const csrfResponse = await fetch(ip + '/auth/csrf', {
+              method: 'GET',
+              credentials: 'include',
+            });
+          } catch (err) {
+            console.log("Issue getting csrf token");
+          }
           const json = await response.json();
           if(json.exists === false) {
             setMessage('User not found. Please register.');
