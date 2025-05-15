@@ -17,6 +17,7 @@ import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 import com.j_mikolajczyk.backend.requests.DeleteBlockRequest;
+import com.j_mikolajczyk.backend.requests.RenameBlockRequest;
 
 @Service
 public class TrainingBlockService {
@@ -135,6 +136,29 @@ public class TrainingBlockService {
 
             User user = userService.getById(block.getCreatedByUserID());
             user.deleteBlock(block.getName());
+            userService.save(user);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+
+     public void rename(RenameBlockRequest renameBlockRequest) throws Exception{
+        String blockName = renameBlockRequest.getBlockName();
+        String newName = renameBlockRequest.getNewName();
+        ObjectId userId = renameBlockRequest.getUserId();
+
+        if(userId == null || blockName == null || newName == null) {
+            throw new RuntimeException("User ID, Block Name, and New Name are required.");
+        }
+
+        try {
+            TrainingBlock block = this.get(blockName, userId);
+            block.setName(newName);
+            blockRepository.save(block);
+
+            User user = userService.getById(block.getCreatedByUserID());
+            user.renameBlock(blockName, newName);
             userService.save(user);
         } catch (Exception e) {
             throw e;

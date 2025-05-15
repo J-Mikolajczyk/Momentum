@@ -81,5 +81,12 @@ public class User {
     public void deleteBlock(String name) throws Exception {
         this.trainingBlockNames.remove(name);
     }
-    
+
+    public void renameBlock(String oldName, String newName) throws Exception {
+        int index = this.trainingBlockNames.indexOf(oldName);
+        if(index == -1) {
+            throw new Exception("404");
+        }
+        this.trainingBlockNames.set(index, newName);
+    }
 }

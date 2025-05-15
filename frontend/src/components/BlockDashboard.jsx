@@ -3,6 +3,7 @@ import { postRequest, getRequest } from '../utils/api';
 import Day from './Day';
 import WeekMenu from './WeekMenu';
 import Exercise from '../models/Exercise';
+import RenameBlockPopup from './RenameBlockPopup';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -13,6 +14,8 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
   const [currentDayIndex, setCurrentDayIndex] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
+  const [showRenamePopup, setShowRenamePopup] = useState(false);
+  const [renameBlockName, setRenameBlockName] = useState('');
 
   const userId = userInfo?.id;
 
@@ -96,6 +99,25 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
       fetchData();
     };
 
+
+    const renameBlock = async (blockName, newName) => {
+  
+      try {
+        const response = await postRequest(`${ip}/secure/block/rename`, { blockName, newName, userId });
+        if (response.status === 403 || response.status === 401) {
+            logOut();
+            return;
+        }
+
+        if (!response.ok) throw new Error('Failed to update block');
+  
+      } catch (err) {
+        console.error(err);
+      }
+      setActiveMenuIndex(null);
+      fetchData();
+    };
+
     const updateBlock = async (updatedWeeks, weekIndex, dayIndex, options = {}) => {
         if (!blockData?.id || !blockData?.name) return;
 
@@ -138,6 +160,12 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
           setMessage('Error updating block.');
         }
     };
+
+  const handleRenameBlock = async (blockName) => {
+    setShowRenamePopup(true);
+    setRenameBlockName(blockName);
+    setActiveMenuIndex(null);
+  };
 
   const addExerciseToDay = async (exerciseName, weekIndex, dayIndex) => {
     const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
@@ -313,7 +341,7 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
   return (
     <>
       {blockName === null ? (
-        <div className="p-4 w-full overflow-y-auto scrollbar-hide min-h-[100dvh] pb-25" >
+        <><div className="p-4 w-full overflow-y-auto scrollbar-hide min-h-[100dvh] pb-25" >
           <div className="flex w-full items-center mb-3">
             <p className="text-blue-800 font-anton inline-block text-3xl">Welcome, {name}</p>
             <button onClick={toggleAddBlockMenu} className="inline-block elect-none bg-gray-400 text-gray-500 font-anton ml-auto w-1/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer">Add Block</button>
@@ -325,6 +353,8 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
                 <button onClick={() => handleActiveMenu(index)} className="text-blue-800 font-anton-bold text-2xl px-4 py-2 text-right w-1/10 relative cursor-pointer">⫶</button>
                 {activeMenuIndex === index && (
                         <div className="absolute right-10 mt-25 w-32 bg-white border border-gray-300 rounded shadow-md z-10">
+                            
+                            <button onClick={() => handleRenameBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Rename</button>
                             <button onClick={() => deleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Delete</button>
                         </div>
                 )}
@@ -334,6 +364,8 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
             <p className="text-gray-500 font-anton text-2xl">No Training Blocks Created</p>
           )}
         </div>
+        <RenameBlockPopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={renameBlockName} rename={renameBlock} />
+        </>
       ) : (
         <>
           <WeekMenu

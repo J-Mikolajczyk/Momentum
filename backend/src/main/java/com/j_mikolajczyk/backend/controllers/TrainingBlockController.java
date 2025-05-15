@@ -19,6 +19,7 @@ import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.AddWeekRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
 import com.j_mikolajczyk.backend.requests.DeleteBlockRequest;
+import com.j_mikolajczyk.backend.requests.RenameBlockRequest;
 import com.j_mikolajczyk.backend.requests.UpdateBlockIndexRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 
@@ -99,6 +100,24 @@ public class TrainingBlockController {
         try {
             blockService.delete(deleteBlockRequest);
             System.out.println("Block deletion successful for block " + name);
+            return ResponseEntity.status(HttpStatus.OK).body("Update successful");
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) {
+                System.out.println(name + " not found, returning false");
+                return ResponseEntity.ok("{\"exists\": false}");
+            }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/rename")
+    public ResponseEntity<?> rename(@RequestBody RenameBlockRequest renameBlockRequest) throws Exception{
+        String name = renameBlockRequest.getBlockName();
+        System.out.println("Block rename requested for block: " + name);
+
+        try {
+            blockService.rename(renameBlockRequest);
+            System.out.println("Block rename successful for block " + name);
             return ResponseEntity.status(HttpStatus.OK).body("Update successful");
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
