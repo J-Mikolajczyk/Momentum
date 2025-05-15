@@ -32,6 +32,15 @@ function App() {
         });
 
         if (response.ok) {
+          try {
+            const csrfRespose = await fetch(ip + '/auth/csrf', {
+              method: 'GET',
+              credentials: 'include',
+            });
+          } catch (err) {
+            console.log("Issue getting csrf token");
+          }
+          console.log('Auto-login successful')
           setThemeColor('#193cb8');
           const user = await response.json();
           setLoggedIn(true);
