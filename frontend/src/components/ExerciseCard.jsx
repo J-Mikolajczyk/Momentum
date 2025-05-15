@@ -132,37 +132,44 @@ export default function ExerciseCard({
                     </div>
                 </div>
 
+                <div className='flex flex-col w-full'>
+                <div className="flex flex-row w-full justify-around items-center">
+                    <div className="flex flex-col items-center w-1/4">
+                        <label className="text-lg font-anton mr-1">Weight:</label>
+                    </div>
+                    <div className="flex flex-col items-center w-1/4">
+                        <label className="text-lg font-anton mr-1">Reps:</label>
+                    </div>
+                    <div className="flex flex-col items-center w-1/10">
+                    </div>
+                </div>
+
                 {exercise?.sets?.map((set, setIndex) => (
                     <div key={setIndex} className="flex flex-row mb-2 w-full justify-around items-center gap-2">
-                        <div className="flex flex-col items-center w-1/4">
-                            <label className="text-lg font-anton mr-1">Weight:</label>
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={priorExercise?.sets?.[setIndex]?.weight || ''}
-                                className="text-center border rounded w-full font-anton h-full text-lg"
+                                className="text-center border rounded w-1/4 font-anton h-full text-lg"
                                 value={inputValues[setIndex]?.weight || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                                 onBlur={() => handleBlur(setIndex, 'weight')}
                             />
-                        </div>
-                        <div className="flex flex-col items-center w-1/4">
-                            <label className="text-lg font-anton mr-1">Reps:</label>
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={priorExercise?.sets?.[setIndex]?.reps || ''}
-                                className="text-center border rounded w-full font-anton h-full text-lg"
+                                className="text-center border rounded w-1/4 font-anton h-full text-lg"
                                 value={inputValues[setIndex]?.reps || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
                                 onBlur={() => handleBlur(setIndex, 'reps')}
                             />
-                        </div>
                         <button onClick={() => handleSetDelete(setIndex)} className="font-anton cursor-pointer h-full w-1/10">X</button>
                     </div>
                 ))}
+                    </div>
             </div>
         </>
     );
