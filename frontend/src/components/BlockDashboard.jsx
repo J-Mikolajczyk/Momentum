@@ -4,6 +4,7 @@ import Day from './Day';
 import WeekMenu from './WeekMenu';
 import Exercise from '../models/Exercise';
 import RenameBlockPopup from './RenameBlockPopup';
+import DeleteBlockPopup from './DeleteBlockPopup';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -15,7 +16,9 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
   const [ignoreMethod, setIgnoreMethod] = useState(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
   const [showRenamePopup, setShowRenamePopup] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [renameBlockName, setRenameBlockName] = useState('');
+  const [deleteBlockName, setDeleteBlockName] = useState('');
 
   const userId = userInfo?.id;
 
@@ -78,6 +81,12 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
         console.error(err);
         setWeekText('Error loading block.');
       }
+    };
+
+    const handleDeleteBlock = async(blockName) => {
+      setShowDeletePopup(true);
+      setDeleteBlockName(blockName);
+      setActiveMenuIndex(null);
     };
 
 
@@ -355,7 +364,7 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
                         <div className="absolute right-10 mt-25 w-32 bg-white border border-gray-300 rounded shadow-md z-10">
                             
                             <button onClick={() => handleRenameBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Rename</button>
-                            <button onClick={() => deleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Delete</button>
+                            <button onClick={() => handleDeleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Delete</button>
                         </div>
                 )}
               </div>
@@ -365,6 +374,8 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
           )}
         </div>
         <RenameBlockPopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={renameBlockName} rename={renameBlock} />
+        <DeleteBlockPopup show={showDeletePopup} toggle={() => setShowDeletePopup()} name={deleteBlockName} deleteMethod={deleteBlock} />
+        
         </>
       ) : (
         <>
