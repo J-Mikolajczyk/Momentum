@@ -1,6 +1,7 @@
 import React, { useState, useSyncExternalStore, useEffect } from 'react';
 import { postRequest, loginRequest } from '../utils/api';
 import setThemeColor from '../hooks/useThemeColor';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function EmailForm({ setLoggedIn, setUserInfo }) {
 
@@ -77,7 +78,8 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
     } 
 
   return (
-      <form  onSubmit={handleSubmit}  className='w-full max-w-125 h-full flex flex-col items-center justify-around font-anton rounded-md text-blue-800 text-4xl'  >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 2 }} className='w-full h-5/12 flex items-center justify-center' >
+      <form  onSubmit={handleSubmit}  className='w-full max-w-125 pt-10 h-full flex flex-col items-center justify-around font-anton rounded-md text-blue-800 text-4xl'  >
       <h1 className='text-blue-800 font-anton text-5xl text-shadow-lg'>{exists ? 'Login:' : notFound ? 'Register:' : 'Login/Register:'}</h1>
         <input className={'bg-white font-anton rounded-md text-blue-800 w-6/7 pl-3 text-2xl border-blue-800 border-2 ' + (notFound ? 'h-10' : 'h-15')} placeholder='Email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input className={'bg-white font-anton rounded-md text-blue-800 w-6/7 pl-3 text-2xl border-blue-800 border-2 ' + (notFound ? 'h-10' : 'h-15')} placeholder='Password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} required />
@@ -89,6 +91,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
         <button type='submit' className='bg-white font-anton rounded-md text-blue-800 hover:bg-gray-200 transition duration-300 h-15 px-10 text-4xl border-blue-800 border-2 flex justify-center items-center'   >Submit</button>
         {message && (<p className='text-blue-800 text-xl mt-2'>{message}</p> )}
       </form>
+    </motion.div>
   );
 }
 

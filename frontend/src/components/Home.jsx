@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { postRequest, getRequest } from '../utils/api';
 import RenameBlockPopup from './RenameBlockPopup';
 import DeleteBlockPopup from './DeleteBlockPopup';
@@ -16,6 +16,7 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [renameBlockName, setRenameBlockName] = useState('');
   const [deleteBlockName, setDeleteBlockName] = useState('');
+  const menuRef = useRef(null); 
 
   const userId = userInfo?.id;
 
@@ -74,7 +75,21 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
         console.error(err);
         setWeekText('Error loading block.');
       }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setActiveMenuIndex(null);
+      }
     };
+    if (activeMenuIndex !== null) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [activeMenuIndex]);
 
     const handleDeleteBlock = async(blockName) => {
       setShowDeletePopup(true);
@@ -141,7 +156,7 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
           </div>
           {userInfo?.trainingBlockNames?.length > 0 ? (
             userInfo.trainingBlockNames.map((blockName, index) => (
-              <div key={index} className="flex flex-row items-center justify-between bg-blue-50 text-blue-800 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1">
+              <div ref={menuRef} key={index} className="flex flex-row items-center justify-between bg-blue-50 text-blue-800 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1">
                 <button onClick={() => openBlock(blockName)} className="font-anton text-blue-800 w-9/10 text-left px-2 py-2 cursor-pointer">{blockName}</button>
                 <button onClick={() => handleActiveMenu(index)} className="text-blue-800 font-anton-bold text-2xl px-4 py-2 text-right w-1/10 relative cursor-pointer">⫶</button>
                 {activeMenuIndex === index && (

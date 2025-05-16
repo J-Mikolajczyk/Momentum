@@ -8,7 +8,7 @@ import BlockDashboard from './components/BlockDashboard';
 import Home from './components/Home';
 import Navigation from './components/Navigation';
 import setThemeColor from './hooks/useThemeColor'
-import {getRequest, postRequest, loginRequest, logoutRequest} from './utils/api'
+import {getRequest, loginRequest, logoutRequest} from './utils/api'
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -17,7 +17,6 @@ export default function App() {
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-  const [autoLoginFail, setAutoLoginFail] = useState(false);
 
   const toggleShowEmailForm = () => {
     setShowEmailForm(!showEmailForm); 
@@ -37,11 +36,9 @@ export default function App() {
           }
         } else {
           toggleShowEmailForm();
-          console.log('Auto-login failed');
         }
       } catch (err) {
         toggleShowEmailForm();
-        console.error(err);
       }
   };
 
@@ -52,15 +49,13 @@ export default function App() {
     }, 1400);
   }, []);
 
-    const ip = import.meta.env.VITE_IP_ADDRESS;
-
   const [showSidebar, setShowSidebar] = useState(false);
   const [showAddBlockMenu, setshowAddBlockMenu] = useState(false);
   const [blockName, setBlockName] = useState(null);
-  const name = userInfo?.name != null ? userInfo.name : null;
+  const [weekText, setWeekText] = useState('Loading...');
+  const [splashFinished, setSplashFinished] = useState(false);
   const userId = userInfo?.id != null ? userInfo.id : null;
   const email = userInfo?.email != null ? userInfo.email : null;
-  const [weekText, setWeekText] = useState('Loading...');
 
   const logOut = () => {
     logoutRequest(email);
@@ -75,24 +70,23 @@ export default function App() {
 
   const fetchData = async () => {
     try {
-                  const refreshResponse = await getRequest(ip+'/secure/user/refresh', { userId });
-                  if(refreshResponse.ok) {
-                    const json = await refreshResponse.json();
-                    if(json.exists === false) {
-                      console.log('User does not exist, redirecting to login');
-                      return;
-                    }
-                    setUserInfo(json);
-                  } else if (refreshResponse.status === 403 || refreshResponse.status === 401) {
-                    logOut();
-                    return;
-                  }
-                  else {
-                    refreshResponse.status
-                    console.log('Response not OK');
-                  }
-                } catch (err) {
-          console.log(err);
+      const refreshResponse = await getRequest(ip+'/secure/user/refresh', { userId });
+      if(refreshResponse.ok) {
+        const json = await refreshResponse.json();
+        if(json.exists === false) {
+          console.log('User does not exist, redirecting to login');
+          return;
+        }
+        setUserInfo(json);
+      } else if (refreshResponse.status === 403 || refreshResponse.status === 401) {
+        logOut();
+        return;
+      } else {
+        console.log('Response not OK');
+        return;
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
   
@@ -117,31 +111,22 @@ export default function App() {
 
   return (
     <div className='h-screen w-screen flex flex-col items-center justify-center bg-white'>
-      {loggedIn ? (
+      {loggedIn ?
         <div className='h-full w-full flex flex-col bg-white'>
           <Navigation toggleSidebar={toggleSidebar}></Navigation>
           <Sidebar goHome={goHome} logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-          {blockName === null ? 
-            (<Home blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>)
-          : (<BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>) 
+          {blockName === null ? <Home blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
+            : <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
           }
           <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} logOut={logOut}/>
-        </div>
-      ) : (
+        </div> : 
         <div className='flex flex-col bg-white h-full w-full items-center justify-center overflow-hidden'>
-          <motion.div initial={{ y: 0 }} animate={showEmailForm ? { y: -100 } : { y: 0 }}transition={{ type: 'spring', stiffness: 100, damping: 15 }}>
-            <SplashScreen />
-          </motion.div>
-
-          <AnimatePresence>
-            {showEmailForm && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }} className='w-full h-5/12 flex items-center justify-center' >
-                <EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo} />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <SplashScreen showEmailForm={showEmailForm}/>
+          {showEmailForm && (
+            <EmailForm setLoggedIn={setLoggedIn} setUserInfo={setUserInfo} />
+           )}
         </div>
-      )}
+      }
     </div>
   );
 }
