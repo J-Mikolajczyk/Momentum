@@ -14,24 +14,29 @@ export default function ExerciseCard({
     renameExercise,
     deleteExercise
 }) {
-    const [inputValues, setInputValues] = useState(() => {
-        return exercise?.sets?.map(set => ({
+
+    const [inputValues, setInputValues] = useState(() =>
+        exercise?.sets?.map(set => ({
             weight: set.weight || '',
             reps: set.reps || '',
-        })) || [];
-    });
+        })) || []
+        );
+    const [isEditing, setIsEditing] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
     const [showRenamePopup, setShowRenamePopup] = useState(false);
     const menuRef = useRef(null); 
 
     useEffect(() => {
-        setInputValues(
+        if (!isEditing) {
+            setInputValues(
             exercise?.sets?.map(set => ({
                 weight: set.weight || '',
                 reps: set.reps || '',
             })) || []
-        );
-    }, [exercise.sets]);
+            );
+        }
+    }, [exercise.sets]); 
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -50,12 +55,13 @@ export default function ExerciseCard({
     }, [showMenu]);
 
     const handleLocalChange = (setIndex, field, value) => {
-        const updatedInputs = [...inputValues];
-        updatedInputs[setIndex] = { ...updatedInputs[setIndex], [field]: value };
-        setInputValues(updatedInputs);
+        setIsEditing(true);
+        setInputValues(prev => {
+            const updated = [...prev];
+            updated[setIndex] = { ...updated[setIndex], [field]: value };
+            return updated;
+        });
     };
-
-    const blurTimeout = useRef(null);
 
     const handleBlur = (setIndex, field) => {
         const value = inputValues[setIndex][field];
@@ -64,9 +70,10 @@ export default function ExerciseCard({
             setIndex,
             field,
             value,
-        currentWeekIndex,
-        currentDayIndex
+            currentWeekIndex,
+            currentDayIndex
         );
+        setTimeout(() => setIsEditing(false), 200);
     };
 
     const handleAddSet = () => {

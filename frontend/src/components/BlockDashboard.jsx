@@ -128,47 +128,46 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
     };
 
     const updateBlock = async (updatedWeeks, weekIndex, dayIndex, options = {}) => {
-        if (!blockData?.id || !blockData?.name) return;
+      if (!blockData?.id || !blockData?.name) return;
 
-        if(weekIndex === blockData.weeks.length-1 && updatedWeeks.length < blockData.weeks.length) {
-          weekIndex--;
+      if (weekIndex === blockData.weeks.length - 1 && updatedWeeks.length < blockData.weeks.length) {
+        weekIndex--;
+      }
+
+      try {
+        const response = await postRequest(`${ip}/secure/block/update`, {
+          id: blockData.id,
+          name: blockData.name,
+          weeks: updatedWeeks,
+          weekIndex,
+          dayIndex
+        });
+
+        if (response.status === 403 || response.status === 401) {
+          logOut();
+          return;
         }
-    
-        try {
-          const response = await postRequest(`${ip}/secure/block/update`, {
-            id: blockData.id,
-            name: blockData.name,
+
+        if (!response.ok) throw new Error('Failed to update block');
+
+        if (!options.skipRefresh) {
+          setBlockData(prev => ({
+            ...prev,
             weeks: updatedWeeks,
-            weekIndex,
-            dayIndex
-          });
-    
-          if (response.status === 403 || response.status === 401) {
-            logOut();
-            return;
-          }
+            mostRecentWeekOpen: weekIndex,
+            mostRecentDayOpen: dayIndex
+          }));
 
-          if (!response.ok) throw new Error('Failed to update block');
-    
-          if (!options.skipRefresh) {
-            const updated = {
-              ...blockData,
-              weeks: updatedWeeks,
-              mostRecentWeekOpen: weekIndex,
-              mostRecentDayOpen: dayIndex
-            };
-            
-            
-            setCurrentWeekIndex(weekIndex);
-            setWeekText(computeWeekText(updated, weekIndex, dayIndex));
-            setBlockData(updated);
-            setCurrentDayIndex(dayIndex);
-          }
-        } catch (err) {
-          console.error(err);
-          setMessage('Error updating block.');
+          setCurrentWeekIndex(weekIndex);
+          setWeekText(computeWeekText({ ...blockData, weeks: updatedWeeks }, weekIndex, dayIndex));
+          setCurrentDayIndex(dayIndex);
         }
+      } catch (err) {
+        console.error(err);
+        setMessage('Error updating block.');
+      }
     };
+
 
   const handleRenameBlock = async (blockName) => {
     setShowRenamePopup(true);
