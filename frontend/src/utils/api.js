@@ -1,5 +1,3 @@
-
-
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
 async function handleAuthFailureRetry(originalRequestFn, ...args) {

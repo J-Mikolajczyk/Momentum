@@ -5,6 +5,7 @@ import EmailForm from './components/EmailForm';
 import AddBlockPopup from './components/AddBlockPopup';
 import Sidebar from './components/Sidebar';
 import BlockDashboard from './components/BlockDashboard';
+import Home from './components/Home';
 import Navigation from './components/Navigation';
 import setThemeColor from './hooks/useThemeColor'
 import {getRequest, postRequest, loginRequest, logoutRequest} from './utils/api'
@@ -120,7 +121,10 @@ export default function App() {
         <div className='h-full w-full flex flex-col bg-white'>
           <Navigation toggleSidebar={toggleSidebar}></Navigation>
           <Sidebar goHome={goHome} logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-          <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
+          {blockName === null ? 
+            (<Home blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>)
+          : (<BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>) 
+          }
           <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} logOut={logOut}/>
         </div>
       ) : (

@@ -36,8 +36,6 @@ export default function Day({
 
   return (
     <div className="flex flex-col w-full flex-grow items-start gap-4 px-4 pt-4 overflow-y-auto scrollbar-hide min-h-[100dvh] pb-50" >
-          
-        
       {exercises?.length > 0 ? (
         exercises.map((exercise, exerciseIndex) => {
           const priorExercise = previousExercises.find(
