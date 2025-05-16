@@ -58,21 +58,15 @@ export default function ExerciseCard({
     const blurTimeout = useRef(null);
 
     const handleBlur = (setIndex, field) => {
-        if (blurTimeout.current) {
-            clearTimeout(blurTimeout.current);
-        }
-
-        blurTimeout.current = setTimeout(() => {
-            const value = inputValues[setIndex][field];
-            updateSetData(
-                exercise.name,
-                setIndex,
-                field,
-                value,
-                currentWeekIndex,
-                currentDayIndex
-            );
-        }, 150); 
+        const value = inputValues[setIndex][field];
+        updateSetData(
+            exercise.name,
+            setIndex,
+            field,
+            value,
+        currentWeekIndex,
+        currentDayIndex
+        );
     };
 
     const handleAddSet = () => {
