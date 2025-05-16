@@ -130,6 +130,7 @@ cd backend
 momentum/
 ├── backend/                # Java Spring Boot backend
 │   ├── src/
+│   ├── Dockerfile
 │   └── pom.xml
 ├── frontend/               # React frontend
 │   ├── public/
