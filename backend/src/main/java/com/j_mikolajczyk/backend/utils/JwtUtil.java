@@ -102,4 +102,12 @@ public class JwtUtil {
         }
         return claims.getExpiration().before(new Date());
     }
+
+    public String extractEmail(String token) {
+        Claims claims = validateToken(token);
+        if (claims == null) {
+            return null;
+        }
+        return claims.get("email", String.class);
+    }
 }

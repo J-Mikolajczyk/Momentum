@@ -47,28 +47,4 @@ public class UserController {
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest, HttpServletResponse response) {
-        String emailString = logoutRequest.getEmail();
-        System.out.println("Logout requested for " + emailString + ", clearing cookies");
-        Cookie longTermCookie = createCookie("longTermCookie", null, 0, "/auth");
-        response.addCookie(longTermCookie);
-
-        Cookie shortTermCookie = createCookie("shortTermCookie", null, 0, "/secure");
-        response.addCookie(shortTermCookie);
-        System.out.println(emailString + " logged out, cookies cleared");
-
-        return ResponseEntity.ok("Logged out successfully");
-    }
-
-    private Cookie createCookie(String name, String value, int maxAge, String path) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setDomain("training-momentum.com");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath(path);
-        cookie.setMaxAge(maxAge);
-        cookie.setAttribute("SameSite", "Lax");
-        return cookie;
-    }
 }

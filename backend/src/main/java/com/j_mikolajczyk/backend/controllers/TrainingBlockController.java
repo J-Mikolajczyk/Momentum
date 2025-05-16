@@ -5,69 +5,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.j_mikolajczyk.backend.dto.BlockDTO;
-import com.j_mikolajczyk.backend.models.Day;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
-import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
-import com.j_mikolajczyk.backend.requests.AddWeekRequest;
-import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
-import com.j_mikolajczyk.backend.requests.DeleteBlockRequest;
-import com.j_mikolajczyk.backend.requests.RenameBlockRequest;
-import com.j_mikolajczyk.backend.requests.UpdateBlockIndexRequest;
+import com.j_mikolajczyk.backend.models.User;
+import com.j_mikolajczyk.backend.requests.*;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
+import com.j_mikolajczyk.backend.services.UserService;
+import com.j_mikolajczyk.backend.utils.JwtUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/secure/block")
 public class TrainingBlockController {
 
     private final TrainingBlockService blockService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public TrainingBlockController(TrainingBlockService blockService) {
+    public TrainingBlockController(TrainingBlockService blockService, UserService userService, JwtUtil jwtUtil) {
         this.blockService = blockService;
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> get(@RequestParam("blockName") String name, @RequestParam("userId") String stringId){
+    public ResponseEntity<?> get(@RequestParam("blockName") String name, @RequestParam("userId") String stringId, HttpServletRequest request) {
         ObjectId id = new ObjectId(stringId);
-        System.out.println("Block " + name + " requested for user: " + id);
+        ResponseEntity<?> authResponse = validateUserAccess(id, request);
+        if (authResponse != null) return authResponse;
+
         try {
             TrainingBlock block = blockService.get(name, id);
-            System.out.println("Block " + name + " found for user: " + id);
-            BlockDTO blockDTO = new BlockDTO(block);
-            return ResponseEntity.ok(blockDTO);
+            return ResponseEntity.ok(new BlockDTO(block));
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok("{\"exists\": false}");
         } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(name + " or " + stringId + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
-            }
-            System.out.println(name + " search unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody CreateTrainingBlockRequest createBlockRequest){
-        String name = createBlockRequest.getBlockName();
-        String userId = createBlockRequest.getUserId().toString();
-        System.out.println("Block creation requested from user: " + userId);
+    public ResponseEntity<?> create(@RequestBody CreateTrainingBlockRequest createTrainingBlockRequest, HttpServletRequest request) {
+        ResponseEntity<?> authResponse = validateUserAccess(createTrainingBlockRequest.getUserId(), request);
+        if (authResponse != null) return authResponse;
+
         try {
-            blockService.create(createBlockRequest);
-            System.out.println("Block creation successful for user: " + userId);
+            blockService.create(createTrainingBlockRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("Creation successful");
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok("{\"exists\": false}");
         } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(userId + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
-            } else if (e.getMessage().equals("409")) {
-                System.out.println(name + " block name already exists.");
+            if ("409".equals(e.getMessage())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");
             }
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -75,57 +68,88 @@ public class TrainingBlockController {
     }
 
     @PostMapping("/update")
-    public ResponseEntity<?> update(@RequestBody UpdateBlockRequest updateBlockRequest) throws Exception{
-        System.out.println("Block update requested for block: " + updateBlockRequest.getName());
-        
-        String name = updateBlockRequest.getName();
+    public ResponseEntity<?> update(@RequestBody UpdateBlockRequest updateBlockRequest, HttpServletRequest request) throws Exception {
+        TrainingBlock block = blockService.get(updateBlockRequest.getId());
+        ResponseEntity<?> authResponse = validateUserAccess(block.getCreatedByUserID(), request);
+        if (authResponse != null) return authResponse;
+
         try {
             blockService.update(updateBlockRequest);
-            System.out.println("Block update successful for block " + name + " new week index is: " + updateBlockRequest.getWeekIndex() + " new day index is: " + updateBlockRequest.getDayIndex());
-            return ResponseEntity.status(HttpStatus.OK).body("Update successful");
+            return ResponseEntity.ok("Update successful");
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok("{\"exists\": false}");
         } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(name + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
-            }
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody DeleteBlockRequest deleteBlockRequest) throws Exception{
-        String name = deleteBlockRequest.getBlockName();
-        System.out.println("Block deletion requested for block: " + name);
+    public ResponseEntity<?> delete(@RequestBody DeleteBlockRequest deleteBlockRequest, HttpServletRequest request) throws Exception {
+        ResponseEntity<?> authResponse = validateUserAccess(deleteBlockRequest.getUserId(), request);
+        if (authResponse != null) return authResponse;
 
         try {
             blockService.delete(deleteBlockRequest);
-            System.out.println("Block deletion successful for block " + name);
-            return ResponseEntity.status(HttpStatus.OK).body("Update successful");
+            return ResponseEntity.ok("Delete successful");
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok("{\"exists\": false}");
         } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(name + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
-            }
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/rename")
-    public ResponseEntity<?> rename(@RequestBody RenameBlockRequest renameBlockRequest) throws Exception{
-        String name = renameBlockRequest.getBlockName();
-        System.out.println("Block rename requested for block: " + name);
+    public ResponseEntity<?> rename(@RequestBody RenameBlockRequest renameBlockRequest, HttpServletRequest request) throws Exception {
+        ResponseEntity<?> authResponse = validateUserAccess(renameBlockRequest.getUserId(), request);
+        if (authResponse != null) return authResponse;
 
         try {
             blockService.rename(renameBlockRequest);
-            System.out.println("Block rename successful for block " + name);
-            return ResponseEntity.status(HttpStatus.OK).body("Update successful");
+            return ResponseEntity.ok("Rename successful");
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok("{\"exists\": false}");
         } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                System.out.println(name + " not found, returning false");
-                return ResponseEntity.ok("{\"exists\": false}");
+            if ("409".equals(e.getMessage())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Blocks cannot have identical names");
             }
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
+    private ResponseEntity<?> validateUserAccess(ObjectId userId, HttpServletRequest request) {
+        User user;
+        try {
+            user = userService.getById(userId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        }
+
+        String jwt = getJwtFromCookies(request);
+        if (jwt == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT cookie found");
+        }
+
+        String email;
+        try {
+            email = jwtUtil.extractEmail(jwt);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT");
+        }
+
+        if (!email.equals(user.getEmail())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
+        }
+
+        return null;
+    }
+
+    private String getJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("shortTermCookie".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
 }
