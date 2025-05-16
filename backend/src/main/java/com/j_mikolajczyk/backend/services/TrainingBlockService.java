@@ -3,9 +3,12 @@ package com.j_mikolajczyk.backend.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 
 import com.j_mikolajczyk.backend.models.Day;
@@ -154,10 +157,15 @@ public class TrainingBlockService {
 
         try {
             TrainingBlock block = this.get(blockName, userId);
+            User user = userService.getById(block.getCreatedByUserID());
+
+            List<String> blocks = user.getTrainingBlockNames();
+            if (blocks.contains(newName)){
+                throw new Exception("409");
+            }
             block.setName(newName);
             blockRepository.save(block);
 
-            User user = userService.getById(block.getCreatedByUserID());
             user.renameBlock(blockName, newName);
             userService.save(user);
         } catch (Exception e) {

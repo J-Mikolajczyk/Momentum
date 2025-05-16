@@ -9,6 +9,8 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,6 @@ import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
 import com.j_mikolajczyk.backend.requests.LogoutRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
-import com.j_mikolajczyk.backend.requests.UserRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 import com.j_mikolajczyk.backend.utils.JwtUtil;
 
@@ -140,6 +141,54 @@ public class AuthController {
             System.out.println("Auto-login unsuccessful");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired long-term token");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest, HttpServletRequest request, HttpServletResponse response) {
+        String email = logoutRequest.getEmail();
+        ResponseEntity<?> authResponse = validateUserAccess(email, request);
+        if (authResponse != null) return authResponse;
+        
+        Cookie longTermCookie = createCookie("longTermCookie", null, 0, "/auth");
+        response.addCookie(longTermCookie);
+
+        Cookie shortTermCookie = createCookie("shortTermCookie", null, 0, "/secure");
+        response.addCookie(shortTermCookie);
+
+        System.out.println(email + " logged out, cookies cleared");
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
+
+    private ResponseEntity<?> validateUserAccess(String givenEmail, HttpServletRequest request) {
+
+        String jwt = getJwtFromCookies(request);
+        if (jwt == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT cookie found");
+        }
+
+        String email;
+        try {
+            email = jwtUtil.extractEmail(jwt);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT");
+        }
+
+        if (!email.equals(givenEmail)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
+        }
+
+        return null;
+    }
+
+    private String getJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("longTermCookie".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 
     private Cookie createCookie(String name, String value, int maxAge, String path) {
