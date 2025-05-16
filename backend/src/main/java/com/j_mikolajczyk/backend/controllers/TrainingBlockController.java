@@ -136,6 +136,10 @@ public class TrainingBlockController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT");
         }
 
+        if(email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
+        }
+
         if (!email.equals(user.getEmail())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
         }

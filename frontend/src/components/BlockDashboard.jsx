@@ -373,8 +373,8 @@ export default function BlockDashboard({ fetchData, weekText, setWeekText, block
             <p className="text-gray-500 font-anton text-2xl">No Training Blocks Created</p>
           )}
         </div>
-        <RenameBlockPopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={renameBlockName} rename={renameBlock} />
-        <DeleteBlockPopup show={showDeletePopup} toggle={() => setShowDeletePopup()} name={deleteBlockName} deleteMethod={deleteBlock} />
+        <RenameBlockPopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={renameBlockName} rename={renameBlock} logOut={logOut} />
+        <DeleteBlockPopup show={showDeletePopup} toggle={() => setShowDeletePopup()} name={deleteBlockName} deleteMethod={deleteBlock} logOut={logOut} />
         
         </>
       ) : (

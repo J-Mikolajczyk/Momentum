@@ -7,11 +7,11 @@ import Sidebar from './components/Sidebar';
 import BlockDashboard from './components/BlockDashboard';
 import Navigation from './components/Navigation';
 import setThemeColor from './hooks/useThemeColor'
-import {getRequest, postRequest, logoutRequest} from './utils/api'
+import {getRequest, postRequest, loginRequest, logoutRequest} from './utils/api'
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
-function App() {
+export default function App() {
 
   const [showEmailForm, setShowEmailForm] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -22,14 +22,9 @@ function App() {
     setShowEmailForm(!showEmailForm); 
   };
 
-  useEffect(() => {
-    setThemeColor('#ffffff');
-    const autoLogin = async () => {
+  const autoLogin = async () => {
       try {
-        const response = await fetch(ip + '/auth/auto-login', {
-          method: 'POST',
-          credentials: 'include',
-        });
+        const response = await loginRequest(ip + '/auth/auto-login')
 
         if (response.ok) {
           setThemeColor('#193cb8');
@@ -47,8 +42,10 @@ function App() {
         toggleShowEmailForm();
         console.error(err);
       }
-    };
+  };
 
+  useEffect(() => {
+    setThemeColor('#ffffff');
     setTimeout(() => {
       autoLogin();
     }, 1400);
@@ -124,7 +121,7 @@ function App() {
           <Navigation toggleSidebar={toggleSidebar}></Navigation>
           <Sidebar goHome={goHome} logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
           <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
-          <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} setUserInfo={setUserInfo}/>
+          <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} logOut={logOut}/>
         </div>
       ) : (
         <div className='flex flex-col bg-white h-full w-full items-center justify-center overflow-hidden'>
@@ -144,5 +141,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

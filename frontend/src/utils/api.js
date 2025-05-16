@@ -4,7 +4,7 @@ const ip = import.meta.env.VITE_IP_ADDRESS;
 
 async function handleAuthFailureRetry(originalRequestFn, ...args) {
   const response = await originalRequestFn(...args);
-  if (response.status === 403 || response.status === 401) {
+  if (response.status === 401) {
     const refreshResponse = await fetch(ip + '/auth/auto-login', {
       credentials: 'include',
       method: 'POST',
@@ -48,14 +48,27 @@ export async function getRequest(url, params = {}) {
   });
 }
 
+export async function loginRequest(url, data) {
+    return fetch(url, {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+}
+
 export async function logoutRequest(email) {
   try {
-      const response = await postRequest(ip+'/auth/logout', {email});
-      if (response.ok) {
-        console.log('User logged out successfully.');
-      } else {
-        console.log('Error logging out user.');
-      }
+    return fetch(ip+'/auth/logout', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(email),
+    });
     } catch (err) {
       console.log(err);
   }

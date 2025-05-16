@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useSyncExternalStore } from 'react';
 import { postRequest, getRequest } from '../utils/api';
 
-export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, userInfo, setUserInfo} ) {
+export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, userInfo, logOut} ) {
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
     const [blockName, setBlockName] = useState('');
@@ -46,28 +46,24 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
         setMessage('Block name is required.')
         return null;
       }
-
       
       const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
       const sortedDays = [...selectedDays].sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
 
-      try {
-              const response = await postRequest(ip+'/secure/block/create', { blockName, userId, sortedDays });
-              console.log(response);
-              if (response.status === 201) {
-                fetchData();
-                handleClose();
-                return null;
-              } else if (response.status === 409) {
-                setMessage(blockName + ' already exists.');
-              } else {
-                setMessage('Error creating block')
-                return null;
-              }
-            } catch (err) {
-              setMessage('Error creating block')
-              return null;
-            }
+
+      const response = await postRequest(ip+'/secure/block/create', { blockName, userId, sortedDays });
+      if (response.status === 201) {
+        fetchData();
+        handleClose();
+      } else if (response.status === 409) {
+        setMessage(blockName + ' already exists.');
+      } else if (response.status === 403 || response.status === 401) {
+        logOut();
+      } else {
+        setMessage('Error creating block')
+      }
+      return null;
+
     }
 
 

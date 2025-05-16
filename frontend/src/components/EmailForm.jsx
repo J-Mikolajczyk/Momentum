@@ -1,5 +1,5 @@
 import React, { useState, useSyncExternalStore, useEffect } from 'react';
-import { postRequest } from '../utils/api';
+import { postRequest, loginRequest } from '../utils/api';
 import setThemeColor from '../hooks/useThemeColor';
 
 function EmailForm({ setLoggedIn, setUserInfo }) {
@@ -18,7 +18,7 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
 
     if(!notFound){
       try {
-        const response = await postRequest(ip+'/auth/login', { email, password });
+        const response = await loginRequest(ip+'/auth/login', { email, password });
 
         if (response.ok) {
           console.log(response);
@@ -44,7 +44,11 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
       } catch (err) {
         setMessage('Server error. Try again later.');
       }}
-      try {
+    try {
+        if(password !== confirmPassword) {
+          setMessage('Passwords do not match.');
+          return;
+        }
         const response = await postRequest(ip+'/auth/register', { email, password, name });
         if (response.ok) {
           setMessage('User registered, redirecting to login.');
