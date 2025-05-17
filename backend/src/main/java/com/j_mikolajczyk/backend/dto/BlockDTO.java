@@ -12,6 +12,7 @@ public class BlockDTO {
     private String createdByUserID;
     private int mostRecentDayOpen;
     private int mostRecentWeekOpen;
+    private boolean logged;
 
     public BlockDTO(TrainingBlock trainingBlock) {
         this.id = trainingBlock.getId().toString();
@@ -20,6 +21,7 @@ public class BlockDTO {
         this.createdByUserID = trainingBlock.getCreatedByUserID().toString();
         this.mostRecentDayOpen = trainingBlock.getMostRecentDayOpen();
         this.mostRecentWeekOpen = trainingBlock.getMostRecentWeekOpen();
+        this.logged = trainingBlock.getLogged();
     }
 
     public String getId() {
@@ -44,6 +46,10 @@ public class BlockDTO {
 
     public int getMostRecentWeekOpen() {
         return this.mostRecentWeekOpen;
+    }
+
+    public boolean getLogged() {
+        return this.logged;
     }
     
 }

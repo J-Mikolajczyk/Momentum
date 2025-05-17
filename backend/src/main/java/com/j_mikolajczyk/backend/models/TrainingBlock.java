@@ -17,21 +17,23 @@ public class TrainingBlock {
     private List<String> selectedDays;
     private int mostRecentDayOpen;
     private int mostRecentWeekOpen;
+    private boolean logged;
 
 
     public TrainingBlock() {
     }
 
-    public TrainingBlock(String name, List<Week> weeks, ObjectId createdByUserID, List<String> selectedDays) {
+    public TrainingBlock(String name, List<Week> weeks, ObjectId createdByUserID, List<String> selectedDays, boolean logged) {
         this.name = name;
         this.weeks = weeks;
         this.createdByUserID = createdByUserID;
         this.selectedDays = selectedDays;
         this.mostRecentDayOpen = 0;
         this.mostRecentWeekOpen = 0;
+        this.logged = logged;
     }
 
-    public TrainingBlock(String name, ObjectId createdByUserID, List<String> selectedDays) {
+    public TrainingBlock(String name, ObjectId createdByUserID, List<String> selectedDays, boolean logged) {
         this.name = name;
         this.weeks = new ArrayList<Week>();
         for (int i = 0; i < 4; i++) {
@@ -41,6 +43,7 @@ public class TrainingBlock {
         this.selectedDays = selectedDays;
         this.mostRecentDayOpen = 0;
         this.mostRecentWeekOpen = 0;
+        this.logged = logged;
     }
 
     public ObjectId getId() {
@@ -93,6 +96,14 @@ public class TrainingBlock {
 
     public void setMostRecentWeekOpen(int mostRecentWeekOpen) {
         this.mostRecentWeekOpen = mostRecentWeekOpen;
+    }
+
+    public boolean getLogged() {
+        return this.logged;
+    }
+
+    public void setLogged(boolean logged) {
+        this.logged = logged;
     }
     
 }
