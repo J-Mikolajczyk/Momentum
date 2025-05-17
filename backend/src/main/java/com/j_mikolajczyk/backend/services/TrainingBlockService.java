@@ -90,7 +90,7 @@ public class TrainingBlockService {
             throw new RuntimeException("UserID is required.");
         }
 
-        TrainingBlock block = new TrainingBlock(createBlockRequest.getBlockName(), createBlockRequest.getUserId(), createBlockRequest.getSortedDays());
+        TrainingBlock block = new TrainingBlock(createBlockRequest.getBlockName(), createBlockRequest.getUserId(), createBlockRequest.getSortedDays(), false);
 
         try {
             blockRepository.save(block);
@@ -115,6 +115,30 @@ public class TrainingBlockService {
             block.setWeeks(updateBlockRequest.getWeeks());
             block.setMostRecentWeekOpen(updateBlockRequest.getWeekIndex());
             block.setMostRecentDayOpen(updateBlockRequest.getDayIndex());
+            blockRepository.save(block);
+
+            User user = userService.getById(block.getCreatedByUserID());
+            user.updateBlockPosition(block.getName());
+            userService.save(user);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void log(UpdateBlockRequest updateBlockRequest) throws Exception{
+        ObjectId id = updateBlockRequest.getId();
+
+        if(id == null) {
+            throw new RuntimeException("Block ID and Block Name is required.");
+        }
+
+        try {
+            TrainingBlock block = this.get(id);
+            block.setName(updateBlockRequest.getName());
+            block.setWeeks(updateBlockRequest.getWeeks());
+            block.setMostRecentWeekOpen(updateBlockRequest.getWeekIndex());
+            block.setMostRecentDayOpen(updateBlockRequest.getDayIndex());
+            block.setLogged(true);
             blockRepository.save(block);
 
             User user = userService.getById(block.getCreatedByUserID());

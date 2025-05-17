@@ -83,6 +83,22 @@ public class TrainingBlockController {
         }
     }
 
+    @PostMapping("/log")
+    public ResponseEntity<?> log(@RequestBody UpdateBlockRequest updateBlockRequest, HttpServletRequest request) throws Exception {
+        TrainingBlock block = blockService.get(updateBlockRequest.getId());
+        ResponseEntity<?> authResponse = validateUserAccess(block.getCreatedByUserID(), request);
+        if (authResponse != null) return authResponse;
+
+        try {
+            blockService.log(updateBlockRequest);
+            return ResponseEntity.ok("Update successful");
+        } catch (NotFoundException e) {
+            return ResponseEntity.ok("{\"exists\": false}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/delete")
     public ResponseEntity<?> delete(@RequestBody DeleteBlockRequest deleteBlockRequest, HttpServletRequest request) throws Exception {
         ResponseEntity<?> authResponse = validateUserAccess(deleteBlockRequest.getUserId(), request);
