@@ -30,9 +30,6 @@ Momentum is a full-stack progressive web app that allows users to log their stre
 - Email verification
 - Sidebar for better navigation
 - User profile page
-
-### Future Updates
-- Email/phone login using one-time passcodes
 - Pre-made training templates to choose from
 - Dark Mode
 ---
