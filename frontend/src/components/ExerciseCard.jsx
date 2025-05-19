@@ -27,14 +27,13 @@ export default function ExerciseCard({
     const menuRef = useRef(null); 
 
     useEffect(() => {
-        if (!isEditing) {
             setInputValues(
             exercise?.sets?.map(set => ({
                 weight: set.weight || '',
                 reps: set.reps || '',
             })) || []
             );
-        }
+
     }, [exercise.sets]); 
 
 
@@ -134,43 +133,57 @@ export default function ExerciseCard({
                 </div>
 
                 <div className='flex flex-col w-full'>
-                <div className="flex flex-row w-full justify-around items-center">
-                    <div className="flex flex-col items-center w-1/4">
-                        <label className="text-lg font-anton mr-1">Weight:</label>
-                    </div>
-                    <div className="flex flex-col items-center w-1/4">
-                        <label className="text-lg font-anton mr-1">Reps:</label>
-                    </div>
-                    <div className="flex flex-col items-center w-1/10">
+                <div className="flex flex-row mb-2 w-full items-center gap-1">
+                    <div className="font-anton cursor-pointer h-full w-1/10"></div>
+                    <div className='flex flex-row justify-between items-center w-full pr-2'>
+                        <label className="text-lg font-anton pl-1">Weight:</label>
+                        <label className="text-lg font-anton pl-1">Reps:</label>
+                        <label className="text-lg font-anton pl-1">Log:</label>
                     </div>
                 </div>
 
                 {exercise?.sets?.map((set, setIndex) => (
-                    <div key={setIndex} className="flex flex-row mb-2 w-full justify-around items-center gap-2">
+                    <div key={setIndex} className="flex flex-row mb-2 w-full items-center gap-1">
+                            <button onClick={() => handleSetDelete(setIndex)} className="font-anton cursor-pointer h-full w-1/10">X</button>
+                            <div key={setIndex} className="flex flex-row w-9/10 h-full justify-between items-center gap-1 pr-2">
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={priorExercise?.sets?.[setIndex]?.weight || ''}
-                                className="text-center border rounded w-1/4 font-anton h-full text-lg"
+                                className="text-center border rounded w-1/3 font-anton h-full text-lg"
                                 value={inputValues[setIndex]?.weight || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
-                                onBlur={() => handleBlur(setIndex, 'weight')}
                             />
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={priorExercise?.sets?.[setIndex]?.reps || ''}
-                                className="text-center border rounded w-1/4 font-anton h-full text-lg"
+                                className="text-center border rounded w-1/3 font-anton h-full text-lg"
                                 value={inputValues[setIndex]?.reps || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
-                                onBlur={() => handleBlur(setIndex, 'reps')}
                             />
-                        <button onClick={() => handleSetDelete(setIndex)} className="font-anton cursor-pointer h-full w-1/10">X</button>
-                    </div>
+                        
+                            <button
+                                onClick={async () => {
+                                    const { weight, reps } = inputValues[setIndex];
+                                    console.log(weight, reps);
+                                    await updateSetData(exercise.name, setIndex, 'weight', weight, currentWeekIndex, currentDayIndex);
+                                    await updateSetData(exercise.name, setIndex, 'reps', reps, currentWeekIndex, currentDayIndex);
+                                    await updateSetData(exercise.name, setIndex, 'logged', !set.logged, currentWeekIndex, currentDayIndex);
+                                }}
+                                className={`w-7 h-7 rounded-sm border transition-colors duration-200 ${
+                                    set.logged ? 'bg-green-400' : 'bg-red-400'
+                                }`}
+                                title={set.logged ? 'Click to unlog' : 'Click to log'}
+                            >
+                            </button>
+
+                        </div>
+                    </div>  
                 ))}
-                    </div>
+                </div>
             </div>
         </>
     );
