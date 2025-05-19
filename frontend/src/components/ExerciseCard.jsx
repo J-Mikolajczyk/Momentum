@@ -1,3 +1,4 @@
+
 import { useEffect, useRef, useState } from 'react';
 import RenamePopup from './RenamePopup';
 
@@ -12,7 +13,8 @@ export default function ExerciseCard({
     exerciseIndex,
     moveExercise,
     renameExercise,
-    deleteExercise
+    deleteExercise,
+    dayLogged
 }) {
 
     const [inputValues, setInputValues] = useState(() =>
@@ -20,8 +22,8 @@ export default function ExerciseCard({
             weight: set.weight || '',
             reps: set.reps || '',
         })) || []
-        );
-    const [isEditing, setIsEditing] = useState(false);
+    );
+    
     const [showMenu, setShowMenu] = useState(false);
     const [showRenamePopup, setShowRenamePopup] = useState(false);
     const menuRef = useRef(null); 
@@ -54,25 +56,11 @@ export default function ExerciseCard({
     }, [showMenu]);
 
     const handleLocalChange = (setIndex, field, value) => {
-        setIsEditing(true);
         setInputValues(prev => {
             const updated = [...prev];
             updated[setIndex] = { ...updated[setIndex], [field]: value };
             return updated;
         });
-    };
-
-    const handleBlur = (setIndex, field) => {
-        const value = inputValues[setIndex][field];
-        updateSetData(
-            exercise.name,
-            setIndex,
-            field,
-            value,
-            currentWeekIndex,
-            currentDayIndex
-        );
-        setTimeout(() => setIsEditing(false), 200);
     };
 
     const handleAddSet = () => {
@@ -114,12 +102,10 @@ export default function ExerciseCard({
                 <div className="w-full flex flex-row justify-between items-center">
                     <h2 className="text-blue-800 font-anton text-2xl ">{exercise?.name}</h2>
                     <div ref={menuRef} className="relative w-1/10 mb-2">
-                        <button
+                        {dayLogged ? null:<button
                             onClick={toggleMenu}
                             className="text-blue-800 font-anton-bold text-2xl w-full text-center cursor-pointer"
-                        >
-                            ⫶
-                        </button>
+                        >⫶</button>}
                         {showMenu && (
                             <div className="absolute right-0 mt-1 w-32 bg-white border border-gray-300 rounded shadow-md z-10">
                                 <button onClick={() => handleAddSet()} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 cursor-pointer">Add Set</button>
@@ -134,52 +120,56 @@ export default function ExerciseCard({
 
                 <div className='flex flex-col w-full'>
                 <div className="flex flex-row mb-2 w-full items-center gap-1">
-                    <div className="font-anton cursor-pointer h-full w-1/10"></div>
-                    <div className='flex flex-row justify-between items-center w-full pr-2'>
-                        <label className="text-lg font-anton pl-1">Weight:</label>
-                        <label className="text-lg font-anton pl-1">Reps:</label>
-                        <label className="text-lg font-anton pl-1">Log:</label>
+                    <div className="flex flex-row w-99/100 h-full justify-between items-center gap-1">
+                        <label className="text-left w-1/3 font-anton h-full text-lg">Weight:</label>
+                        <label className="text-left w-1/3 font-anton h-full text-lg">Reps:</label>
+                        <label className="text-left font-anton h-full text-lg w-8">Log:</label>
+                        <div className="font-anton h-full w-1/100"></div>
                     </div>
                 </div>
 
                 {exercise?.sets?.map((set, setIndex) => (
                     <div key={setIndex} className="flex flex-row mb-2 w-full items-center gap-1">
-                            <button onClick={() => handleSetDelete(setIndex)} className="font-anton cursor-pointer h-full w-1/10">X</button>
-                            <div key={setIndex} className="flex flex-row w-9/10 h-full justify-between items-center gap-1 pr-2">
+                            <div key={setIndex} className="flex flex-row w-99/100 h-full justify-between items-center gap-1">
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={priorExercise?.sets?.[setIndex]?.weight || ''}
-                                className="text-center border rounded w-1/3 font-anton h-full text-lg"
+                                className={`text-center border rounded w-1/3 font-anton h-full text-lg ${set.logged ? 'bg-gray-300 text-gray-600' : 'text-black'}`}
                                 value={inputValues[setIndex]?.weight || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
+                                disabled={set.logged}
                             />
                             <input
                                 type="number"
                                 inputMode="decimal"
-                                pattern="[0-9]*(\.[0-9]*)?"
+                                pattern="[0-9]*"
                                 placeholder={priorExercise?.sets?.[setIndex]?.reps || ''}
-                                className="text-center border rounded w-1/3 font-anton h-full text-lg"
+                                className={`text-center border rounded w-1/3 font-anton h-full text-lg ${set.logged ? 'bg-gray-300 text-gray-600' : 'text-black'}`}
                                 value={inputValues[setIndex]?.reps || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
+                                disabled={set.logged}
                             />
                         
-                            <button
-                                onClick={async () => {
+                            <input
+                                type="checkbox"
+                                checked={set.logged}
+                                onChange={async () => {
                                     const { weight, reps } = inputValues[setIndex];
-                                    console.log(weight, reps);
-                                    await updateSetData(exercise.name, setIndex, 'weight', weight, currentWeekIndex, currentDayIndex);
-                                    await updateSetData(exercise.name, setIndex, 'reps', reps, currentWeekIndex, currentDayIndex);
-                                    await updateSetData(exercise.name, setIndex, 'logged', !set.logged, currentWeekIndex, currentDayIndex);
+                                    await updateSetData(exercise.name, setIndex, weight, reps, currentWeekIndex, currentDayIndex);
                                 }}
-                                className={`w-7 h-7 rounded-sm border transition-colors duration-200 ${
-                                    set.logged ? 'bg-green-400' : 'bg-red-400'
-                                }`}
-                                title={set.logged ? 'Click to unlog' : 'Click to log'}
-                            >
-                            </button>
-
+                                className={`flex items-center justify-center cursor-pointer appearance-none w-8 h-8 rounded-md border border-black
+                                        checked:bg-blue-800 checked:border-blue-800
+                                        relative transition-colors duration-200
+                                        before:content-['✓'] before:text-3xl before:text-white before:hidden
+                                        checked:before:block disabled:cursor-default`}
+                                        title={set.logged ? 'Click to unlog' : 'Click to log'}
+                                disabled={dayLogged}
+                                 />
+                                 <button onClick={() => handleSetDelete(setIndex)} 
+                                    className={`font-anton h-full w-1/100 ${set.logged ? '' : 'cursor-pointer'}`}
+                                    disabled={set.logged}> {!set.logged ? 'X' : ''}</button>
                         </div>
                     </div>  
                 ))}

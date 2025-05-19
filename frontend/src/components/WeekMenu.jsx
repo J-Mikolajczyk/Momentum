@@ -31,10 +31,26 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
     const proceedAddWeek = async () => {
       const newWeeks = [...blockData.weeks];
       const lastWeek = newWeeks[newWeeks.length - 1];
-      newWeeks.push(new Week(lastWeek?.days || []));
-      await updateWeeks(newWeeks);
-    };
-  
+
+        const newDays = (lastWeek?.days || []).map(day => {
+          const newDay = {
+            ...day,
+            logged: false,
+            exercises: (day.exercises || []).map(ex => ({
+              ...ex,
+              sets: (ex.sets || []).map(() => ({
+                weight: '',
+                reps: ''
+              }))
+            }))
+          };
+          return newDay;
+        });
+
+        newWeeks.push(new Week(newDays));
+        await updateWeeks(newWeeks);
+      };
+
     const removeWeek = async () => {
       if (!blockData || blockData.weeks.length === 1) {
         setMessage('Cannot remove only week.');
@@ -58,7 +74,7 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
   const maxDays = getMaxDays();
 
   return (
-    <><MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod} setIgnoreMethod={setIgnoreMethod} />
+    <><MessagePopup message={message} setMessage={setMessage} ignoreMethod={ignoreMethod} setIgnoreMethod={setIgnoreMethod} buttonText="Ignore"/>
       
     <div className="relative bg-blue-800 w-full flex flex-col justify-center">
           <p className="text-white font-anton text-xl cursor-pointer h-6 px-4" onClick={toggleDropdown}>{blockData?.name}</p>
