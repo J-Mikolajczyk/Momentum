@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import MessagePopup from './MessagePopup';
 import Week from '../models/Week';
 
-export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWeeks }) {
+export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWeeks, currentWeek, currentDay }) {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const [message, setMessage] = useState(null);
@@ -86,6 +86,8 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
                     {Array.from({ length: maxDays }).map((_, dayIndex) => {
                       const dayExists = week.days[dayIndex];
                       const label = `${(week.days[dayIndex].name)?.substring(0,3).toUpperCase()}`;
+                      const isCurrent = currentWeek === weekIndex && currentDay === dayIndex;
+                      const isLogged = dayExists.logged;
                       return (
                         <div
                           key={`${weekIndex}-${dayIndex}`}
@@ -95,10 +97,18 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
                               setDropdownOpen(false);
                             }
                           }}
-                          className={`pt-0.5 h-6 w-full border bg-white border-gray-400 rounded-md text-blue-800 font-anton text-md flex items-center justify-center cursor-pointer ${
-                            dayExists ? 'hover:bg-gray-200' : 'text-gray-400 cursor-default'
-                          }`}
-                        >
+                              className={`pt-0.5 h-6 w-full border font-anton text-md flex items-center justify-center rounded-md cursor-pointer
+                              ${
+                                dayExists
+                                  ? isCurrent
+                                    ? 'bg-blue-600 border-blue-900 text-white'
+                                    : isLogged
+                                    ? 'bg-green-300 border-green-500 text-green-900 hover:bg-green-400'
+                                    : 'bg-white border-gray-400 text-blue-800 hover:bg-gray-200'
+                                  : 'text-gray-400 bg-white border-gray-300 cursor-default'
+                              }`}
+
+                          >
                           {label}
                         </div>
                       );

@@ -12,8 +12,27 @@ export default function Day({
     updateSetData,
     moveExercise,
     renameExercise,
-    deleteExercise
+    deleteExercise,
+    updateWeeks
   }) {
+
+    const logDay = () => {
+      const newWeeks = [...blockData.weeks];
+  
+      const updatedWeek = { ...newWeeks[currentWeekIndex] };
+      const updatedDays = [...updatedWeek.days];
+
+      const updatedDay = { ...updatedDays[currentDayIndex], logged: true };
+      updatedDays[currentDayIndex] = updatedDay;
+
+      updatedWeek.days = updatedDays;
+
+      newWeeks[currentWeekIndex] = updatedWeek;
+
+      updateWeeks(newWeeks);
+    };
+
+
 
   if (!blockData) {
     return;
@@ -60,7 +79,8 @@ export default function Day({
         })
       ) : null}
       <div className="flex flex-row w-full items-center justify-between">
-        <button onClick={toggleAddExercisePopup} className="flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-28 h-8 text-lg border items-center justify-center border-gray-500 rounded-xs ml-auto cursor-pointer">Add Exercise</button>
+        <button onClick={() => logDay()} className="flex bg-gray-400 text-gray-500 font-anton w-1/4 min-w-28 h-8 text-lg border items-center justify-center border-gray-500 rounded-xs cursor-pointer">Log Day</button>
+        <button onClick={toggleAddExercisePopup} className="flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-28 h-8 text-lg border items-center justify-center border-gray-500 rounded-xs cursor-pointer">Add Exercise</button>
         <AddExercisePopup
           show={showAddExercisePopup}
           toggle={toggleAddExercisePopup}
