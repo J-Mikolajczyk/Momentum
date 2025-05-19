@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import ExerciseCard from './ExerciseCard';
 import AddExercisePopup from './AddExercisePopup';
+import MessagePopup from './MessagePopup';
+
 
 export default function Day({
     blockData,
@@ -17,21 +19,32 @@ export default function Day({
   }) {
 
     const logDay = () => {
-      const newWeeks = [...blockData.weeks];
-  
-      const updatedWeek = { ...newWeeks[currentWeekIndex] };
-      const updatedDays = [...updatedWeek.days];
+      const day = blockData.weeks[currentWeekIndex]?.days?.[currentDayIndex];
+      if (!day) return;
 
-      const updatedDay = { ...updatedDays[currentDayIndex], logged: true };
-      updatedDays[currentDayIndex] = updatedDay;
+      for (const exercise of day.exercises || []) {
+        for (const set of exercise.sets || []) {
+          if (!set.logged) {
+            setMessage('Cannot log day until all sets are logged.');
+            return;
+          }
+        }
+      }
 
-      updatedWeek.days = updatedDays;
-
-      newWeeks[currentWeekIndex] = updatedWeek;
-
-      updateWeeks(newWeeks);
+      setMessage('Logging a day is irreversible. Are you sure?');
+      setIgnoreMethod(() => () => handleLog());
     };
 
+
+    const handleLog = async () => {
+      const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+      const day = newWeeks[currentWeekIndex]?.days?.[currentDayIndex];
+      if (!day) return;
+
+      day.logged = true;
+      newWeeks[currentWeekIndex].days[currentDayIndex] = day;
+      updateWeeks(newWeeks);
+    };
 
 
   if (!blockData) {
@@ -39,6 +52,8 @@ export default function Day({
   }
 
   const [showAddExercisePopup, setShowAddExercisePopup] = useState(false);
+  const [message, setMessage] = useState('');
+  const [ignoreMethod, setIgnoreMethod] = useState(null);
 
   const toggleAddExercisePopup = () => {
     setShowAddExercisePopup(!showAddExercisePopup);
@@ -74,13 +89,16 @@ export default function Day({
                 moveExercise={moveExercise}
                 renameExercise={renameExercise}
                 deleteExercise={deleteExercise}
+                dayLogged={currentDay.logged}
               />
           );
         })
       ) : null}
+      {currentDay.logged ? null : 
       <div className="flex flex-row w-full items-center justify-between">
         <button onClick={() => logDay()} className="flex bg-gray-400 text-gray-500 font-anton w-1/4 min-w-28 h-8 text-lg border items-center justify-center border-gray-500 rounded-xs cursor-pointer">Log Day</button>
-        <button onClick={toggleAddExercisePopup} className="flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-28 h-8 text-lg border items-center justify-center border-gray-500 rounded-xs cursor-pointer">Add Exercise</button>
+        <button onClick={toggleAddExercisePopup} className="flex elect-none bg-gray-400 text-gray-500 font-anton w-1/4 min-w-28 h-8 text-lg border items-center justify-center border-gray-500 rounded-xs cursor-pointer ">Add Exercise</button>
+        </div>}
         <AddExercisePopup
           show={showAddExercisePopup}
           toggle={toggleAddExercisePopup}
@@ -88,7 +106,13 @@ export default function Day({
           currentWeekIndex={currentWeekIndex}
           addExerciseToDay={addExerciseToDay}
         />
-      </div>
+        <MessagePopup
+          message={message}
+          setMessage={setMessage}
+          ignoreMethod={ignoreMethod}
+          setIgnoreMethod={setIgnoreMethod}
+          buttonText="Continue"
+        />
     </div>
   );
 }

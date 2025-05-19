@@ -195,14 +195,19 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, userI
     await updateBlock(newWeeks, weekIndex, dayIndex);
   };
 
-  const updateSetData = async (exerciseName, setIndex, field, value, weekIndex, dayIndex) => {
+  const updateSetData = async (exerciseName, setIndex, weight, reps, weekIndex, dayIndex, toggleLog = true) => {
     const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
     const exercise = newWeeks[weekIndex]?.days?.[dayIndex]?.exercises?.find(ex => ex.name === exerciseName);
     if (exercise && exercise.sets[setIndex]) {
-      exercise.sets[setIndex][field] = ['weight', 'reps'].includes(field) ? Number(value) || 0 : value;
+      exercise.sets[setIndex].weight = weight;
+      exercise.sets[setIndex].reps = reps;
+      if (toggleLog) {
+        exercise.sets[setIndex].logged = !exercise.sets[setIndex].logged;
+      }
     }
     await updateBlock(newWeeks, weekIndex, dayIndex);
   };
+
 
   const moveExercise = async (direction, index) => {
     const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));

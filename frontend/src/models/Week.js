@@ -5,7 +5,7 @@ export default class Week {
             ...day,
             exercises: day.exercises.map(exercise => ({
                 ...exercise,
-                sets: exercise.sets.map(() => ({ weight: '', reps: '' }))
+                sets: exercise.sets.map(() => ({ weight: '', reps: '', logged: false }))
             }))
         }));
     }

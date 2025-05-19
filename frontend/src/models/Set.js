@@ -1,8 +1,9 @@
 export default class Set {
 
-    constructor(weight = 0.0, reps = 0) {
+    constructor(weight = 0.0, reps = 0, logged = false) {
         this.weight = weight;
         this.reps = reps;
+        this.logged = false;
     }
 
     getWeight() {
@@ -19,5 +20,13 @@ export default class Set {
 
     setReps(reps) {
         this.reps = reps;
+    }
+
+    getLogged() {
+        return this.logged;
+    }
+
+    setLogged(logged) {
+        this.logged = logged;
     }
 }
