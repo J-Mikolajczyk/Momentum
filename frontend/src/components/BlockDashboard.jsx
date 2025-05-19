@@ -276,6 +276,8 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, userI
       <WeekMenu
             blockData={blockData}
             setWeekAndDay={setWeekAndDay}
+            currentWeek={currentWeekIndex}
+            currentDay={currentDayIndex}
             weekText={weekText}
             updateWeeks={updateWeeks}
       />
@@ -290,6 +292,7 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, userI
             moveExercise={moveExercise}             
             renameExercise={renameExercise}
             deleteExercise={deleteExercise}
+            updateWeeks={updateWeeks}
         />
     </>   
   );
