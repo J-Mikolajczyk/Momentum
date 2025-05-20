@@ -10,7 +10,9 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
   const [blockData, setBlockData] = useState(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(null);
   const [currentDayIndex, setCurrentDayIndex] = useState(null);
+  const [message, setMessage] = useState(null);
   const [ignoreMethod, setIgnoreMethod] = useState(null);
+  const [buttonText, setButtonText] = useState(null);
   const [activeMenuIndex, setActiveMenuIndex] = useState(null);
   const [showRenamePopup, setShowRenamePopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);

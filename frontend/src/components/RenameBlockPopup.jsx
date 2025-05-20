@@ -32,7 +32,7 @@ export default function RenamePopup( { show, toggle, name, rename } ) {
 
     return (
         <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/5">
+          <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/5 max-w-130">
             <div className='flex justify-between'>
             <p className='inline text-blue-800 font-anton text-2xl'>Rename Block</p>
             <button onClick={handleClose} className="font-anton inlinetext-gray-500 hover:text-gray-700 text-2xl ">X</button>

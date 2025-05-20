@@ -32,14 +32,12 @@ export default function DeleteBlockPopup( { show, toggle, name, deleteMethod } )
 
     return (
         <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-3/4 min-h-1/5">
-            <div className='flex flex-col justify-between'>
-            <p className='text-blue-800 font-anton text-2xl'>Are you sure you would like to delete {name}?</p>
-            <div className='flex flex-row w-full justify-around'>
-              <button type='submit' onClick={() => {handleClose(); deleteMethod(name);}} className='mt-3 bg-white font-anton rounded-md text-blue-800 px-10 text-xl border-blue-800 border-2 w-1/3 text-center flex items-center justify-center h-10'>Confirm</button>
-              <button type='submit' onClick={handleClose} className='mt-3 bg-white font-anton rounded-md text-blue-800 px-10 text-xl border-blue-800 border-2 w-1/3 text-center flex items-center justify-center h-10'>Cancel</button>     </div>
+          <div onClick={handleInnerClick} className="bg-white p-2 rounded-xl shadow-lg w-3/4 min-h-1/6 min-w-50 max-w-90 flex flex-col items-center justify-around gap-2">
+            <p className="font-anton text-red-700 text-xl mt-2 text-center">Are you sure you would like to delete {name}?</p>
+            <div className="flex justify-around w-full">
+              <button type='submit' onClick={() => {handleClose(); deleteMethod(name);}} className="w-1/3 bg-blue-800 font-anton text-white rounded-md hover:bg-blue-600 flex items-center justify-center min-w-12 pr-1 cursor-pointer">Confirm</button>
+              <button type='submit' onClick={handleClose} className="w-1/3 bg-gray-500 font-anton text-white rounded-md hover:bg-gray-600 flex items-center justify-center pr-1 min-w-12 cursor-pointer">Cancel</button>     </div>
             </div>
-          </div>
         </div>
       );
       

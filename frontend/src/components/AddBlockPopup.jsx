@@ -73,13 +73,13 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
 
     return (
       <div onClick={handleOuterClick} className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div onClick={handleInnerClick} className="bg-white p-5 pr-7 rounded-xl shadow-lg w-7/8 min-h-1/4">
+        <div onClick={handleInnerClick} className="flex flex-col justify-center bg-white p-5 rounded-xl shadow-lg w-7/8 min-h-1/4 max-w-150">
         <div className='flex justify-between'>
           <p className='inline text-blue-800 font-anton text-xl'>Add a Training Block</p>
           <button onClick={handleClose} className="font-anton inline text-gray-500 hover:text-gray-700 text-xl cursor-pointer">X</button>
         </div>
         <form>
-          <input className='mt-1.5 bg-white font-anton rounded-md text-blue-800 h-1/4 w-6/7 text-xl border-blue-800 border-2 pl-3' placeholder='Block Name' value={blockName} onChange={(e) => setBlockName(e.target.value)} required /> 
+          <input className='mt-1.5 bg-white font-anton rounded-md text-blue-800 h-1/4 w-full text-xl border-blue-800 border-2 pl-3' placeholder='Block Name' value={blockName} onChange={(e) => setBlockName(e.target.value)} required /> 
           <p className='text-blue-800 font-anton text-xl mt-1.5'>Select Training Days:</p>
             <div className='flex flex-row justify-around w-full'>
               {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => {
