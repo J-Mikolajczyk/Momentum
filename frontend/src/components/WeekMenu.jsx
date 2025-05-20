@@ -56,6 +56,15 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
         setMessage('Cannot remove only week.');
         return;
       }
+
+      for (const week of blockData?.weeks) {
+        for (const day of week?.days) {
+          if (day?.logged) {
+            setMessage('Cannot remove a week with a logged day.');
+            return;
+          }
+        }
+      }
   
       if (blockData.weeks.length <= 4) {
         setMessage('Mesocycles shorter than 4 weeks are not recommended.');
