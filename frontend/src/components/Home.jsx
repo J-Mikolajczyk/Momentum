@@ -18,7 +18,7 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [renameBlockName, setRenameBlockName] = useState('');
   const [deleteBlockName, setDeleteBlockName] = useState('');
-  const menuRef = useRef(null); 
+  const menuRefs = useRef([]);
 
   const userId = userInfo?.id;
 
@@ -81,13 +81,16 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      const activeRef = menuRefs.current[activeMenuIndex];
+      if (activeRef && !activeRef.contains(event.target)) {
         setActiveMenuIndex(null);
       }
     };
+
     if (activeMenuIndex !== null) {
       document.addEventListener('mousedown', handleClickOutside);
     }
+
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
@@ -158,12 +161,11 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
           </div>
           {userInfo?.trainingBlockNames?.length > 0 ? (
             userInfo.trainingBlockNames.map((blockName, index) => (
-              <div ref={menuRef} key={index} className="flex flex-row items-center justify-between bg-blue-50 text-blue-800 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1">
+              <div ref={(el) => (menuRefs.current[index] = el)} key={index} className="flex flex-row items-center justify-between bg-blue-50 text-blue-800 rounded-md shadow-md w-full text-left text-2xl border-blue-800 border-1 mb-1">
                 <button onClick={() => openBlock(blockName)} className="font-anton text-blue-800 w-9/10 text-left px-2 py-2 cursor-pointer">{blockName}</button>
                 <button onClick={() => handleActiveMenu(index)} className="text-blue-800 font-anton-bold text-2xl px-4 py-2 text-right w-1/10 relative cursor-pointer">⫶</button>
                 {activeMenuIndex === index && (
                         <div className="absolute right-10 mt-25 w-32 bg-white border border-gray-300 rounded shadow-md z-10">
-                            
                             <button onClick={() => handleRenameBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Rename</button>
                             <button onClick={() => handleDeleteBlock(blockName)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 text-md cursor-pointer">Delete</button>
                         </div>
