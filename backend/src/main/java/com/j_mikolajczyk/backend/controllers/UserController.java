@@ -54,7 +54,7 @@ public class UserController {
                 logger.warn("Refresh unsuccessful for user: {}. User not found.", stringId);
                 return ResponseEntity.ok("{\"exists\": false}");
             }
-            logger.warn("Refresh unsuccessful for user: {}.", stringId);
+            logger.error("Refresh unsuccessful for user: {}.", stringId);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -64,11 +64,13 @@ public class UserController {
         try {
             user = userService.getById(userId);
         } catch (Exception e) {
+            logger.warn("Unauthorized access attempt for user '{}': {}", userId, e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
 
         String jwt = getJwtFromCookies(request);
         if (jwt == null) {
+            logger.warn("Unauthorized access attempt for user '{}': {}", userId, "No cookies found.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT cookie found");
         }
 
@@ -76,14 +78,19 @@ public class UserController {
         try {
             email = jwtUtil.extractEmail(jwt);
         } catch (Exception e) {
+            logger.warn("Unauthorized access attempt for user '{}': {}", userId, "Invalid JWT.");
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT");
         }
 
         if(email == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
+            logger.warn("Unauthorized access attempt for user '{}': {}", userId, "No subject found in JWT.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No subject found in JWT.");
         }
 
         if (!email.equals(user.getEmail())) {
+            logger.warn("Unauthorized access attempt for user '{}': {}", userId, "Wrong user's cookie.");
+
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
         }
 

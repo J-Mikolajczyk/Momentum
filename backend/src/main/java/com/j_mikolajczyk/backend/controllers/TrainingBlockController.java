@@ -46,7 +46,7 @@ public class TrainingBlockController {
         if (authResponse != null) return authResponse;
 
         try {
-            logger.warn("Block '{}' found for user '{}'", name, stringId);
+            logger.info("Block '{}' found for user '{}'", name, stringId);
             TrainingBlock block = blockService.get(name, id);
             return ResponseEntity.ok(new BlockDTO(block));
         } catch (Exception e) {
@@ -127,7 +127,7 @@ public class TrainingBlockController {
         } catch (Exception e) {
             String message = e.getMessage();
             if (e instanceof NotFoundException) {
-                logger.error("Error logging to block '{}': {}. Block not found.", blockId, message);
+                logger.warn("Error logging to block '{}': {}. Block not found.", blockId, message);
                 return ResponseEntity.ok("{\"exists\": false}");
             }
             logger.error("Error logging to block '{}': {}", blockId, message);

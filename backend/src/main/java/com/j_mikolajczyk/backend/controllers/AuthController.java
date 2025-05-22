@@ -60,10 +60,11 @@ public class AuthController {
             userService.register(registerRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
         } catch (Exception e) {
-            logger.warn("Registration failed for email: {}, reason: {}", email, e.getMessage());
             if (e.getMessage().equals("409")){
+                logger.warn("Registration failed for email: {}. User not found.", email);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("User already registered");
             }
+            logger.error("Registration failed for email: {}, reason: {}", email, e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
