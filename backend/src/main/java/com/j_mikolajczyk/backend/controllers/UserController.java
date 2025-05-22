@@ -1,6 +1,8 @@
 package com.j_mikolajczyk.backend.controllers;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,10 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("/secure/user")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TrainingBlockController.class);
+
     private final UserService userService;
     private final JwtUtil jwtUtil;
-
 
     @Autowired
     public UserController(UserService userService, JwtUtil jwtUtil) {
@@ -38,21 +41,20 @@ public class UserController {
 
     @GetMapping("/refresh")
     public ResponseEntity<?> login(@RequestParam("userId") String stringId, HttpServletRequest request){
+        logger.info("Refresh requested for user: {}", stringId);
         ObjectId id = new ObjectId(stringId);
         ResponseEntity<?> authResponse = validateUserAccess(id, request);
         if (authResponse != null) return authResponse;
-
-        System.out.println("Refresh requested for user: " + id);
         try {
             UserDTO userDTO = userService.refresh(id);
-            System.out.println("User found, returning: " + id);
+            logger.info("Refresh successful for user: {}", stringId);
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(id + " not found, returning false");
+                logger.warn("Refresh unsuccessful for user: {}. User not found.", stringId);
                 return ResponseEntity.ok("{\"exists\": false}");
             }
-            System.out.println(id + " refresh unsuccessful, returning bad request");
+            logger.warn("Refresh unsuccessful for user: {}.", stringId);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

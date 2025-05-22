@@ -3,6 +3,8 @@ package com.j_mikolajczyk.backend.controllers;
 import java.util.Map;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -38,6 +40,8 @@ public class AuthController {
 
     @Value("${jwt.shortTermExpiration}")
     private long shortTermExpiration;
+    
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
@@ -51,17 +55,15 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest){
         String email = registerRequest.getEmail().toLowerCase();
-        System.out.println("Registration requested for user: " + email);
+        logger.info("Registration attempt for email: {}", email);
         try {
             userService.register(registerRequest);
-            System.out.println("Registration successful for user: " + email);
             return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
         } catch (Exception e) {
-            if (e.getMessage().equals("409")) {
-                System.out.println(email + " already registered.");
+            logger.warn("Registration failed for email: {}, reason: {}", email, e.getMessage());
+            if (e.getMessage().equals("409")){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("User already registered");
             }
-            System.out.println(email + " registration unsuccessful, returning bad request");
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -69,7 +71,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail().toLowerCase();
-        System.out.println("Login requested for user: " + email);
+        logger.info("Login attempt for email: {}", email);
         try {
             UserDTO userDTO = userService.login(loginRequest);
             Map<String, String> tokens = jwtUtil.generateJwtToken(userDTO);
@@ -79,27 +81,27 @@ public class AuthController {
 
             Cookie shortTermCookie = createCookie("shortTermCookie", tokens.get("shortTermToken"), (int) shortTermExpiration / 1000, "/secure");
             response.addCookie(shortTermCookie);
-            
-            System.out.println("User found, returning: " + email);
+            logger.info("Login successful for email: {}", email);
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
             if (e instanceof NotFoundException) {
-                System.out.println(email + " not found, returning false");
+                logger.warn("Login failed - user not found: {}", email);
                 return ResponseEntity.ok("{\"exists\": false}");
             } else if (e instanceof BadCredentialsException) {
-                System.out.println(email + " invalid credentials, returning unauthorized");
+                logger.warn("Login failed - bad credentials for email: {}", email);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
-            System.out.println(email + " login unsuccessful, returning bad request");
+            logger.error("Login failed due to unexpected error: {}", e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping("/auto-login")
     public ResponseEntity<?> autoLogin(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("Auto-login attempt with long-term cookie");
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
-            System.out.println("Auto-login unsuccessful");
+            logger.warn("Auto-login failed: missing or expired token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing necessary cookies");
         }
 
@@ -112,17 +114,18 @@ public class AuthController {
         }
 
         if (longTermToken == null) {
-            System.out.println("Auto-login unsuccessful");
+            logger.warn("Auto-login failed: missing or expired token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing tokens");
         }
 
         if(jwtUtil.isTokenExpired(longTermToken)) {
-            System.out.println("Auto-login unsuccessful");
+            logger.warn("Auto-login failed: missing or expired token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is expired");
         }
 
         Claims claims = jwtUtil.validateToken(longTermToken);
         if (claims == null) {
+            logger.warn("Auto-login failed: invalid token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
         }
 
@@ -134,11 +137,10 @@ public class AuthController {
             String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
             Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000, "/secure");
             response.addCookie(shortTermCookie);    
-
-            System.out.println("Auto-login successful for " + userDTO.getEmail());
+            logger.info("Auto-login successful for user ID: {}", user.getId());
             return ResponseEntity.ok(userDTO);
         } catch (Exception e) {
-            System.out.println("Auto-login unsuccessful");
+            logger.warn("Auto-login failed: invalid token");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired long-term token");
         }
     }
@@ -146,6 +148,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest, HttpServletRequest request, HttpServletResponse response) {
         String email = logoutRequest.getEmail();
+        logger.info("Logout requested for email: {}", email);
         ResponseEntity<?> authResponse = validateUserAccess(email, request);
         if (authResponse != null) return authResponse;
         
@@ -154,16 +157,15 @@ public class AuthController {
 
         Cookie shortTermCookie = createCookie("shortTermCookie", null, 0, "/secure");
         response.addCookie(shortTermCookie);
-
-        System.out.println(email + " logged out, cookies cleared");
-
+        logger.info("Logout successful for email: {}", email);
         return ResponseEntity.ok("Logged out successfully");
     }
 
     private ResponseEntity<?> validateUserAccess(String givenEmail, HttpServletRequest request) {
-
+        logger.debug("Validating JWT for email: {}", givenEmail);
         String jwt = getJwtFromCookies(request);
         if (jwt == null) {
+            logger.warn("JWT validation failed: invalid token or email mismatch");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT cookie found");
         }
 
@@ -171,14 +173,17 @@ public class AuthController {
         try {
             email = jwtUtil.extractEmail(jwt);
         } catch (Exception e) {
+            logger.warn("JWT validation failed: invalid token or email mismatch");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT");
         }
 
         if(email == null) {
+            logger.warn("JWT validation failed: invalid token or email mismatch");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
         }
 
         if (!email.equals(givenEmail)) {
+            logger.warn("JWT validation failed: invalid token or email mismatch");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
         }
 
@@ -186,7 +191,10 @@ public class AuthController {
     }
 
     private String getJwtFromCookies(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
+        if (request.getCookies() == null)  {
+            logger.warn("JWT validation failed: no cookie found");
+            return null;
+        }
         for (Cookie cookie : request.getCookies()) {
             if ("longTermCookie".equals(cookie.getName())) {
                 return cookie.getValue();
