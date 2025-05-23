@@ -160,13 +160,13 @@ export default function ExerciseCard({
 
                 {exercise?.sets?.map((set, setIndex) => (
                     <div key={setIndex} className="flex flex-row mb-2 w-full items-center gap-1">
-                            <div key={setIndex} className="flex flex-row w-99/100 h-full justify-between items-center gap-1">
+                            <div key={setIndex} className="relative flex flex-row w-99/100 h-full justify-between items-center gap-1">
                             <button ref={(el) => (setMenuRefs.current[setIndex] = el)}
                                     onClick={() => toggleSetMenu(setIndex)} 
                                     className={`text-xl font-anton-bold pb-1 h-full w-1/100 ${set.logged ? '' : 'cursor-pointer'}`}
                                     disabled={set.logged}> {!set.logged ? '⫶' : ''}</button>
                                     {showSetMenu === setIndex && (
-                                        <div className="absolute left-9 mt-15 w-25 bg-white border border-gray-300 rounded shadow-md z-4">
+                                        <div className="absolute left-1 mt-15 w-25 bg-white border border-gray-300 rounded shadow-md z-4">
                                             <button onClick={() => handleSetDelete(setIndex)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 cursor-pointer">Delete Set</button>
                                         </div>
                                     )}
