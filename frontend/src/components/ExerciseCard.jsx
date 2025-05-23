@@ -150,20 +150,20 @@ export default function ExerciseCard({
 
                 <div className='flex flex-col w-full'>
                 <div className="flex flex-row mb-2 w-full items-center gap-1">
-                    <div className="flex flex-row w-99/100 h-full items-center gap-1">
+                    <div className="flex flex-row w-99/100 h-full justify-between items-center gap-1">
                         <div className="font-anton h-full w-1/100"></div>
-                        <label className="ml-4 text-left w-1/3 font-anton h-full text-lg">Weight:</label>
-                        <label className="ml-6 text-left w-1/3 font-anton h-full text-lg">Reps:</label>
-                        <label className="ml-6 text-left font-anton h-full text-lg w-8">Log:</label>
+                        <label className="text-left w-1/3 font-anton h-full text-lg">Weight:</label>
+                        <label className="text-left w-1/3 font-anton h-full text-lg">Reps:</label>
+                        <label className="text-left font-anton h-full text-lg w-8">Log:</label>
                     </div>
                 </div>
 
                 {exercise?.sets?.map((set, setIndex) => (
                     <div key={setIndex} className="flex flex-row mb-2 w-full items-center gap-1">
-                            <div key={setIndex} className="flex flex-row w-99/100 h-full items-center gap-1">
+                            <div key={setIndex} className="flex flex-row w-99/100 h-full justify-between items-center gap-1">
                             <button ref={(el) => (setMenuRefs.current[setIndex] = el)}
                                     onClick={() => toggleSetMenu(setIndex)} 
-                                    className={`font-anton-bold pb-1 h-full w-1/100 ${set.logged ? '' : 'cursor-pointer'}`}
+                                    className={`text-xl font-anton-bold pb-1 h-full w-1/100 ${set.logged ? '' : 'cursor-pointer'}`}
                                     disabled={set.logged}> {!set.logged ? '⫶' : ''}</button>
                                     {showSetMenu === setIndex && (
                                         <div className="absolute left-9 mt-15 w-25 bg-white border border-gray-300 rounded shadow-md z-4">
@@ -175,7 +175,7 @@ export default function ExerciseCard({
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={set.logged ? '' : (priorExercise?.sets?.[setIndex]?.weight || '')}
-                                className={`ml-4 text-center border rounded w-1/3 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
+                                className={`text-center border rounded w-1/3 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
                                 value={inputValues[setIndex]?.weight || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                                 disabled={set.logged}
@@ -185,7 +185,7 @@ export default function ExerciseCard({
                                 inputMode="decimal"
                                 pattern="[0-9]*"
                                 placeholder={set.logged ? '' : (priorExercise?.sets?.[setIndex]?.reps || '')}
-                                className={`ml-6 text-center border rounded w-1/3 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
+                                className={`text-center border rounded w-1/3 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
                                 value={inputValues[setIndex]?.reps || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
                                 disabled={set.logged}
@@ -198,7 +198,7 @@ export default function ExerciseCard({
                                     const { weight, reps } = inputValues[setIndex];
                                     await updateSetData(exercise.name, setIndex, weight, reps, currentWeekIndex, currentDayIndex);
                                 }}
-                                className={`ml-6 flex items-center justify-center cursor-pointer appearance-none w-8 h-8 rounded-md border border-black
+                                className={`flex items-center justify-center cursor-pointer appearance-none w-8 h-8 rounded-md border border-black
                                         checked:bg-blue-800 checked:border-blue-800
                                         relative transition-colors duration-200
                                         before:content-['✓'] before:text-3xl before:text-white before:hidden
