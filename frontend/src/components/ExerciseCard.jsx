@@ -29,6 +29,7 @@ export default function ExerciseCard({
     const [showRenamePopup, setShowRenamePopup] = useState(false);
     const menuRef = useRef(null); 
     const setMenuRefs = useRef([]); 
+    const setMenuButtons = useRef([]); 
 
     useEffect(() => {
             setInputValues(
@@ -62,7 +63,9 @@ export default function ExerciseCard({
             if (
             showSetMenu !== null &&
             setMenuRefs.current[showSetMenu] &&
-            !setMenuRefs.current[showSetMenu].contains(event.target)
+            !setMenuRefs.current[showSetMenu].contains(event.target) &&
+            setMenuButtons.current[showSetMenu] &&
+            !setMenuButtons.current[showSetMenu].contains(event.target)
             ) {
             setShowSetMenu(null);
             }
@@ -95,6 +98,7 @@ export default function ExerciseCard({
         deleteSetFromExercise(exercise.name, setIndexToDelete, currentWeekIndex, currentDayIndex);
         const newInputValues = [...inputValues];
         newInputValues.splice(setIndexToDelete, 1);
+        setShowSetMenu(null);
         setInputValues(newInputValues);
     };
 
@@ -106,7 +110,7 @@ export default function ExerciseCard({
         if (showSetMenu === index) {
             setShowSetMenu(null);
         } else {
-        setShowSetMenu(index);
+            setShowSetMenu(index);
         }
     };
 
@@ -131,7 +135,7 @@ export default function ExerciseCard({
             <div className="px-3 py-1.5 border border-blue-800 rounded-md shadow-md w-full">
                 <div className="w-full flex flex-row justify-between items-center">
                     <h2 className="text-blue-800 font-anton text-2xl ">{exercise?.name}</h2>
-                    <div ref={menuRef} className="relative w-1/10 mb-2">
+                    <div ref={menuRef} className="relative w-1/10 mb-2" >
                         {dayLogged ? null:<button
                             onClick={toggleMenu}
                             className="text-blue-800 font-anton-bold text-2xl w-full text-center cursor-pointer"
@@ -160,13 +164,15 @@ export default function ExerciseCard({
 
                 {exercise?.sets?.map((set, setIndex) => (
                     <div key={setIndex} className="flex flex-row mb-2 w-full items-center gap-1">
-                            <div key={setIndex} className="relative flex flex-row w-99/100 h-full justify-between items-center gap-1">
-                            <button ref={(el) => (setMenuRefs.current[setIndex] = el)}
+                            <div key={setIndex} className="relative flex flex-row w-99/100 h-full justify-between items-center gap-1" >
+                            <button
+                                    ref={(el) => (setMenuButtons.current[setIndex] = el)}
                                     onClick={() => toggleSetMenu(setIndex)} 
-                                    className={`text-xl font-anton-bold pb-1 h-full w-1/100 ${set.logged ? '' : 'cursor-pointer'}`}
+                                    className={`text-xl font-anton-bold pb-1 h-full w-1/20 ${set.logged ? '' : 'cursor-pointer'}`}
                                     disabled={set.logged}> {!set.logged ? '⫶' : ''}</button>
                                     {showSetMenu === setIndex && (
-                                        <div className="absolute left-1 mt-15 w-25 bg-white border border-gray-300 rounded shadow-md z-4">
+                                        <div className="absolute left-1 mt-15 w-25 bg-white border border-gray-300 rounded shadow-md z-4"
+                                                ref={(el) => (setMenuRefs.current[setIndex] = el)}>
                                             <button onClick={() => handleSetDelete(setIndex)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 cursor-pointer">Delete Set</button>
                                         </div>
                                     )}
