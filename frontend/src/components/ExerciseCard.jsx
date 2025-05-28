@@ -132,9 +132,9 @@ export default function ExerciseCard({
     return (
         <>
             <RenamePopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={exercise.name} rename={renameExercise}  />
-            <div className="px-3 py-1.5 border border-blue-800 rounded-md shadow-md w-full">
+            <div className="pl-1 pr-3 py-1.5 border border-blue-800 rounded-md shadow-md w-full">
                 <div className="w-full flex flex-row justify-between items-center">
-                    <h2 className="text-blue-800 font-anton text-2xl ">{exercise?.name}</h2>
+                    <h2 className="ml-3 text-blue-800 font-anton text-2xl ">{exercise?.name}</h2>
                     <div ref={menuRef} className="relative w-1/10 mb-2" >
                         {dayLogged ? null:<button
                             onClick={toggleMenu}
@@ -153,18 +153,18 @@ export default function ExerciseCard({
                 </div>
 
                 <div className='flex flex-col w-full'>
-                <div className="flex flex-row mb-2 w-full items-center gap-1">
-                    <div className="flex flex-row w-99/100 h-full justify-between items-center gap-1">
-                        <div className="font-anton h-full w-1/100"></div>
+                <div className="flex flex-row mb-2 w-full h-full items-center gap-1">
+                    <div className='w-1/20 h-full flex items-center justify-between'></div>
+                    <div className='w-19/20 h-full flex items-center justify-between'>
                         <label className="text-left w-1/3 font-anton h-full text-lg">Weight:</label>
                         <label className="text-left w-1/3 font-anton h-full text-lg">Reps:</label>
                         <label className="text-left font-anton h-full text-lg w-8">Log:</label>
                     </div>
                 </div>
+                
 
                 {exercise?.sets?.map((set, setIndex) => (
-                    <div key={setIndex} className="flex flex-row mb-2 w-full items-center gap-1">
-                            <div key={setIndex} className="relative flex flex-row w-99/100 h-full justify-between items-center gap-1" >
+                    <div key={setIndex} className="relative flex flex-row mb-2 w-full items-center gap-1">
                             <button
                                     ref={(el) => (setMenuButtons.current[setIndex] = el)}
                                     onClick={() => toggleSetMenu(setIndex)} 
@@ -176,12 +176,14 @@ export default function ExerciseCard({
                                             <button onClick={() => handleSetDelete(setIndex)} className="block w-full font-anton text-left px-4 py-2 hover:bg-gray-100 cursor-pointer">Delete Set</button>
                                         </div>
                                     )}
+                            <div key={setIndex} className="flex flex-row w-19/20 h-full justify-between items-center gap-1" >
+                            
                             <input
                                 type="number"
                                 inputMode="decimal"
                                 pattern="[0-9]*(\.[0-9]*)?"
                                 placeholder={set.logged ? '' : (priorExercise?.sets?.[setIndex]?.weight || '')}
-                                className={`text-center border rounded w-1/3 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
+                                className={`text-center border rounded w-5/12 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
                                 value={inputValues[setIndex]?.weight || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                                 disabled={set.logged}
@@ -191,7 +193,7 @@ export default function ExerciseCard({
                                 inputMode="decimal"
                                 pattern="[0-9]*"
                                 placeholder={set.logged ? '' : (priorExercise?.sets?.[setIndex]?.reps || '')}
-                                className={`text-center border rounded w-1/3 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
+                                className={`text-center border rounded w-5/12 font-anton h-full text-lg text-black ${set.logged ? 'bg-gray-300' : ''}`}
                                 value={inputValues[setIndex]?.reps || ''}
                                 onChange={(e) => handleLocalChange(setIndex, 'reps', e.target.value)}
                                 disabled={set.logged}
