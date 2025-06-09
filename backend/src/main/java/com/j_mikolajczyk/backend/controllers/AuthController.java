@@ -24,6 +24,7 @@ import com.j_mikolajczyk.backend.requests.LoginRequest;
 import com.j_mikolajczyk.backend.requests.LogoutRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.services.UserService;
+import com.j_mikolajczyk.backend.utils.CookieUtil;
 import com.j_mikolajczyk.backend.utils.JwtUtil;
 
 import io.jsonwebtoken.Claims;
@@ -45,11 +46,13 @@ public class AuthController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final CookieUtil cookieUtil;
 
     @Autowired
-    public AuthController(UserService userService, JwtUtil jwtUtil) {
+    public AuthController(UserService userService, JwtUtil jwtUtil, CookieUtil cookieUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.cookieUtil = cookieUtil;
     }
 
     @PostMapping("/register")
@@ -77,10 +80,10 @@ public class AuthController {
             UserDTO userDTO = userService.login(loginRequest);
             Map<String, String> tokens = jwtUtil.generateJwtToken(userDTO);
             
-            Cookie longTermCookie = createCookie("longTermCookie", tokens.get("longTermToken"), (int) longTermExpiration / 1000 , "/auth");
+            Cookie longTermCookie = cookieUtil.createCookie("longTermCookie", tokens.get("longTermToken"), (int) longTermExpiration / 1000 , "/auth");
             response.addCookie(longTermCookie);
 
-            Cookie shortTermCookie = createCookie("shortTermCookie", tokens.get("shortTermToken"), (int) shortTermExpiration / 1000, "/secure");
+            Cookie shortTermCookie = cookieUtil.createCookie("shortTermCookie", tokens.get("shortTermToken"), (int) shortTermExpiration / 1000, "/secure");
             response.addCookie(shortTermCookie);
             logger.info("Login successful for email: {}", email);
             return ResponseEntity.ok(userDTO);
@@ -136,7 +139,7 @@ public class AuthController {
             UserDTO userDTO = new UserDTO(user);
 
             String newShortTermToken = jwtUtil.generateShortTermToken(userDTO);
-            Cookie shortTermCookie = createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000, "/secure");
+            Cookie shortTermCookie = cookieUtil.createCookie("shortTermCookie", newShortTermToken, (int) shortTermExpiration / 1000, "/secure");
             response.addCookie(shortTermCookie);    
             logger.info("Auto-login successful for user ID: {}", user.getId());
             return ResponseEntity.ok(userDTO);
@@ -153,10 +156,10 @@ public class AuthController {
         ResponseEntity<?> authResponse = validateUserAccess(email, request);
         if (authResponse != null) return authResponse;
         
-        Cookie longTermCookie = createCookie("longTermCookie", null, 0, "/auth");
+        Cookie longTermCookie = cookieUtil.createCookie("longTermCookie", null, 0, "/auth");
         response.addCookie(longTermCookie);
 
-        Cookie shortTermCookie = createCookie("shortTermCookie", null, 0, "/secure");
+        Cookie shortTermCookie = cookieUtil.createCookie("shortTermCookie", null, 0, "/secure");
         response.addCookie(shortTermCookie);
         logger.info("Logout successful for email: {}", email);
         return ResponseEntity.ok("Logged out successfully");
@@ -202,16 +205,5 @@ public class AuthController {
             }
         }
         return null;
-    }
-
-    private Cookie createCookie(String name, String value, int maxAge, String path) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setDomain("training-momentum.com");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath(path);
-        cookie.setMaxAge(maxAge);
-        cookie.setAttribute("SameSite", "Lax");
-        return cookie;
     }
 }
