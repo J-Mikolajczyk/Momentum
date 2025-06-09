@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
@@ -23,6 +25,8 @@ import com.j_mikolajczyk.backend.requests.UserRequest;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -75,21 +79,22 @@ public class UserService {
         Optional<User> existingUser = userRepository.findById(id);
 
         if (existingUser.isEmpty()) {
+            logger.error("Refresh unsuccessful for user: {}.", id);
             throw new RuntimeException("User not found.");
         } else {
             User user = existingUser.get();
+            logger.info("Refresh successful for user: {}", id);
             return new UserDTO(user);
         }
     }
 
     public boolean exists(UserRequest userRequest) throws Exception{
-
         Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail().toLowerCase());
 
         if (existingUser.isEmpty()) {
             throw new NotFoundException();
         }
-
+        
         return true;
     }
 
