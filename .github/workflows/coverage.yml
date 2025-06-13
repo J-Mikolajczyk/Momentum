@@ -26,15 +26,9 @@ jobs:
         MONGO_CLUSTER: ${{ secrets.MONGO_CLUSTER }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-    - name: List files for debugging
-      run: |
-        cd backend/target/site/jacoco
-        ls
-
     - name: Generate Coverage Badge
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
-        filename: target/site/jacoco/jacoco.xml
+        filename: backend/target/site/jacoco/jacoco.xml
         badge: true
         output: both
-        
