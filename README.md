@@ -1,4 +1,5 @@
 # Momentum <img src="frontend/src/assets/favicon.ico" alt="Momentum Logo" width="24" height="24" />
+<img src=".github/badges/jacoco.svg" alt="Backend Coverage Badge">
 
 Momentum is a full-stack progressive web app that allows users to log their strength training workouts. It is built with Java Spring Boot, React, and MongoDB. Users can plan and create training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
 
