@@ -24,6 +24,7 @@ import com.j_mikolajczyk.backend.requests.LoginRequest;
 import com.j_mikolajczyk.backend.requests.LogoutRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.services.UserService;
+import com.j_mikolajczyk.backend.utils.AuthGuard;
 import com.j_mikolajczyk.backend.utils.CookieUtil;
 import com.j_mikolajczyk.backend.utils.JwtUtil;
 
@@ -47,12 +48,14 @@ public class AuthController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final CookieUtil cookieUtil;
+    private final AuthGuard authGuard;
 
     @Autowired
-    public AuthController(UserService userService, JwtUtil jwtUtil, CookieUtil cookieUtil) {
+    public AuthController(UserService userService, JwtUtil jwtUtil, CookieUtil cookieUtil, AuthGuard authGuard) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.cookieUtil = cookieUtil;
+        this.authGuard = authGuard;
     }
 
     @PostMapping("/register")
@@ -153,7 +156,13 @@ public class AuthController {
     public ResponseEntity<?> logout(@RequestBody LogoutRequest logoutRequest, HttpServletRequest request, HttpServletResponse response) {
         String email = logoutRequest.getEmail();
         logger.info("Logout requested for email: {}", email);
-        ResponseEntity<?> authResponse = validateUserAccess(email, request);
+        ObjectId userId = null;
+        try {
+            userId = userService.getObjectIdByEmail(email);
+        } catch (Exception e) {
+            return ResponseEntity.ok("{\"exists\": false}");
+        }
+        ResponseEntity<?> authResponse = authGuard.validateUserAccess(userId, request);
         if (authResponse != null) return authResponse;
         
         Cookie longTermCookie = cookieUtil.createCookie("longTermCookie", null, 0, "/auth");
@@ -165,45 +174,4 @@ public class AuthController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
-    private ResponseEntity<?> validateUserAccess(String givenEmail, HttpServletRequest request) {
-        logger.debug("Validating JWT for email: {}", givenEmail);
-        String jwt = getJwtFromCookies(request);
-        if (jwt == null) {
-            logger.warn("JWT validation failed: invalid token or email mismatch");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No JWT cookie found");
-        }
-
-        String email;
-        try {
-            email = jwtUtil.extractEmail(jwt);
-        } catch (Exception e) {
-            logger.warn("JWT validation failed: invalid token or email mismatch");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid JWT");
-        }
-
-        if(email == null) {
-            logger.warn("JWT validation failed: invalid token or email mismatch");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
-        }
-
-        if (!email.equals(givenEmail)) {
-            logger.warn("JWT validation failed: invalid token or email mismatch");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Wrong user's cookie");
-        }
-
-        return null;
-    }
-
-    private String getJwtFromCookies(HttpServletRequest request) {
-        if (request.getCookies() == null)  {
-            logger.warn("JWT validation failed: no cookie found");
-            return null;
-        }
-        for (Cookie cookie : request.getCookies()) {
-            if ("longTermCookie".equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
 }

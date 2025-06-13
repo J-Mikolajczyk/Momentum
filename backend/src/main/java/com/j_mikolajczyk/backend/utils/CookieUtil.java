@@ -14,6 +14,7 @@ public class CookieUtil {
         cookie.setSecure(true);
         cookie.setPath(path);
         cookie.setMaxAge(maxAge);
+        cookie.setDomain("training-momentum.com");
         cookie.setAttribute("SameSite", "Lax");
         return cookie;
     }
@@ -22,6 +23,16 @@ public class CookieUtil {
         if (request.getCookies() == null) return null;
         for (Cookie cookie : request.getCookies()) {
             if ("shortTermCookie".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+    public String extractLongTermJwt(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+        for (Cookie cookie : request.getCookies()) {
+            if ("longTermCookie".equals(cookie.getName())) {
                 return cookie.getValue();
             }
         }
