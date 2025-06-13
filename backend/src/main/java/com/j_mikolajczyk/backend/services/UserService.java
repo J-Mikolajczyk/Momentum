@@ -140,4 +140,17 @@ public class UserService {
         }
     }
 
+    public ObjectId getObjectIdByEmail(String email) throws Exception{
+
+        Optional<User> existingUser = userRepository.findByEmail(email);
+
+        if (existingUser.isEmpty()) {
+            throw new NotFoundException();
+        }
+
+        User user = existingUser.get();
+
+        return user.getId();
+    }
+
 }
