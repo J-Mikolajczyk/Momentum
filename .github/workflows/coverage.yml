@@ -25,15 +25,8 @@ jobs:
         MONGO_CLUSTER: ${{ secrets.MONGO_CLUSTER }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-    - name: List Jacoco report files
-      run: ls -l backend/target/site/jacoco
-
-    - name: Show Jacoco XML head
-      run: head -40 backend/target/site/jacoco/jacoco.xml
-
-    - name: Generate Coverage Badge
-      uses: irongut/CodeCoverageSummary@v1.3.0
+    - name: jacoco-badge-generator
+      uses: cicirello/jacoco-badge-generator@v2.12.0
       with:
-        filename: backend/target/site/jacoco/jacoco.xml
-        badge: true
-        output: both
+        jacoco-csv-file: backend/target/site/jacoco/jacoco.csv
+
