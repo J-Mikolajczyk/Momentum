@@ -16,32 +16,8 @@ export default function App() {
   const {
     loggedIn,
     showEmailForm,
-    setUserInfo,
-    setLoggedIn,
     blockName,
-    setBlockName,
-    setShowEmailForm
   } = useUser();
-
-  const autoLogin = async () => {
-    try {
-      const response = await loginRequest(ip + '/auth/auto-login')
-
-      if (response.ok) {
-        setThemeColor('#193cb8');
-        const user = await response.json();
-        setLoggedIn(true);
-        setUserInfo(user);
-        if (user.trainingBlockNames.length >= 1) {
-          setBlockName(user.trainingBlockNames[0]);
-        }
-      } else {
-        setShowEmailForm(true);
-      }
-    } catch (err) {
-      setShowEmailForm(true);    
-    }
-  };
 
   useEffect(() => {
     setThemeColor('#ffffff');
