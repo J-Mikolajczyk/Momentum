@@ -16,6 +16,11 @@ public class Exercise {
         this.sets = new ArrayList<Set>();
     }
 
+    public Exercise(String name) {
+        this.name = name;
+        this.sets = new ArrayList<Set>();
+    }
+
     public Exercise(String name, List<Set> sets) {
         this.name = name;
         this.sets = sets;

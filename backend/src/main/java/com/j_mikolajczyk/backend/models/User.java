@@ -36,6 +36,10 @@ public class User {
     public ObjectId getId() {
         return this.id;
     }
+
+    public void setId(ObjectId id) {
+        this.id = id;
+    }
     
     public String getEmail() {
         return this.email;
