@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from 'react';
+import { use, useEffect, useRef, useState } from 'react';
 import RenamePopup from './RenamePopup';
 
 export default function ExerciseCard({
@@ -19,8 +19,8 @@ export default function ExerciseCard({
 
     const [inputValues, setInputValues] = useState(() =>
         exercise?.sets?.map(set => ({
-            weight: set.weight || '',
-            reps: set.reps || '',
+            weight: set.weight ?? '',
+            reps: set.reps ?? '',
         })) || []
     );
     
@@ -34,8 +34,8 @@ export default function ExerciseCard({
     useEffect(() => {
             setInputValues(
             exercise?.sets?.map(set => ({
-                weight: set.weight || '',
-                reps: set.reps || '',
+                weight: set.weight ?? '',
+                reps: set.reps ?? '',
             })) || []
             );
 
@@ -188,6 +188,7 @@ export default function ExerciseCard({
                                 onChange={(e) => handleLocalChange(setIndex, 'weight', e.target.value)}
                                 disabled={set.logged}
                             />
+                            
                             <input
                                 type="number"
                                 inputMode="decimal"
