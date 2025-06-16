@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import ExerciseCard from './ExerciseCard';
 import AddExercisePopup from './AddExercisePopup';
 import MessagePopup from './MessagePopup';
+import { useBlockDataContext } from '../contexts/BlockDataContext';
 
+export default function Day({ }) {
 
-export default function Day({
+    const {
     blockData,
     currentWeekIndex,
     currentDayIndex,
@@ -16,7 +18,7 @@ export default function Day({
     renameExercise,
     deleteExercise,
     updateWeeks
-  }) {
+  } = useBlockDataContext();
 
     const logDay = () => {
       const day = blockData.weeks[currentWeekIndex]?.days?.[currentDayIndex];
