@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ExerciseCard from './ExerciseCard';
-import AddExercisePopup from './AddExercisePopup';
-import MessagePopup from './MessagePopup';
+import AddExercisePopup from './popups/AddExercisePopup';
+import MessagePopup from './popups/MessagePopup';
 import { useBlockDataContext } from '../contexts/BlockDataContext';
 
 export default function Day({ }) {
 
-    const {
+  const {
     blockData,
     currentWeekIndex,
     currentDayIndex,
@@ -20,10 +20,17 @@ export default function Day({ }) {
     updateWeeks
   } = useBlockDataContext();
 
-    const logDay = () => {
-      const day = blockData.weeks[currentWeekIndex]?.days?.[currentDayIndex];
-      if (!day) return;
+  const [showAddExercisePopup, setShowAddExercisePopup] = useState(false);
+  const [message, setMessage] = useState('');
+  const [ignoreMethod, setIgnoreMethod] = useState(null);
 
+  if (!blockData) {
+    return;
+  }
+
+  const logDay = () => {
+    const day = blockData.weeks[currentWeekIndex]?.days?.[currentDayIndex];
+    if (!day) return;
       for (const exercise of day.exercises || []) {
         for (const set of exercise.sets || []) {
           if (!set.logged) {
@@ -32,30 +39,20 @@ export default function Day({ }) {
           }
         }
       }
-
-      setMessage('Logging a day is irreversible. Are you sure?');
-      setIgnoreMethod(() => () => handleLog());
-    };
-
-
-    const handleLog = async () => {
-      const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
-      const day = newWeeks[currentWeekIndex]?.days?.[currentDayIndex];
-      if (!day) return;
-
-      day.logged = true;
-      newWeeks[currentWeekIndex].days[currentDayIndex] = day;
-      updateWeeks(newWeeks);
-    };
+    setMessage('Logging a day is irreversible. Are you sure?');
+    setIgnoreMethod(() => () => handleLog());
+  };
 
 
-  if (!blockData) {
-    return;
-  }
+  const handleLog = async () => {
+    const newWeeks = JSON.parse(JSON.stringify(blockData.weeks));
+    const day = newWeeks[currentWeekIndex]?.days?.[currentDayIndex];
+    if (!day) return;
 
-  const [showAddExercisePopup, setShowAddExercisePopup] = useState(false);
-  const [message, setMessage] = useState('');
-  const [ignoreMethod, setIgnoreMethod] = useState(null);
+    day.logged = true;
+    newWeeks[currentWeekIndex].days[currentDayIndex] = day;
+    updateWeeks(newWeeks);
+  };
 
   const toggleAddExercisePopup = () => {
     setShowAddExercisePopup(!showAddExercisePopup);

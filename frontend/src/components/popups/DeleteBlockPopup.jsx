@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import setThemeColor from '../hooks/useThemeColor'
+import setThemeColor from '../../hooks/useThemeColor'
 
 export default function DeleteBlockPopup( { show, toggle, name, deleteMethod } ) {
 
     if (!show) {
         return <></>;
     }
-
-    const [newName, setNewName] = useState('');
 
     useEffect(() => {
         setThemeColor('#0D1E5C'); 

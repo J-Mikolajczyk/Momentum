@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import setThemeColor from '../hooks/useThemeColor'
+import setThemeColor from '../../hooks/useThemeColor'
 
 export default function MessagePopup({ message, setMessage, ignoreMethod, setIgnoreMethod, buttonText }) {
   if (!message) {

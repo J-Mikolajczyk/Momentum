@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import setThemeColor from '../hooks/useThemeColor'
+import setThemeColor from '../../hooks/useThemeColor'
 
 export default function AddExercisePopup( {
   show, 

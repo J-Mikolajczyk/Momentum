@@ -1,10 +1,13 @@
 import React, { useState, useSyncExternalStore, useEffect } from 'react';
 import { postRequest, loginRequest } from '../utils/api';
 import setThemeColor from '../hooks/useThemeColor';
-import PolicyPopup from './PolicyPopup';
-import { motion, AnimatePresence } from 'framer-motion';
+import PolicyPopup from './popups/PolicyPopup';
+import { motion } from 'framer-motion';
+import { useUser } from '../contexts/UserContext';
 
-function EmailForm({ setLoggedIn, setUserInfo }) {
+function EmailForm({ }) {
+
+  const { setLoggedIn, setUserInfo } = useUser();
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
   const [type, setType] = useState('');
@@ -100,7 +103,6 @@ function EmailForm({ setLoggedIn, setUserInfo }) {
       </motion.div>
       <PolicyPopup type={type} setType={setType} location='email'/>
     </>
-    
   );
 }
 
