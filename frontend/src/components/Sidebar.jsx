@@ -1,27 +1,38 @@
 import React, { useState } from 'react';
-import PolicyPopup from './PolicyPopup';
-import { postRequest } from '../utils/api';
+import PolicyPopup from './popups/PolicyPopup';
+import { useUI } from '../contexts/UIContext.jsx';
+import { useUser } from '../contexts/UserContext';
 
-export default function Sidebar( { logOut, open, toggleSidebar, goHome, userInfo, setUserInfo} ) {
+export default function Sidebar( {  } ) {
 
-    const [type, setType] = useState(null);
-    const handleOuterClick = () => {
-      toggleSidebar();
-    };
+  const { logOut, setBlockName, setWeekText, fetchData } = useUser();
+
+  const goHome = () => {
+    setBlockName(null);
+    setWeekText('Loading...');
+    fetchData();
+  }
+
+  const { showSidebar, toggleSidebar } = useUI();
+
+  const [type, setType] = useState(null);
+  const handleOuterClick = () => {
+    toggleSidebar();
+  };
   
-    const handleInnerClick = (e) => {
-      e.stopPropagation();
-    };
+  const handleInnerClick = (e) => {
+    e.stopPropagation();
+  };
 
-    const handleGoHome = async () => {
-      goHome();
-      toggleSidebar();
-    }
+  const handleGoHome = async () => {
+    goHome();
+    toggleSidebar();
+  }
 
 
-    if (!open) {
-        return null;
-    }
+  if (!showSidebar) {
+    return null;
+  }
 
     return (
       <>

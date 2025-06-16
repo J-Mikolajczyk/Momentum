@@ -1,6 +1,6 @@
 
 import { use, useEffect, useRef, useState } from 'react';
-import RenamePopup from './RenamePopup';
+import RenameExercisePopup from './popups/RenameExercisePopup';
 
 export default function ExerciseCard({
     exercise,
@@ -131,7 +131,7 @@ export default function ExerciseCard({
 
     return (
         <>
-            <RenamePopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={exercise.name} rename={renameExercise}  />
+            <RenameExercisePopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={exercise.name} rename={renameExercise}  />
             <div className="pl-1 pr-3 py-1.5 border border-blue-800 rounded-md shadow-md w-full">
                 <div className="w-full flex flex-row justify-between items-center">
                     <h2 className="ml-3 text-blue-800 font-anton text-2xl ">{exercise?.name}</h2>

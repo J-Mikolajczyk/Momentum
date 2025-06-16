@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useSyncExternalStore } from 'react';
-import { postRequest, getRequest } from '../utils/api';
+import { postRequest, getRequest } from '../../utils/api';
+import { useUser } from '../../contexts/UserContext';
+import { useUI } from '../../contexts/UIContext';
 
-export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, userInfo, logOut} ) {
+export default function AddBlockPopup( {} ) {
+
+  const { fetchData, userInfo, logOut } = useUser();
+  const { showAddBlockMenu, toggleAddBlockMenu } = useUI();
 
   const ip = import.meta.env.VITE_IP_ADDRESS;
     const [blockName, setBlockName] = useState('');
@@ -67,7 +72,7 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
     }
 
 
-    if (!open) {
+    if (!showAddBlockMenu) {
         return <></>;
     }
 
@@ -96,9 +101,6 @@ export default function AddBlockPopup( {fetchData, open, toggleAddBlockMenu, use
                 );
               })}
             </div>
-
-
-
           <button type='submit' onClick={handleSubmit} className='mt-3 bg-white font-anton rounded-md text-blue-800 hover:bg-gray-200 transition duration-300 h-1/4 px-10 text-xl border-blue-800 border-2 cursor-pointer'>Add</button>
           {message && (<p className='font-anton text-red-700 text-xl mt-2'>{message}</p> )}
         </form>

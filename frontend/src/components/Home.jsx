@@ -1,11 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { postRequest, getRequest } from '../utils/api';
-import RenameBlockPopup from './RenameBlockPopup';
-import DeleteBlockPopup from './DeleteBlockPopup';
+import RenameBlockPopup from './popups/RenameBlockPopup';
+import DeleteBlockPopup from './popups/DeleteBlockPopup';
+import AddBlockPopup from './popups/AddBlockPopup';
+import { useUser } from '../contexts/UserContext';
+import { useUI } from '../contexts/UIContext';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
-export default function Home({ fetchData, setWeekText, blockName, setBlockName, userInfo, toggleAddBlockMenu, logOut }) {
+export default function Home({  }) {
+
+  const { fetchData, setWeekText, blockName, setBlockName, userInfo, logOut } = useUser();
+  const { showAddBlockMenu, toggleAddBlockMenu} = useUI();
 
   const [blockData, setBlockData] = useState(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(null);
@@ -178,6 +184,7 @@ export default function Home({ fetchData, setWeekText, blockName, setBlockName, 
         </div>
         <RenameBlockPopup show={showRenamePopup} toggle={() => setShowRenamePopup()} name={renameBlockName} rename={renameBlock} logOut={logOut} />
         <DeleteBlockPopup show={showDeletePopup} toggle={() => setShowDeletePopup()} name={deleteBlockName} deleteMethod={deleteBlock} logOut={logOut} />
+        <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} logOut={logOut}/>
     </>
   );
 }

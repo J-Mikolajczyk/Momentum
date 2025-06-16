@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MessagePopup from './MessagePopup';
+import MessagePopup from './popups/MessagePopup';
 import Week from '../models/Week';
 import { useBlockDataContext } from '../contexts/BlockDataContext';
 
