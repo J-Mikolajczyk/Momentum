@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
 import MessagePopup from './MessagePopup';
 import Week from '../models/Week';
+import { useBlockDataContext } from '../contexts/BlockDataContext';
 
-export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWeeks, currentWeek, currentDay }) {
+export default function WeekMenu({ }) {
+  const {
+    blockData,
+    setWeekAndDay,
+    currentWeekIndex,
+    currentDayIndex,
+    weekText,
+    updateWeeks
+  } = useBlockDataContext();
+  
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   const [message, setMessage] = useState(null);
@@ -111,7 +121,7 @@ export default function WeekMenu({ blockData, setWeekAndDay, weekText, updateWee
                     {Array.from({ length: maxDays }).map((_, dayIndex) => {
                       const dayExists = week.days[dayIndex];
                       const label = `${(week.days[dayIndex].name)?.substring(0,3).toUpperCase()}`;
-                      const isCurrent = currentWeek === weekIndex && currentDay === dayIndex;
+                      const isCurrent = currentWeekIndex === weekIndex && currentDayIndex === dayIndex;
                       const isLogged = dayExists.logged;
                       return (
                         <div

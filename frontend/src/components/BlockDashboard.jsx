@@ -3,10 +3,20 @@ import { postRequest, getRequest } from '../utils/api';
 import Day from './Day';
 import WeekMenu from './WeekMenu';
 import Exercise from '../models/Exercise';
+import { useBlockDashboardContext } from '../contexts/BlockDashboardContext';
+import { BlockDataContext } from '../contexts/BlockDataContext';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
-export default function BlockDashboard({ weekText, setWeekText, blockName, userInfo, logOut }) {
+export default function BlockDashboard({ }) {
+
+  const {
+    blockName,
+    userInfo,
+    setWeekText,
+    weekText,
+    logOut
+  } = useBlockDashboardContext();
 
   const [blockData, setBlockData] = useState(null);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(null);
@@ -277,28 +287,23 @@ export default function BlockDashboard({ weekText, setWeekText, blockName, userI
 
 
   return (
-    <>
-      <WeekMenu
-            blockData={blockData}
-            setWeekAndDay={setWeekAndDay}
-            currentWeek={currentWeekIndex}
-            currentDay={currentDayIndex}
-            weekText={weekText}
-            updateWeeks={updateWeeks}
-      />
-      <Day
-            blockData={blockData}
-            currentWeekIndex={currentWeekIndex}
-            currentDayIndex={currentDayIndex}
-            addExerciseToDay={addExerciseToDay}
-            addSetToExercise={addSetToExercise}
-            deleteSetFromExercise={deleteSetFromExercise}
-            updateSetData={updateSetData}
-            moveExercise={moveExercise}             
-            renameExercise={renameExercise}
-            deleteExercise={deleteExercise}
-            updateWeeks={updateWeeks}
-        />
-    </>   
+    <BlockDataContext.Provider value={{
+      blockData,
+      currentWeekIndex,
+      currentDayIndex,
+      weekText,
+      updateWeeks,
+      setWeekAndDay,
+      addExerciseToDay,
+      addSetToExercise,
+      deleteSetFromExercise,
+      updateSetData,
+      moveExercise,
+      renameExercise,
+      deleteExercise
+    }}>
+      <WeekMenu />
+      <Day />
+    </BlockDataContext.Provider>
   );
 }

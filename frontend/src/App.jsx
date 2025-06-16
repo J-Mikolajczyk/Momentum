@@ -9,6 +9,7 @@ import Home from './components/Home';
 import Navigation from './components/Navigation';
 import setThemeColor from './hooks/useThemeColor'
 import {getRequest, loginRequest, logoutRequest} from './utils/api'
+import { BlockDashboardContext } from './contexts/BlockDashboardContext';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
 
@@ -115,8 +116,20 @@ export default function App() {
         <div className='h-full w-full flex flex-col bg-white'>
           <Navigation toggleSidebar={toggleSidebar}></Navigation>
           <Sidebar goHome={goHome} logOut={logOut} open={showSidebar} toggleSidebar={toggleSidebar} userInfo={userInfo} setUserInfo={setUserInfo}/>
-          {blockName === null ? <Home blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
-            : <BlockDashboard blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
+          {blockName === null ? 
+              <Home blockName={blockName} setBlockName={setBlockName} userInfo={userInfo} toggleAddBlockMenu={toggleAddBlockMenu} setWeekText={setWeekText} weekText={weekText} fetchData={fetchData} logOut={logOut}/>
+            : <BlockDashboardContext.Provider value={{
+                blockName,
+                setBlockName,
+                userInfo,
+                toggleAddBlockMenu,
+                setWeekText,
+                weekText,
+                fetchData,
+                logOut
+              }}>
+                <BlockDashboard />
+              </BlockDashboardContext.Provider>
           }
           <AddBlockPopup fetchData={fetchData} open={showAddBlockMenu} toggleAddBlockMenu={toggleAddBlockMenu} userInfo={userInfo} logOut={logOut}/>
         </div> : 
