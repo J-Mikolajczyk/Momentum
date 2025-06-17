@@ -27,7 +27,6 @@ function EmailForm({ }) {
         const response = await loginRequest(ip+'/auth/login', { email, password });
 
         if (response.ok) {
-          console.log(response);
           const json = await response.json();
           if(json.exists === false) {
             setMessage('User not found. Please register.');

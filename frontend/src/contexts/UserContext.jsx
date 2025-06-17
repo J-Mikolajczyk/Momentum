@@ -13,7 +13,7 @@ const ip = import.meta.env.VITE_IP_ADDRESS;
 
 export const UserProvider = ({ children }) => {
 
-  const { setShowSidebar } = useUI();
+  const { toggleSidebar } = useUI();
 
   const [userInfo, setUserInfo] = useState(null);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -34,26 +34,7 @@ export const UserProvider = ({ children }) => {
     setWeekText('Loading...');
     setUserInfo(null);
     setThemeColor('#ffffff');
-    setShowSidebar(false);
-  };
-
-  const autoLogin = async () => {
-    try {
-      const response = await loginRequest(ip + '/auth/auto-login');
-      if (response.ok) {
-        setThemeColor('#193cb8');
-        const user = await response.json();
-        setLoggedIn(true);
-        setUserInfo(user);
-        if (user.trainingBlockNames.length >= 1) {
-          setBlockName(user.trainingBlockNames[0]);
-        }
-      } else {
-        toggleShowEmailForm();
-      }
-    } catch {
-      toggleShowEmailForm();
-    }
+    toggleSidebar();
   };
 
   const fetchData = async () => {
@@ -75,13 +56,6 @@ export const UserProvider = ({ children }) => {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    setThemeColor('#ffffff');
-    setTimeout(() => {
-      autoLogin();
-    }, 1400);
-  }, []);
 
   return (
     <UserContext.Provider
