@@ -13,19 +13,19 @@ Momentum is a full-stack progressive web app that allows users to log their stre
 
 ## 🛠 Tech Stack
 
-### Backend
+### ⚙️ Backend
 - **Java Spring Boot**
 - **REST APIs**
 - **Docker**
 
-### Frontend
+### 🖼️ Frontend
 - **React** with JSX
 - **Tailwind CSS** for styling
 
-### Database
+### 🗄️ Database
 - **MongoDB** via Spring Data
 
-### In Progress
+### 🚧 In Progress
 - Email verification
 - Pre-made training templates to choose from
 - Dark Mode
