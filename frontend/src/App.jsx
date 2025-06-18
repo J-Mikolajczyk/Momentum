@@ -7,6 +7,7 @@ import Home from './components/Home';
 import Navigation from './components/Navigation';
 import setThemeColor from './hooks/useThemeColor'
 import { useUser } from './contexts/UserContext';
+import { loginRequest } from './utils/api';
 import { AnimatePresence } from 'framer-motion';
 
 const ip = import.meta.env.VITE_IP_ADDRESS;
@@ -37,7 +38,7 @@ export default function App() {
       } else {
         setShowEmailForm(true);
       }
-    } catch {
+    } catch (error) {
       setShowEmailForm(true);
     }
   };
