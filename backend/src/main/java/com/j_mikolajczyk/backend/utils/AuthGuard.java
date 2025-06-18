@@ -38,6 +38,10 @@ public class AuthGuard {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
 
+        if (!request.getRequestURI().startsWith("/secure")) {
+            return null;
+        }
+
         String jwt = cookieUtil.extractShortTermJwt(request);
         if (jwt == null) {
             logger.warn("Unauthorized access attempt for user '{}': {}", userId, "No cookies found.");
