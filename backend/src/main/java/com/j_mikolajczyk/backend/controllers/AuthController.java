@@ -81,7 +81,7 @@ public class AuthController {
         logger.info("Login attempt for email: {}", email);
         try {
             UserDTO userDTO = userService.login(loginRequest);
-            Map<String, String> tokens = jwtUtil.generateJwtToken(userDTO);
+            Map<String, String> tokens = jwtUtil.generateTokens(userDTO);
             
             Cookie longTermCookie = cookieUtil.createCookie("longTermCookie", tokens.get("longTermToken"), (int) longTermExpiration / 1000 , "/auth");
             response.addCookie(longTermCookie);
