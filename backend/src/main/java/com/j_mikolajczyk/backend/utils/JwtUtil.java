@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
+import com.j_mikolajczyk.backend.models.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -33,29 +34,11 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Map<String, String> generateJwtToken(UserDTO userDTO) {
+    public Map<String, String> generateTokens(UserDTO userDTO) {
         Map<String, String> tokens = new HashMap<>();
-    
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
-        Key key = Keys.hmacShaKeyFor(keyBytes);
             
-        String shortTermToken = Jwts.builder()
-                .setSubject(userDTO.getId())
-                .claim("email", userDTO.getEmail())
-                .claim("name", userDTO.getName())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + shortTermExpiration))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
-
-        String longTermToken = Jwts.builder()
-                    .setSubject(userDTO.getId())
-                .claim("email", userDTO.getEmail())
-                .claim("name", userDTO.getName())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + longTermExpiration))
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+        String shortTermToken = generateToken(userDTO, shortTermExpiration);
+        String longTermToken = generateToken(userDTO, longTermExpiration);
     
         tokens.put("shortTermToken", shortTermToken);
         tokens.put("longTermToken", longTermToken);
@@ -63,21 +46,24 @@ public class JwtUtil {
         return tokens;
     }
 
-    public String generateShortTermToken(UserDTO userDTO) {
-    
+    private String generateToken(UserDTO userDTO, long expiration) {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         Key key = Keys.hmacShaKeyFor(keyBytes);
             
-        String shortTermToken = Jwts.builder()
+        String token = Jwts.builder()
                 .setSubject(userDTO.getId())
                 .claim("email", userDTO.getEmail())
                 .claim("name", userDTO.getName())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + shortTermExpiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     
-        return shortTermToken;
+        return token;
+    }
+
+    public String generateShortTermToken(UserDTO userDTO) {
+        return generateToken(userDTO, longTermExpiration);
     }
 
     public Claims validateToken(String token){
