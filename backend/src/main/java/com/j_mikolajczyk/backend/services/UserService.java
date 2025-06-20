@@ -34,9 +34,9 @@ public class UserService {
     private final TrainingBlockService blockService;
 
     @Autowired
-    public UserService(UserRepository userRepository, TrainingBlockService blockService) throws Exception{
+    public UserService(UserRepository userRepository, TrainingBlockService blockService, BCryptPasswordEncoder passwordEncoder) throws Exception{
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
         this.blockService = blockService;
     }
 
@@ -46,10 +46,6 @@ public class UserService {
     }
 
     public void register(RegisterRequest registerRequest) throws Exception {
-        if (registerRequest.getEmail() == null || registerRequest.getPassword() == null) {
-            logger.warn("Registration attempt with missing email or password");
-            throw new RuntimeException("Email and password are required.");
-        }
 
         Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
 
@@ -88,7 +84,7 @@ public class UserService {
 
         if (existingUser.isEmpty()) {
             logger.error("Refresh unsuccessful: user '{}' not found", id);
-            throw new RuntimeException("User not found.");
+            throw new NotFoundException();
         } else {
             logger.info("Refresh successful for user '{}'", id);
             return new UserDTO(existingUser.get());
@@ -166,10 +162,6 @@ public class UserService {
     }
 
     public void delete(ObjectId id, String password) throws Exception {
-        if (id == null) {
-            logger.warn("Delete attempt with null ID");
-            throw new RuntimeException("User ID is required.");
-        }
 
         Optional<User> existingUser = userRepository.findById(id);
 
