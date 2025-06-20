@@ -14,6 +14,7 @@ public class CookieUtil {
         cookie.setSecure(true);
         cookie.setPath(path);
         cookie.setMaxAge(maxAge);
+        cookie.setDomain("training-momentum.com");
         cookie.setAttribute("SameSite", "Lax");
         return cookie;
     }
