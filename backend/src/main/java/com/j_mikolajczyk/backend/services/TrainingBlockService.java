@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Lazy;
 
 import com.j_mikolajczyk.backend.controllers.TrainingBlockController;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
@@ -22,13 +23,13 @@ import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
 @Service
 public class TrainingBlockService {
 
-    private static final Logger logger = LoggerFactory.getLogger(TrainingBlockController.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrainingBlockService.class);
 
     private final TrainingBlockRepository blockRepository;
     private final UserService userService;
 
     @Autowired
-    public TrainingBlockService(TrainingBlockRepository blockRepository, UserService userService) {
+    public TrainingBlockService(TrainingBlockRepository blockRepository, @Lazy UserService userService) {
         this.blockRepository = blockRepository;
         this.userService = userService;
     }
@@ -177,7 +178,7 @@ public class TrainingBlockService {
         }
     }
 
-     public void rename(RenameBlockRequest renameBlockRequest) throws Exception{
+    public void rename(RenameBlockRequest renameBlockRequest) throws Exception{
         String blockName = renameBlockRequest.getBlockName();
         String newName = renameBlockRequest.getNewName();
         ObjectId userId = renameBlockRequest.getUserId();
@@ -205,4 +206,13 @@ public class TrainingBlockService {
             throw e;
         }
     }
+
+    public void deleteAllForUser(ObjectId userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID must not be null.");
+        }
+
+        blockRepository.deleteByCreatedByUserID(userId);
+    }
+
 }

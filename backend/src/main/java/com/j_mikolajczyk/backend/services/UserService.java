@@ -31,25 +31,30 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TrainingBlockService blockService;
 
     @Autowired
-    public UserService(UserRepository userRepository) throws Exception{
+    public UserService(UserRepository userRepository, TrainingBlockService blockService) throws Exception{
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.blockService = blockService;
     }
 
     public void save(User user) {
+        logger.info("Saving user '{}'", user.getEmail());
         userRepository.save(user);
     }
 
-    public void register(RegisterRequest registerRequest) throws Exception{
-        if(registerRequest.getEmail() == null || registerRequest.getPassword() == null) {
+    public void register(RegisterRequest registerRequest) throws Exception {
+        if (registerRequest.getEmail() == null || registerRequest.getPassword() == null) {
+            logger.warn("Registration attempt with missing email or password");
             throw new RuntimeException("Email and password are required.");
         }
 
         Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
 
         if (existingUser.isPresent()) {
+            logger.warn("Registration failed: email '{}' already exists", registerRequest.getEmail());
             throw new Exception("409");
         }
 
@@ -57,77 +62,82 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
+        logger.info("User registered with email '{}'", user.getEmail());
     }
 
-    public UserDTO login(LoginRequest loginRequest) throws Exception{
-
+    public UserDTO login(LoginRequest loginRequest) throws Exception {
         Optional<User> existingUser = userRepository.findByEmail(loginRequest.getEmail().toLowerCase());
 
         if (existingUser.isEmpty()) {
+            logger.warn("Login failed: email '{}' not found", loginRequest.getEmail());
             throw new NotFoundException();
         } else {
             User user = existingUser.get();
-            if (passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())) {
+            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                logger.info("Login successful for user '{}'", loginRequest.getEmail());
                 return new UserDTO(user);
             } else {
+                logger.warn("Login failed: invalid credentials for '{}'", loginRequest.getEmail());
                 throw new BadCredentialsException("Invalid credentials.");
             }
         }
     }
 
-    public UserDTO refresh(ObjectId id) throws Exception{
-
+    public UserDTO refresh(ObjectId id) throws Exception {
         Optional<User> existingUser = userRepository.findById(id);
 
         if (existingUser.isEmpty()) {
-            logger.error("Refresh unsuccessful for user: {}.", id);
+            logger.error("Refresh unsuccessful: user '{}' not found", id);
             throw new RuntimeException("User not found.");
         } else {
-            User user = existingUser.get();
-            logger.info("Refresh successful for user: {}", id);
-            return new UserDTO(user);
+            logger.info("Refresh successful for user '{}'", id);
+            return new UserDTO(existingUser.get());
         }
     }
 
-    public boolean exists(UserRequest userRequest) throws Exception{
+    public boolean exists(UserRequest userRequest) throws Exception {
         Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail().toLowerCase());
 
         if (existingUser.isEmpty()) {
+            logger.warn("User existence check failed: '{}' not found", userRequest.getEmail());
             throw new NotFoundException();
         }
-        
+
+        logger.info("User '{}' exists", userRequest.getEmail());
         return true;
     }
 
-    public User getByUserRequest(UserRequest userRequest) throws Exception{
-
+    public User getByUserRequest(UserRequest userRequest) throws Exception {
         Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
 
         if (existingUser.isEmpty()) {
+            logger.warn("User fetch failed: '{}' not found", userRequest.getEmail());
             throw new NotFoundException();
         }
 
+        logger.info("User fetched by email '{}'", userRequest.getEmail());
         return existingUser.get();
     }
 
-    public User getById(ObjectId userId) throws Exception{
-
+    public User getById(ObjectId userId) throws Exception {
         Optional<User> existingUser = userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
+            logger.warn("User fetch failed: ID '{}' not found", userId);
             throw new NotFoundException();
         }
 
+        logger.info("User fetched by ID '{}'", userId);
         return existingUser.get();
     }
 
-    public void addBlock(TrainingBlock block) throws Exception{
-
+    public void addBlock(TrainingBlock block) throws Exception {
         ObjectId userId = block.getCreatedByUserID();
 
         Optional<User> existingUser = userRepository.findById(userId);
 
         if (existingUser.isEmpty()) {
+            logger.warn("Add block failed: user '{}' not found", userId);
             throw new NotFoundException();
         }
 
@@ -135,23 +145,48 @@ public class UserService {
 
         try {
             user.addBlock(block.getName());
-            userRepository.save(existingUser.get());
+            userRepository.save(user);
+            logger.info("Block '{}' added to user '{}'", block.getName(), userId);
         } catch (Exception e) {
+            logger.error("Error adding block '{}' to user '{}': {}", block.getName(), userId, e.getMessage());
             throw e;
         }
     }
 
-    public ObjectId getObjectIdByEmail(String email) throws Exception{
-
+    public ObjectId getObjectIdByEmail(String email) throws Exception {
         Optional<User> existingUser = userRepository.findByEmail(email);
 
         if (existingUser.isEmpty()) {
+            logger.warn("Get ObjectId failed: user '{}' not found", email);
+            throw new NotFoundException();
+        }
+
+        logger.info("ObjectId retrieved for user '{}'", email);
+        return existingUser.get().getId();
+    }
+
+    public void delete(ObjectId id, String password) throws Exception {
+        if (id == null) {
+            logger.warn("Delete attempt with null ID");
+            throw new RuntimeException("User ID is required.");
+        }
+
+        Optional<User> existingUser = userRepository.findById(id);
+
+        if (existingUser.isEmpty()) {
+            logger.warn("Delete failed: user '{}' not found", id);
             throw new NotFoundException();
         }
 
         User user = existingUser.get();
 
-        return user.getId();
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            userRepository.deleteById(id);
+            blockService.deleteAllForUser(id);
+            logger.info("User '{}' deleted successfully", id);
+        } else {
+            logger.warn("Delete failed: invalid password for user '{}'", id);
+            throw new BadCredentialsException("Invalid credentials.");
+        }
     }
-
 }

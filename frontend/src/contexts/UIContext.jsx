@@ -10,8 +10,17 @@ export const UIProvider = ({ children }) => {
   const [showAddBlockMenu, setShowAddBlockMenu] = useState(false);
   const [showRenamePopup, setShowRenamePopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [showDeleteAccountPopup, setShowDeleteAccountPopup] = useState(false);
 
   const toggleSidebar = () => setShowSidebar((prev) => !prev);
+
+  const toggleShowDeleteAccountPopup = () => {
+    setShowDeleteAccountPopup((prev) => {
+      const newValue = !prev;
+      setThemeColor(newValue ? '#0D1E5C' : '#193cb8');
+      return newValue;
+    });
+  };
 
   const toggleAddBlockMenu = () => {
     setShowAddBlockMenu((prev) => {
@@ -31,7 +40,10 @@ export const UIProvider = ({ children }) => {
         showRenamePopup,
         setShowRenamePopup,
         showDeletePopup,
-        setShowDeletePopup
+        setShowDeletePopup,
+        showDeleteAccountPopup,
+        setShowDeleteAccountPopup,
+        toggleShowDeleteAccountPopup
       }}
     >
       {children}
