@@ -14,6 +14,11 @@ public class UpdateBlockRequest {
     private int dayIndex;
 
     public UpdateBlockRequest() {
+        this.id = null;
+        this.name = null;
+        this.weeks = null;
+        this.weekIndex = -1;
+        this.dayIndex = -1;
     }
 
     public UpdateBlockRequest(String id, String name, List<Week> weeks, int weekIndex, int dayIndex) {

@@ -16,8 +16,8 @@ import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
-import com.j_mikolajczyk.backend.requests.DeleteBlockRequest;
 import com.j_mikolajczyk.backend.requests.RenameBlockRequest;
+import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
 
 @Service
 public class TrainingBlockService {
@@ -155,7 +155,7 @@ public class TrainingBlockService {
         }
     }
 
-    public void delete(DeleteBlockRequest deleteBlockRequest) throws Exception{
+    public void delete(TrainingBlockRequest deleteBlockRequest) throws Exception {
         String blockName = deleteBlockRequest.getBlockName();
         ObjectId userId = deleteBlockRequest.getUserId();
 

@@ -7,6 +7,12 @@ public class RenameBlockRequest {
     private final String newName;
     private final ObjectId userId;
 
+    public RenameBlockRequest() {
+        this.blockName = null;
+        this.newName = null;
+        this.userId = null;
+    }
+
     public RenameBlockRequest(String blockName, String newName, ObjectId userId) {
         this.blockName = blockName;
         this.newName = newName;

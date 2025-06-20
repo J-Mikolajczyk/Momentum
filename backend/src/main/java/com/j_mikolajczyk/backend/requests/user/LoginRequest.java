@@ -23,8 +23,4 @@ public class LoginRequest {
         return this.password;
     }
 
-    public String toString() {
-        return "User " + email + " successfully logged in.";
-    }
-
 }

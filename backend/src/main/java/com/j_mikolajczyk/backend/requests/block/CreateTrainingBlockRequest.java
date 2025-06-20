@@ -1,7 +1,7 @@
 package com.j_mikolajczyk.backend.requests;
 
 import java.util.List;
-
+import java.util.ArrayList;
 import org.bson.types.ObjectId;
 
 public class CreateTrainingBlockRequest {

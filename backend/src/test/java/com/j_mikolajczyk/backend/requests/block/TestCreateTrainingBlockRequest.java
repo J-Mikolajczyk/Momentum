@@ -3,27 +3,34 @@ package com.j_mikolajczyk.backend.requests;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import com.j_mikolajczyk.backend.requests.AddWeekRequest;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
+import org.bson.types.ObjectId;
+import java.util.ArrayList;
+import java.util.List;
+
+
 @SpringBootTest
-public class TestAddWeekRequest {
+public class TestCreateTrainingBlockRequest {
 
     @Test
     public void testCreateEmpty() {
-        AddWeekRequest request = new AddWeekRequest();
+        CreateTrainingBlockRequest request = new CreateTrainingBlockRequest();
         assertNull(request.getBlockName());
         assertNull(request.getUserId());
+        assertNull(request.getSortedDays());
     }
 
     @Test
-    public void testCreateWithArgs() {
+    public void testCreateArgs() {
         ObjectId id = new ObjectId();
-        AddWeekRequest request = new AddWeekRequest("blockName", id);
+        List<String> days = new ArrayList<String>();
+        CreateTrainingBlockRequest request = new CreateTrainingBlockRequest("blockName", id, days);
         assertEquals("blockName", request.getBlockName());
         assertEquals(id, request.getUserId());
+        assertEquals(days, request.getSortedDays());
     }
 
 }
