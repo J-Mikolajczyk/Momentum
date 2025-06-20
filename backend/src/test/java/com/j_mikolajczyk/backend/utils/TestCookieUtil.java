@@ -1,6 +1,6 @@
 package com.j_mikolajczyk.backend.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
@@ -39,6 +39,40 @@ public class TestCookieUtil {
         when(request.getCookies()).thenReturn(new Cookie[] { longTermCookie });
         String longTermJwt = cookieUtil.extractLongTermJwt(request);
         assertEquals("longTermValue", longTermJwt);
+    }
+
+    @Test
+    public void testExtractShortTermJwtNull() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        Cookie wrongCookie = cookieUtil.createCookie("wrong", "shortTermValue", 3600, "/");
+        when(request.getCookies()).thenReturn(new Cookie[] { wrongCookie });
+        String shortTermJwt = cookieUtil.extractShortTermJwt(request);
+        assertNull(shortTermJwt);
+    }
+
+    @Test
+    public void testExtractLongTermJwtNull() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        Cookie wrongCookie = cookieUtil.createCookie("wrong", "longTermValue", 3600, "/");
+        when(request.getCookies()).thenReturn(new Cookie[] { wrongCookie });
+        String longTermJwt = cookieUtil.extractLongTermJwt(request);
+        assertNull(longTermJwt);
+    }
+
+    @Test
+    public void testExtractShortTermJwtCookiesNull() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getCookies()).thenReturn(null);
+        String shortTermJwt = cookieUtil.extractShortTermJwt(request);
+        assertNull(shortTermJwt);
+    }
+
+    @Test
+    public void testExtractLongTermJwtCookiesNull() {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        when(request.getCookies()).thenReturn(null);
+        String longTermJwt = cookieUtil.extractLongTermJwt(request);
+        assertNull(longTermJwt);
     }
 
 }
