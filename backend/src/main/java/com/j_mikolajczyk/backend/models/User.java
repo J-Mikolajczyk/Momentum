@@ -95,6 +95,9 @@ public class User {
         if(index == -1) {
             throw new Exception("404");
         }
+        if(this.trainingBlockNames.contains(newName)) {
+            throw new Exception("409");
+        }
         this.trainingBlockNames.set(index, newName);
     }
 }

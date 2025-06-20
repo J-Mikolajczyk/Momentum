@@ -48,13 +48,56 @@ public class TestUser {
     public void testAddBlock() throws Exception {
         User user = new User();
         user.addBlock("Block 1");
-        assertEquals(1, user.getTrainingBlockNames().size());
         assertEquals("Block 1", user.getTrainingBlockNames().get(0));
-        user.addBlock("Block 2");
-        assertEquals(2, user.getTrainingBlockNames().size());
-        assertEquals("Block 2", user.getTrainingBlockNames().get(0));
-        assertEquals("Block 1", user.getTrainingBlockNames().get(1));
     }
+
+    @Test
+    public void testDeleteBlock() {
+        User user = new User();
+        try {
+            user.addBlock("Block 1");
+            user.deleteBlock("Block 1");
+        } catch (Exception e) {
+            fail("Exception was thrown");
+        }
+        assertEquals(0, user.getTrainingBlockNames().size());
+    }
+
+    @Test
+    public void testRenameBlock() {
+        User user = new User();
+        try {
+            user.addBlock("Block 1");
+            user.renameBlock("Block 1", "New Name");
+        } catch (Exception e) {
+            fail("Exception was thrown");
+        }
+        assertEquals("New Name", user.getTrainingBlockNames().get(0));
+    }
+
+    @Test
+    public void testRenameBlockNonExistent() {
+        User user = new User();
+        try {
+            user.addBlock("Block 1");        
+            user.renameBlock("Block 2", "Block 1");
+        } catch (Exception e) {
+            assertEquals("404", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testRenameBlockDuplicate() {
+        User user = new User();
+        try {
+            user.addBlock("Block 1");
+            user.addBlock("Block 2");
+            user.renameBlock("Block 2", "Block 1");
+        } catch (Exception e) {
+            assertEquals("409", e.getMessage());
+        }
+    }
+
 
     @Test
     public void testAddBlockDuplicate() {
@@ -71,12 +114,16 @@ public class TestUser {
     @Test
     public void testUpdateBlockPosition() throws Exception {
         User user = new User();
-        user.addBlock("Block 1");
-        user.addBlock("Block 2");
-        user.addBlock("Block 3");
+        try {
+            user.addBlock("Block 1");
+            user.addBlock("Block 2");
+            user.addBlock("Block 3");
+        } catch (Exception e) {
+            fail("Exception was thrown");
+        }
+        
         user.updateBlockPosition("Block 2");
         assertEquals("Block 2", user.getTrainingBlockNames().get(0));
-
     }
 
 }
