@@ -27,11 +27,22 @@ public class TestDay {
     }
 
     @Test
+    public void testSetters() {
+        Day day = new Day();
+        List<Exercise> exercises = new ArrayList<>();
+        day.setName("Name");
+        day.setExercises(exercises);
+        day.setLogged(true);
+        assertEquals("Name", day.getName());
+        assertEquals(exercises, day.getExercises());
+        assertEquals(true, day.getLogged());
+    }
+
+    @Test
     public void testCreateWithNameExercises() {
         List<Exercise> exercises = new ArrayList<>();
         exercises.add(new Exercise("Push-ups"));
         Day day = new Day("Workout", exercises);
-
         assertEquals("Workout", day.getName());
         assertEquals(exercises, day.getExercises());
     }
