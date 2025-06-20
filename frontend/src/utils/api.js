@@ -71,3 +71,18 @@ export async function logoutRequest(email) {
       console.log(err);
   }
 }
+
+export async function deleteRequest(data) {
+  try {
+    return fetch(ip+'/secure/user/delete', {
+      credentials: 'include',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    } catch (err) {
+      console.log(err);
+  }
+}

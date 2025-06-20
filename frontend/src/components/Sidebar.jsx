@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PolicyPopup from './popups/PolicyPopup';
 import { useUI } from '../contexts/UIContext.jsx';
 import { useUser } from '../contexts/UserContext';
+import DeleteAccountPopup from './popups/DeleteAccountPopup.jsx';
 
 export default function Sidebar( {  } ) {
 
@@ -13,7 +14,7 @@ export default function Sidebar( {  } ) {
     fetchData();
   }
 
-  const { showSidebar, toggleSidebar } = useUI();
+  const { showSidebar, toggleSidebar, showDeleteAccountPopup, toggleShowDeleteAccountPopup } = useUI();
 
   const [type, setType] = useState(null);
   const handleOuterClick = () => {
@@ -29,7 +30,6 @@ export default function Sidebar( {  } ) {
     toggleSidebar();
   }
 
-
   if (!showSidebar) {
     return null;
   }
@@ -38,14 +38,16 @@ export default function Sidebar( {  } ) {
       <>
         <div className="fixed bottom-0 left-0 right-0 z-5 bg-black/50 flex items-center justify-end bg-black/30 h-full" onClick={handleOuterClick}>
           <div className="flex flex-col gap-5 bg-white px-6 shadow-lg w-2/3 h-full" onClick={handleInnerClick}>
-              <div className='h-1/12'></div>
-              <button onClick={handleGoHome} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer'>Home</button>
-              <button onClick={logOut} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Log Out</button>
-              <button onClick={() => setType('terms')} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Terms of Service</button>
-              <button onClick={() => setType('privacy')} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Privacy Policy</button>
+            <div className='h-1/12'></div>
+            <button onClick={handleGoHome} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer'>Home</button>
+            <button onClick={logOut} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Log Out</button>
+            <button onClick={() => setType('terms')} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Terms of Service</button>
+            <button onClick={() => setType('privacy')} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Privacy Policy</button>
+            <button onClick={toggleShowDeleteAccountPopup} className='bg-gray-400 text-gray-500 font-anton ml-auto w-3/4 min-w-21 h-10 text-xl border border-gray-500 rounded-xs cursor-pointer' >Delete Account</button>
           </div>
         </div>
         <PolicyPopup type={type} setType={setType} location='sidebar'/>
+        <DeleteAccountPopup show={showDeleteAccountPopup} toggle={toggleShowDeleteAccountPopup}/>
       </>
     );
       
