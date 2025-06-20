@@ -130,7 +130,7 @@ public class TrainingBlockController {
     }
 
     @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody DeleteBlockRequest deleteBlockRequest, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> delete(@RequestBody TrainingBlockRequest deleteBlockRequest, HttpServletRequest request) throws Exception {
         String blockName = deleteBlockRequest.getBlockName();
         ObjectId userId = deleteBlockRequest.getUserId();
         logger.info("Received POST request to delete block '{}' from user '{}'", blockName, userId);

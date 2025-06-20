@@ -2,11 +2,17 @@ package com.j_mikolajczyk.backend.requests;
 
 import org.bson.types.ObjectId;
 
-public class DeleteBlockRequest {
+public class TrainingBlockRequest {
+
     private final String blockName;
     private final ObjectId userId;
 
-    public DeleteBlockRequest(String blockName, ObjectId userId) {
+    public TrainingBlockRequest() {
+        this.blockName = null;
+        this.userId = null;
+    }
+
+    public TrainingBlockRequest(String blockName, ObjectId userId) {
         this.blockName = blockName;
         this.userId = userId;
     }
@@ -17,6 +23,5 @@ public class DeleteBlockRequest {
 
     public ObjectId getUserId() {
         return userId;
-    } 
-
+    }
 }

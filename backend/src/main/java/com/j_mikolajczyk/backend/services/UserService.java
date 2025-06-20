@@ -22,6 +22,7 @@ import com.j_mikolajczyk.backend.repositories.UserRepository;
 import com.j_mikolajczyk.backend.requests.LoginRequest;
 import com.j_mikolajczyk.backend.requests.RegisterRequest;
 import com.j_mikolajczyk.backend.requests.UserRequest;
+import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
 
 @Service
 public class UserService {
