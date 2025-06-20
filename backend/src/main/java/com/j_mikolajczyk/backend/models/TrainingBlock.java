@@ -21,6 +21,13 @@ public class TrainingBlock {
 
 
     public TrainingBlock() {
+        this.name = null;
+        this.weeks = null;
+        this.createdByUserID = null;
+        this.selectedDays = null;
+        this.mostRecentDayOpen = -1;
+        this.mostRecentWeekOpen = -1;
+        this.logged = false;
     }
 
     public TrainingBlock(String name, List<Week> weeks, ObjectId createdByUserID, List<String> selectedDays, boolean logged) {

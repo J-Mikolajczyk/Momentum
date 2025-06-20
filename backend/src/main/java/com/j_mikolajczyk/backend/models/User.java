@@ -19,6 +19,10 @@ public class User {
     private List<String> trainingBlockNames;
 
     public User() {
+        this.email = null;
+        this.password = null;
+        this.name = null;
+        this.trainingBlockNames = new ArrayList<String>();
     }
 
     public User(String email, String password, String name) {
