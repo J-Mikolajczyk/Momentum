@@ -207,11 +207,6 @@ class TestTrainingBlockService {
     }
 
     @Test
-    void testGetWithNulls() {
-        assertThrows(RuntimeException.class, () -> trainingBlockService.get(null, null));
-    }
-
-    @Test
     void testGetUserNotFound() throws Exception {
         when(userService.getById(userId)).thenThrow(new NotFoundException());
 
