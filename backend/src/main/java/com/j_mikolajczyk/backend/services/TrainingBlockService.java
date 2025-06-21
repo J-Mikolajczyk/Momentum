@@ -35,9 +35,6 @@ public class TrainingBlockService {
     }
 
     public TrainingBlock get(String blockName, ObjectId id) throws Exception {
-        if (blockName == null || id == null) {
-            throw new RuntimeException("Email and Block Name are required.");
-        }
 
         ObjectId userId;
         try {
@@ -65,9 +62,6 @@ public class TrainingBlockService {
     }
 
     public TrainingBlock get(ObjectId id) throws Exception {
-        if (id == null) {
-            throw new RuntimeException("Block ID is required.");
-        }
 
         Optional<TrainingBlock> fetchedBlock = blockRepository.findById(id);
 
@@ -88,9 +82,6 @@ public class TrainingBlockService {
         String blockName = createBlockRequest.getBlockName();
         ObjectId userId = createBlockRequest.getUserId();
 
-        if(userId == null) {
-            throw new RuntimeException("UserID is required.");
-        }
         TrainingBlock block = new TrainingBlock(blockName, userId, createBlockRequest.getSortedDays(), false);
 
         try {
@@ -107,10 +98,6 @@ public class TrainingBlockService {
 
     public void update(UpdateBlockRequest updateBlockRequest) throws Exception{
         ObjectId id = updateBlockRequest.getId();
-
-        if(id == null) {
-            throw new RuntimeException("Block ID and Block Name is required.");
-        }
 
         try {
             TrainingBlock block = this.get(id);
@@ -132,10 +119,6 @@ public class TrainingBlockService {
 
     public void log(UpdateBlockRequest updateBlockRequest) throws Exception{
         ObjectId id = updateBlockRequest.getId();
-
-        if(id == null) {
-            throw new RuntimeException("Block ID and Block Name is required.");
-        }
 
         try {
             TrainingBlock block = this.get(id);
@@ -160,10 +143,6 @@ public class TrainingBlockService {
         String blockName = deleteBlockRequest.getBlockName();
         ObjectId userId = deleteBlockRequest.getUserId();
 
-        if(userId == null || blockName == null) {
-            throw new RuntimeException("Block ID and Block Name is required.");
-        }
-
         try {
             TrainingBlock block = this.get(blockName, userId);
             blockRepository.delete(block);
@@ -182,10 +161,6 @@ public class TrainingBlockService {
         String blockName = renameBlockRequest.getBlockName();
         String newName = renameBlockRequest.getNewName();
         ObjectId userId = renameBlockRequest.getUserId();
-
-        if(userId == null || blockName == null || newName == null) {
-            throw new RuntimeException("User ID, Block Name, and New Name are required.");
-        }
 
         try {
             TrainingBlock block = this.get(blockName, userId);
@@ -208,10 +183,6 @@ public class TrainingBlockService {
     }
 
     public void deleteAllForUser(ObjectId userId) {
-        if (userId == null) {
-            throw new IllegalArgumentException("User ID must not be null.");
-        }
-
         blockRepository.deleteByCreatedByUserID(userId);
     }
 
