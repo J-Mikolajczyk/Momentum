@@ -3,11 +3,13 @@ package com.j_mikolajczyk.backend.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.requests.block.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 import com.j_mikolajczyk.backend.services.UserService;
 import com.j_mikolajczyk.backend.utils.AuthGuard;
 import com.j_mikolajczyk.backend.utils.CookieUtil;
 import com.j_mikolajczyk.backend.utils.JwtUtil;
+import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
@@ -28,8 +30,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -41,6 +46,9 @@ public class TestTrainingBlockController {
 
     @MockBean
     private TrainingBlockService blockService;
+
+    @MockBean
+    private TrainingBlockRepository blockRepository;
 
     @MockBean
     private UserService userService;
@@ -134,6 +142,58 @@ public class TestTrainingBlockController {
     }
 
     @Test
+    public void testCreateSuccess() throws Exception {
+        ObjectId userId = new ObjectId();
+        String jwt = "mocked.jwt.token";
+        CreateTrainingBlockRequest request = new CreateTrainingBlockRequest("duplicate", userId, new ArrayList<>());
+
+        when(authGuard.validateUserAccess(eq(userId), any(HttpServletRequest.class)))
+            .thenReturn(null);
+        doNothing().when(blockService).create(eq(request));
+
+        mockMvc.perform(post("/secure/block/create")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+            .cookie(new Cookie("jwt", jwt)))
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testCreateAuthFailure() throws Exception {
+        ObjectId userId = new ObjectId();
+        String jwt = "mocked.jwt.token";
+        CreateTrainingBlockRequest request = new CreateTrainingBlockRequest("duplicate", userId, new ArrayList<>());
+
+        when(authGuard.validateUserAccess(any(ObjectId.class), any(HttpServletRequest.class)))
+            .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
+        doNothing().when(blockService).create(eq(request));
+
+        mockMvc.perform(post("/secure/block/create")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+            .cookie(new Cookie("jwt", jwt)))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testCreateNotFound() throws Exception {
+        ObjectId userId = new ObjectId();
+        String jwt = "mocked.jwt.token";
+        CreateTrainingBlockRequest request = new CreateTrainingBlockRequest("duplicate", userId, new ArrayList<>());
+
+        when(authGuard.validateUserAccess(eq(userId), any(HttpServletRequest.class)))
+            .thenReturn(null);
+        doThrow(new NotFoundException()).when(blockService).create(any(CreateTrainingBlockRequest.class));
+
+        mockMvc.perform(post("/secure/block/create")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+            .cookie(new Cookie("jwt", jwt)))
+            .andExpect(status().isOk())
+            .andExpect(content().string("{\"exists\": false}"));
+    }
+
+    @Test
     public void testCreateConflict() throws Exception {
         ObjectId userId = new ObjectId();
         CreateTrainingBlockRequest request = new CreateTrainingBlockRequest("duplicate", userId, new ArrayList<>());
@@ -146,5 +206,19 @@ public class TestTrainingBlockController {
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict())
                 .andExpect(content().string("Blocks cannot have identical names"));
+    }
+
+    @Test
+    public void testCreateException() throws Exception {
+        ObjectId userId = new ObjectId();
+        CreateTrainingBlockRequest request = new CreateTrainingBlockRequest("duplicate", userId, new ArrayList<>());
+
+        when(authGuard.validateUserAccess(eq(userId), any(HttpServletRequest.class))).thenReturn(null);
+        doThrow(new RuntimeException()).when(blockService).create(any(CreateTrainingBlockRequest.class));
+
+        mockMvc.perform(post("/secure/block/create")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 }

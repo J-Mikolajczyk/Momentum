@@ -93,7 +93,6 @@ public class TrainingBlockService {
             logger.error("Error creating block '{}': {}", blockName, e.getMessage());
             throw e;
         }
-
     }
 
     public void update(UpdateBlockRequest updateBlockRequest) throws Exception{
