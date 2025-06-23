@@ -1,10 +1,10 @@
-package com.j_mikolajczyk.backend.requests;
+package com.j_mikolajczyk.backend.requests.block;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.models.Week;
 
 import java.util.ArrayList;

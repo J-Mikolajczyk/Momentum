@@ -1,4 +1,4 @@
-package com.j_mikolajczyk.backend.requests;
+package com.j_mikolajczyk.backend.requests.block;
 
 import java.util.List;
 import java.util.ArrayList;
