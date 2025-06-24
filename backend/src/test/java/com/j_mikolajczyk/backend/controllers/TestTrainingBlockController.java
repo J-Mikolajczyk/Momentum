@@ -161,7 +161,6 @@ public class TestTrainingBlockController {
 
         when(authGuard.validateUserAccess(any(ObjectId.class), any(HttpServletRequest.class)))
             .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
-        doNothing().when(blockService).create(eq(request));
 
         mockMvc.perform(post("/secure/block/create")
             .contentType(MediaType.APPLICATION_JSON)
@@ -237,7 +236,6 @@ public class TestTrainingBlockController {
             .thenReturn(mockBlock);
         when(authGuard.validateUserAccess(any(ObjectId.class), any(HttpServletRequest.class)))
             .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
-        doNothing().when(blockService).update(eq(request));
 
         mockMvc.perform(post("/secure/block/update")
             .contentType(MediaType.APPLICATION_JSON)
@@ -306,7 +304,6 @@ public class TestTrainingBlockController {
             .thenReturn(mockBlock);
         when(authGuard.validateUserAccess(any(ObjectId.class), any(HttpServletRequest.class)))
             .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
-        doNothing().when(blockService).log(eq(request));
 
         mockMvc.perform(post("/secure/block/log")
             .contentType(MediaType.APPLICATION_JSON)
@@ -371,7 +368,6 @@ public class TestTrainingBlockController {
 
         when(authGuard.validateUserAccess(any(ObjectId.class), any(HttpServletRequest.class)))
             .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
-        doNothing().when(blockService).delete(eq(request));
 
         mockMvc.perform(post("/secure/block/delete")
             .contentType(MediaType.APPLICATION_JSON)
@@ -432,7 +428,6 @@ public class TestTrainingBlockController {
 
         when(authGuard.validateUserAccess(any(ObjectId.class), any(HttpServletRequest.class)))
             .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
-        doNothing().when(blockService).rename(eq(request));
 
         mockMvc.perform(post("/secure/block/rename")
             .contentType(MediaType.APPLICATION_JSON)

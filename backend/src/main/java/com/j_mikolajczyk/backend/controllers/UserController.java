@@ -74,9 +74,6 @@ public class UserController {
             userService.delete(userId, deleteUserRequest.getPassword());
             return ResponseEntity.ok("{\"deleted\": true}");
         } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                return ResponseEntity.ok("{\"exists\": false}");
-            }
             if (e instanceof BadCredentialsException) {
                  return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
