@@ -25,10 +25,6 @@ Momentum is a full-stack web app that allows users to log their strength trainin
 ### 🗄️ Database
 - **MongoDB** via Spring Data
 
-### 🚧 In Progress
-- Email verification
-- Pre-made training templates to choose from
-- Dark Mode
 ---
 
 ## 🚀 Personal Deployment
