@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
+import com.j_mikolajczyk.backend.exceptions.UserAlreadyExistsException;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.requests.user.LoginRequest;
 import com.j_mikolajczyk.backend.requests.user.LogoutRequest;
@@ -66,7 +67,7 @@ public class AuthController {
             userService.register(registerRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body("Registration successful");
         } catch (Exception e) {
-            if (e.getMessage().equals("409")){
+            if (e instanceof UserAlreadyExistsException) {
                 logger.warn("Registration failed for email: {}. User not found.", email);
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("User already registered");
             }
