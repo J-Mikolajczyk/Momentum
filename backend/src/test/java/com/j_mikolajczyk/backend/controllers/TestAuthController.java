@@ -220,6 +220,15 @@ public class TestAuthController {
     }
 
     @Test
+    void testAutoLoginNotLongTerm() throws Exception {
+        Cookie shortTermCookie = new Cookie("shortTermCookie", null);
+
+        mockMvc.perform(post("/auth/auto-login")
+                .cookie(shortTermCookie))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void testAutoLoginNullToken() throws Exception {
         Cookie longTermCookie = new Cookie("longTermCookie", null);
 
@@ -267,6 +276,53 @@ public class TestAuthController {
 
         mockMvc.perform(post("/auth/auto-login")
                 .cookie(longTermCookie))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testLogoutSuccess() throws Exception {
+        LogoutRequest request = new LogoutRequest(email);
+
+        Cookie cookie = new Cookie("name", "value");
+        cookie.setMaxAge(0);
+
+        when(userService.getObjectIdByEmail(email)).thenReturn(userId);
+        when(authGuard.validateUserAccess(userId, null)).thenReturn(null);
+        when(cookieUtil.createCookie("longTermCookie", null, 0, "/auth"))
+            .thenReturn(cookie);
+        when(cookieUtil.createCookie("shortTermCookie", null, 0, "/secure"))
+            .thenReturn(cookie);
+
+        mockMvc.perform(post("/auth/logout")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void testLogoutNotFound() throws Exception {
+        LogoutRequest request = new LogoutRequest(email);
+
+        when(userService.getObjectIdByEmail(email)).thenThrow(new NotFoundException());
+
+        mockMvc.perform(post("/auth/logout")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andExpect(content().string("{\"exists\": false}"));
+    }
+
+    @Test
+    void testLogoutAuthFailure() throws Exception {
+        LogoutRequest request = new LogoutRequest(email);
+
+        when(userService.getObjectIdByEmail(email)).thenReturn(userId);
+        when(authGuard.validateUserAccess(eq(userId), any(HttpServletRequest.class)))
+            .thenReturn((ResponseEntity) ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found"));
+        
+        mockMvc.perform(post("/auth/logout")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isUnauthorized());
     }
 
