@@ -19,10 +19,10 @@ import com.j_mikolajczyk.backend.dto.UserDTO;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.UserRepository;
-import com.j_mikolajczyk.backend.requests.LoginRequest;
-import com.j_mikolajczyk.backend.requests.RegisterRequest;
-import com.j_mikolajczyk.backend.requests.UserRequest;
-import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.user.LoginRequest;
+import com.j_mikolajczyk.backend.requests.user.RegisterRequest;
+import com.j_mikolajczyk.backend.requests.user.UserRequest;
+import com.j_mikolajczyk.backend.requests.block.TrainingBlockRequest;
 
 @Service
 public class UserService {

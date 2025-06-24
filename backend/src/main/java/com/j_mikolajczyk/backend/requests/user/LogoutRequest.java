@@ -1,4 +1,4 @@
-package com.j_mikolajczyk.backend.requests;
+package com.j_mikolajczyk.backend.requests.user;
 
 public class LogoutRequest {
 

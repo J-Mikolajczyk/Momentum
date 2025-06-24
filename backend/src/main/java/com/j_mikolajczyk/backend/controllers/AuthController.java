@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
 import com.j_mikolajczyk.backend.models.User;
-import com.j_mikolajczyk.backend.requests.LoginRequest;
-import com.j_mikolajczyk.backend.requests.LogoutRequest;
-import com.j_mikolajczyk.backend.requests.RegisterRequest;
+import com.j_mikolajczyk.backend.requests.user.LoginRequest;
+import com.j_mikolajczyk.backend.requests.user.LogoutRequest;
+import com.j_mikolajczyk.backend.requests.user.RegisterRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 import com.j_mikolajczyk.backend.utils.AuthGuard;
 import com.j_mikolajczyk.backend.utils.CookieUtil;

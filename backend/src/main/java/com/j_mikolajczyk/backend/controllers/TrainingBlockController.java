@@ -8,19 +8,19 @@ import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import com.j_mikolajczyk.backend.dto.BlockDTO;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
-import com.j_mikolajczyk.backend.models.User;
-import com.j_mikolajczyk.backend.requests.*;
+import com.j_mikolajczyk.backend.requests.block.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.RenameBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.UpdateBlockRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 import com.j_mikolajczyk.backend.services.UserService;
 import com.j_mikolajczyk.backend.utils.AuthGuard;
 import com.j_mikolajczyk.backend.utils.CookieUtil;
 import com.j_mikolajczyk.backend.utils.JwtUtil;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController

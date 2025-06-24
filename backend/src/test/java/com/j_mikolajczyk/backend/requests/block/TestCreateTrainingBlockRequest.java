@@ -1,4 +1,4 @@
-package com.j_mikolajczyk.backend.requests;
+package com.j_mikolajczyk.backend.requests.block;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.CreateTrainingBlockRequest;
 import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;

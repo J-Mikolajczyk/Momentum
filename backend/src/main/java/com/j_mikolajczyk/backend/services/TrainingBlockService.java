@@ -15,10 +15,10 @@ import com.j_mikolajczyk.backend.controllers.TrainingBlockController;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
-import com.j_mikolajczyk.backend.requests.UpdateBlockRequest;
-import com.j_mikolajczyk.backend.requests.CreateTrainingBlockRequest;
-import com.j_mikolajczyk.backend.requests.RenameBlockRequest;
-import com.j_mikolajczyk.backend.requests.TrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.UpdateBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.CreateTrainingBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.RenameBlockRequest;
+import com.j_mikolajczyk.backend.requests.block.TrainingBlockRequest;
 
 @Service
 public class TrainingBlockService {
@@ -93,7 +93,6 @@ public class TrainingBlockService {
             logger.error("Error creating block '{}': {}", blockName, e.getMessage());
             throw e;
         }
-
     }
 
     public void update(UpdateBlockRequest updateBlockRequest) throws Exception{

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.j_mikolajczyk.backend.dto.UserDTO;
-import com.j_mikolajczyk.backend.requests.LoginRequest;
+import com.j_mikolajczyk.backend.requests.user.LoginRequest;
 import com.j_mikolajczyk.backend.services.UserService;
 import com.j_mikolajczyk.backend.utils.AuthGuard;
 
