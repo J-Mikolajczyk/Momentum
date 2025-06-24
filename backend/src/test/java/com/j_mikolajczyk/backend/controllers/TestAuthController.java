@@ -6,12 +6,16 @@ import com.j_mikolajczyk.backend.exceptions.UserAlreadyExistsException;
 import com.j_mikolajczyk.backend.models.TrainingBlock;
 import com.j_mikolajczyk.backend.models.User;
 import com.j_mikolajczyk.backend.requests.user.LoginRequest;
+import com.j_mikolajczyk.backend.requests.user.LogoutRequest;
 import com.j_mikolajczyk.backend.requests.user.RegisterRequest;
 import com.j_mikolajczyk.backend.services.TrainingBlockService;
 import com.j_mikolajczyk.backend.services.UserService;
 import com.j_mikolajczyk.backend.utils.AuthGuard;
 import com.j_mikolajczyk.backend.utils.CookieUtil;
 import com.j_mikolajczyk.backend.utils.JwtUtil;
+
+import io.jsonwebtoken.Claims;
+
 import com.j_mikolajczyk.backend.repositories.TrainingBlockRepository;
 
 import org.bson.types.ObjectId;
@@ -79,6 +83,7 @@ public class TestAuthController {
     private String name;
     private User user;
     private UserDTO userDTO;
+    private ObjectId userId;
 
     @BeforeEach
     void setUp() {
@@ -86,7 +91,8 @@ public class TestAuthController {
         password = "password";
         name = "name";
         user = new User(name, email, password);
-        user.setId(new ObjectId());
+        userId = new ObjectId();
+        user.setId(userId);
         userDTO = new UserDTO(user);
     }
 
@@ -170,6 +176,99 @@ public class TestAuthController {
             .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    void testLoginException() throws Exception {
+        LoginRequest request = new LoginRequest(email, password);
+
+        when(userService.login(any(LoginRequest.class)))
+            .thenThrow(new Exception());
+        
+        mockMvc.perform(post("/auth/login")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testAutoLoginSuccess() throws Exception {
+        String longTermToken = "validLongTermToken";
+        Cookie longTermCookie = new Cookie("longTermCookie", longTermToken);
+
+        when(jwtUtil.isTokenExpired(longTermToken)).thenReturn(false);
+
+        Claims claims = mock(Claims.class);
+        when(jwtUtil.validateToken(longTermToken)).thenReturn(claims);
+        when(claims.getSubject()).thenReturn(user.getId().toHexString());
+
+        when(userService.getById(any(ObjectId.class))).thenReturn(user);
+        when(jwtUtil.generateShortTermToken(any(UserDTO.class))).thenReturn("shortTermToken");
+        when(cookieUtil.createCookie(eq("shortTermCookie"), eq("shortTermToken"), anyInt(), eq("/secure")))
+            .thenReturn(new Cookie("shortTermCookie", "shortTermToken"));
+
+        mockMvc.perform(post("/auth/auto-login")
+                .cookie(longTermCookie))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(user.getId().toHexString()))
+            .andExpect(jsonPath("$.email").value(user.getEmail()))
+            .andExpect(jsonPath("$.name").value(user.getName()));
+    }
+
+    @Test
+    void testAutoLoginNullCookies() throws Exception {
+        mockMvc.perform(post("/auth/auto-login"))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testAutoLoginNullToken() throws Exception {
+        Cookie longTermCookie = new Cookie("longTermCookie", null);
+
+        mockMvc.perform(post("/auth/auto-login")
+                .cookie(longTermCookie))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testAutoLoginExpiredToken() throws Exception {
+        String longTermToken = "validLongTermToken";
+        Cookie longTermCookie = new Cookie("longTermCookie", longTermToken);
+
+        when(jwtUtil.isTokenExpired(longTermToken)).thenReturn(true);
+
+        mockMvc.perform(post("/auth/auto-login")
+                .cookie(longTermCookie))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testAutoLoginNullClaim() throws Exception {
+        String longTermToken = "validLongTermToken";
+        Cookie longTermCookie = new Cookie("longTermCookie", longTermToken);
+
+        when(jwtUtil.isTokenExpired(longTermToken)).thenReturn(false);
+        when(jwtUtil.validateToken(longTermToken)).thenReturn(null);
+
+        mockMvc.perform(post("/auth/auto-login")
+                .cookie(longTermCookie))
+            .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testAutoLoginException() throws Exception {
+        String longTermToken = "validLongTermToken";
+        Cookie longTermCookie = new Cookie("longTermCookie", longTermToken);
+
+        when(jwtUtil.isTokenExpired(longTermToken)).thenReturn(false);
+
+        Claims claims = mock(Claims.class);
+        when(jwtUtil.validateToken(longTermToken)).thenReturn(claims);
+        when(claims.getSubject()).thenReturn(user.getId().toHexString());
+        when(userService.getById(any(ObjectId.class))).thenThrow(new Exception());
+
+        mockMvc.perform(post("/auth/auto-login")
+                .cookie(longTermCookie))
+            .andExpect(status().isUnauthorized());
+    }
 
 }
 
