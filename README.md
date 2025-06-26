@@ -4,34 +4,34 @@
 Momentum is a full-stack web app that allows users to log their strength training workouts. It is built with Java Spring Boot, React, and MongoDB. Users can plan and create training blocks, log workouts by week and day, and record exercises with detailed set data including reps and weights.
 
 ---
-## ☁️ Deployment Platforms
+## Deployment Platforms
 
 - [Render](https://render.com/) for Backend (via Dockerfile)
 - [Netlify](https://www.netlify.com/) for Frontend
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
-### ⚙️ Backend
+### Backend
 - **Java Spring Boot**
 - **REST APIs**
 - **Docker**
 
-### 🖼️ Frontend
+### Frontend
 - **React** with JSX
 - **Tailwind CSS** for styling
 
-### 🗄️ Database
+### Database
 - **MongoDB** via Spring Data
 
 ---
 
-## 🚀 Personal Deployment
+## Personal Deployment
 
 To run Momentum locally, follow the instructions for your operating system below:
 
-### 🪟 Windows Setup
+### Windows Setup
 
 **1. Clone the Repository**
 
@@ -72,7 +72,7 @@ cd backend
   npm run dev
   ```
 
-### 🐧 Linux/MacOS Setup
+### Linux/MacOS Setup
 
 **1. Clone the Repository**
 
@@ -114,7 +114,7 @@ cd backend
   ```
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```bash
 momentum/
