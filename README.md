@@ -25,6 +25,12 @@
 ### Database
 - **MongoDB** via Spring Data
 
+## Testing and CI
+
+- **Unit Testing**: Backend logic is tested using `@SpringBootTest` to validate services and controllers in an integrated Spring context.
+- **Code Coverage**: JaCoCo is used to generate backend test coverage reports.
+- **CI with GitHub Actions**: Test coverage is automatically calculated on each push and pull request, and the coverage badge is updated in real-time via a GitHub Action workflow.
+
 ---
 
 ## Personal Deployment
