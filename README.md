@@ -51,7 +51,7 @@ Copy the example ```.env``` files:
 
 ```powershell
 copy backend\src\main\resources\.env.example backend\src\main\resources\.env
-copy frontend\.env.example copy frontend\.env  
+copy frontend\.env.example frontend\.env  
 ```
 
 Open the ```.env``` file and fill in the necessary configuration values (e.g., MongoDB URI, username, password, etc.).
