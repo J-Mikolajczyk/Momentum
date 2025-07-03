@@ -15,12 +15,12 @@
 
 ### Backend
 - **Java Spring Boot**: Used to build scalable and maintainable RESTful services
-- **REST APIs**: The backend exposes RESTful endpoints that follow standard HTTP conventions, allowing smooth integration with frontend components.
-- **Docker**: The application runs in Docker containers to ensure consistent development and deployment environments.
+- **REST APIs**: The backend exposes RESTful endpoints that follow standard HTTP conventions
+- **Docker**: The application runs in Docker containers to ensure consistent development and deployment environments
 
 ### Frontend
-- **React**: The UI is built with React using JSX for fast updates and dynamic rendering.
-- **Tailwind CSS**: Tailwind is used for styling, allowing for responsive design and consistent UI.
+- **React**: The UI is built with React using JSX for fast updates and dynamic rendering
+- **Tailwind CSS**: Tailwind is used for styling, allowing for responsive design and consistent UI
 
 ### Database
 - **MongoDB**: MongoDB is accessed through Spring Data’s repository abstraction
@@ -28,7 +28,7 @@
 ### Testing and CI
 - **Unit Testing**: Backend is tested using `@SpringBootTest` to validate services and controllers
 - **Code Coverage**: JaCoCo is used to generate backend test coverage reports
-- **CI with GitHub Actions**: Coverage badge is updated in real-time via a GitHub Action workflow.
+- **CI with GitHub Actions**: Coverage badge is updated in real-time via a GitHub Action workflow
 
 ---
 
