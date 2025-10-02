@@ -139,16 +139,16 @@ momentum/
 Below are screenshots demonstrating key features of Momentum.
 
 ### Login Page
-<img src=".github/images/login.jpg" alt="Login Page" width="300">
+<img src=".github/images/login.jpg" alt="Login Page" width="450">
 
 ### Add New Block
-<img src=".github/images/add_block.jpg" alt="Add New Block" width="300">
+<img src=".github/images/add_block.jpg" alt="Add New Block" width="450">
 
 ### Unlogged Sets
-<img src=".github/images/unlogged_sets.jpg" alt="Unlogged Sets" width="300">
+<img src=".github/images/unlogged_sets.jpg" alt="Unlogged Sets" width="450">
 
 ### Logged Sets
-<img src=".github/images/logged_sets.jpg" alt="Logged Sets" width="300">
+<img src=".github/images/logged_sets.jpg" alt="Logged Sets" width="450">
 
 ### Week Menu
-<img src=".github/images/week_menu.jpg" alt="Week Menu" width="300">
+<img src=".github/images/week_menu.jpg" alt="Week Menu" width="450">
